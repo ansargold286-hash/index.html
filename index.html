@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ANSO GOLD HD - Mobile Studio Automation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #0b0b0b;
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Bar */
+        .top-header {
+            background-color: #161616;
+            padding: 6px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #282828;
+            height: 40px;
+            flex-shrink: 0;
+        }
+        .channel-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #00e5bc;
+        }
+        .admin-toggle-btn {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Main Workspace */
+        .workspace {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Video Broadcast Container */
+        .broadcast-view {
+            width: 100%;
+            height: 40vh;
+            background-color: #000;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Logo stuck to the left corner and safely inside top video frame */
+        .anso-logo-box {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            align-items: center;
+            z-index: 99;
+            pointer-events: none;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Reduced scale for ideal compact channel logo size */
+        .anso-logo-scale {
+            display: flex;
+            align-items: center;
+            transform: scale(0.14);
+            transform-origin: top left;
+        }
+
+        /* Circle Sphere containing ANSO */
+        .circle-sphere {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #00e5bc 0%, #008f82 40%, #004d40 80%, #002620 100%);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Text inside the green circle (ANSO) */
+        .circle-text {
+            font-size: 52px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Text outside the green circle (GOLD HD) */
+        .outer-logo-text {
+            margin-left: 20px;
+            font-size: 52px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.95);
+        }
+
+        /* Running Ticker / News Bar */
+        .ticker-bar {
+            height: 26px;
+            background-color: #b30000;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 11px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .ticker-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: tickerScroll 20s linear infinite;
+        }
+        @keyframes tickerScroll {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* Lower Section: Playlist */
+        .lower-section {
+            flex-grow: 1;
+            background-color: #121212;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .section-header {
+            padding: 6px 10px;
+            font-size: 12px;
+            color: #00e5bc;
+            font-weight: bold;
+            border-bottom: 1px solid #222;
+            background: #181818;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .playlist-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 6px;
+        }
+        .playlist-card {
+            background-color: #1e1e1e;
+            padding: 6px 8px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            border-left: 3px solid #555;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .playlist-card.active {
+            border-left-color: #00e5bc;
+            background-color: #262626;
+        }
+        .card-info h5 {
+            font-size: 12px;
+            color: #fff;
+            margin-bottom: 1px;
+        }
+        .card-info span {
+            font-size: 9px;
+            color: #aaa;
+        }
+
+        /* Admin Panel Drawer */
+        .admin-drawer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1a1a1a;
+            border-top: 2px solid #00e5bc;
+            padding: 12px 12px 30px 12px;
+            transition: transform 0.3s ease-in-out;
+            transform: translateY(100%);
+            z-index: 100;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .admin-drawer.open {
+            transform: translateY(0);
+        }
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .drawer-header h4 {
+            color: #00e5bc;
+            font-size: 13px;
+        }
+        .close-drawer {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 8px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 10px;
+            color: #ccc;
+            margin-bottom: 2px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 7px;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .file-picker-btn {
+            display: block;
+            width: 100%;
+            padding: 7px;
+            background-color: #252525;
+            border: 1px dashed #00e5bc;
+            color: #00e5bc;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+        .file-picker-btn input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .file-name-display {
+            font-size: 9px;
+            color: #00cc66;
+            margin-bottom: 4px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 10px;
+            background-color: #00e5bc;
+            color: #121212;
+            border: none;
+            font-weight: bold;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-top: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="channel-title">ANSO GOLD HD (Live)</div>
+        <button class="admin-toggle-btn" onclick="toggleAdminPanel()">⚙️ Admin Panel</button>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+        <!-- Video Broadcast Display -->
+        <div class="broadcast-view">
+            <!-- Channel Logo stuck to left corner inside video frame -->
+            <div class="anso-logo-box">
+                <div class="anso-logo-scale">
+                    <div class="circle-sphere">
+                        <span class="circle-text">ANSO</span>
+                    </div>
+                    <div class="outer-logo-text">GOLD HD</div>
+                </div>
+            </div>
+
+            <video id="studioPlayer" controls autoplay playsinline ontimeupdate="checkAdTriggers()" onended="playNextInQueue()">
+                <source id="videoSource" src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <!-- News Ticker -->
+        <div class="ticker-bar">
+            <div class="ticker-content" id="tickerText">
+                🔴 LIVE BROADCAST: Welcome to ANSO GOLD HD Studio. Logo locked to top-left corner!
+            </div>
+        </div>
+
+        <!-- Lower Schedule View -->
+        <div class="lower-section">
+            <div class="section-header">
+                <span>Channel Playlist & Commercial Breaks</span>
+                <span id="itemCount" style="font-size: 10px; color: #888;">0 Shows</span>
+            </div>
+            <div class="playlist-container" id="playlistContainer">
+                <!-- Dynamic schedule items appear here -->
+            </div>
+        </div>
+
+        <!-- Admin Control Drawer -->
+        <div class="admin-drawer" id="adminDrawer">
+            <div class="drawer-header">
+                <h4>Studio Automation (Precise Ad Breaks)</h4>
+                <button class="close-drawer" onclick="toggleAdminPanel()">✕</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Drama / Show Title</label>
+                <input type="text" id="movieTitleInput" class="form-control" placeholder="e.g. Episode 1 - Drama">
+            </div>
+
+            <div class="form-group">
+                <label>Broadcast Time Slot</label>
+                <input type="text" id="movieTimeInput" class="form-control" placeholder="e.g. 08:00 PM - 09:00 PM">
+            </div>
+
+            <div class="form-group">
+                <label>1. Main Drama Video File (.mp4 / .mkv)</label>
+                <div class="file-picker-btn">
+                    📁 Choose Main Drama File
+                    <input type="file" id="dramaFileInput" accept="video/mp4,video/mkv,video/webm" onchange="handleDramaFileSelect()">
+                </div>
+                <div id="dramaFileName" class="file-name-display">No drama file selected</div>
+            </div>
+
+            <div class="form-group">
+                <label>2. Commercial Ad / Mashhoori Video File</label>
+                <div class="file-picker-btn" style="border-color: #ffaa00; color: #ffaa00;">
+                    📁 Choose Mashhoori / Ad File
+                    <input type="file" id="adFileInput" accept="video/mp4,video/mkv,video/webm" onchange="handleAdFileSelect()">
+                </div>
+                <div id="adFileName" class="file-name-display">No ad file selected</div>
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>1st Ad Break (Minutes)</label>
+                    <input type="number" id="adTime1Input" class="form-control" placeholder="e.g. 7" value="7">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>2nd Ad Break (Minutes)</label>
+                    <input type="number" id="adTime2Input" class="form-control" placeholder="e.g. 14" value="14">
+                </div>
+            </div>
+
+            <button class="btn-submit" onclick="addNewSchedule()">Add to Schedule & Start Channel</button>
+        </div>
+    </div>
+
+    <script>
+        let masterQueue = [];
+        let displayPlaylist = [];
+        let currentIndex = 0;
+        let tempDramaUrl = "";
+        let tempAdUrl = "";
+        let wakeLock = null;
+        let activeInterruption = null; 
+
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (err) {
+                console.log('Wake Lock error:', err);
+            }
+        }
+
+        document.addEventListener('visibilitychange', async () => {
+            if (wakeLock !== null && document.visibilityState === 'visible') {
+                await requestWakeLock();
+            }
+        });
+
+        function toggleAdminPanel() {
+            const drawer = document.getElementById('adminDrawer');
+            drawer.classList.toggle('open');
+        }
+
+        function handleDramaFileSelect() {
+            const fileInput = document.getElementById('dramaFileInput');
+            const nameDisplay = document.getElementById('dramaFileName');
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                tempDramaUrl = URL.createObjectURL(file);
+                nameDisplay.innerText = "Loaded Drama: " + file.name;
+            }
+        }
+
+        function handleAdFileSelect() {
+            const fileInput = document.getElementById('adFileInput');
+            const nameDisplay = document.getElementById('adFileName');
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                tempAdUrl = URL.createObjectURL(file);
+                nameDisplay.innerText = "Loaded Ad: " + file.name;
+            }
+        }
+
+        function addNewSchedule() {
+            const title = document.getElementById('movieTitleInput').value.trim();
+            const time = document.getElementById('movieTimeInput').value.trim();
+            const adMin1 = parseFloat(document.getElementById('adTime1Input').value) || 7;
+            const adMin2 = parseFloat(document.getElementById('adTime2Input').value) || 14;
+
+            if (!title || !time || !tempDramaUrl) {
+                alert('Please enter show title, time slot, and select a main drama file!');
+                return;
+            }
+
+            displayPlaylist.push({
+                title: title,
+                time: time,
+                hasAds: tempAdUrl !== ""
+            });
+
+            let adTriggers = [];
+            if (tempAdUrl !== "") {
+                adTriggers = [adMin1 * 60, adMin2 * 60];
+            }
+
+            masterQueue.push({
+                title: title,
+                url: tempDramaUrl,
+                adUrl: tempAdUrl,
+                time: time,
+                adTriggers: adTriggers,
+                firedAds: []
+            });
+
+            renderPlaylist();
+
+            if (masterQueue.length === 1 || (masterQueue.length > 0 && document.getElementById('studioPlayer').paused)) {
+                currentIndex = 0;
+                loadAndPlayCurrent();
+            }
+
+            document.getElementById('movieTitleInput').value = '';
+            document.getElementById('movieTimeInput').value = '';
+            document.getElementById('dramaFileInput').value = '';
+            document.getElementById('adFileInput').value = '';
+            document.getElementById('dramaFileName').innerText = 'No drama file selected';
+            document.getElementById('adFileName').innerText = 'No ad file selected';
+            tempDramaUrl = "";
+            tempAdUrl = "";
+
+            toggleAdminPanel();
+        }
+
+        function renderPlaylist() {
+            const container = document.getElementById('playlistContainer');
+            document.getElementById('itemCount').innerText = displayPlaylist.length + " Shows";
+            container.innerHTML = '';
+
+            displayPlaylist.forEach((item, index) => {
+                const card = document.createElement('div');
+                const isActive = masterQueue[currentIndex] && masterQueue[currentIndex].title === item.title;
+                card.className = `playlist-card ${isActive ? 'active' : ''}`;
+                card.innerHTML = `
+                    <div class="card-info">
+                        <h5>${item.title} ${item.hasAds ? '<span style="color:#ffaa00; font-size:9px;">(📢 Timed Ad Breaks Active)</span>' : ''}</h5>
+                        <span>${item.time}</span>
+                    </div>
+                    <div style="font-size:10px; color: ${isActive ? '#00e5bc' : '#666'}; font-weight:bold;">
+                        ${isActive ? '▶ PLAYING' : 'QUEUED'}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function loadAndPlayCurrent() {
+            if (masterQueue.length === 0) return;
+
+            const player = document.getElementById('studioPlayer');
+            const source = document.getElementById('videoSource');
+            const currentItem = masterQueue[currentIndex];
+
+            activeInterruption = null;
+            source.src = currentItem.url;
+            player.load();
+            
+            player.play().then(() => {
+                requestWakeLock();
+            }).catch(e => {
+                console.log("Autoplay waiting:", e);
+            });
+
+            setupMediaSession(currentItem.title, currentItem.time);
+            document.getElementById('tickerText').innerText = `🔴 NOW BROADCASTING: ${currentItem.title} — ANSO GOLD HD Live Automation`;
+            renderPlaylist();
+        }
+
+        function checkAdTriggers() {
+            const player = document.getElementById('studioPlayer');
+            const currentItem = masterQueue[currentIndex];
+            
+            if (!currentItem || !currentItem.adUrl || activeInterruption) return;
+
+            let currentTime = player.currentTime;
+
+            for (let i = 0; i < currentItem.adTriggers.length; i++) {
+                let targetSec = currentItem.adTriggers[i];
+                if (currentTime >= targetSec && currentTime < (targetSec + 1.5) && !currentItem.firedAds.includes(targetSec)) {
+                    currentItem.firedAds.push(targetSec);
+                    
+                    player.pause();
+                    
+                    activeInterruption = {
+                        returnTime: player.currentTime,
+                        isAd: true
+                    };
+
+                    const source = document.getElementById('videoSource');
+                    source.src = currentItem.adUrl;
+                    player.load();
+                    player.play();
+
+                    setupMediaSession(currentItem.title + " [COMMERCIAL BREAK / MASHHOORI]", currentItem.time);
+                    document.getElementById('tickerText').innerText = `📢 COMMERCIAL BREAK: Mashhoori running — ANSO GOLD HD`;
+                    break;
+                }
+            }
+        }
+
+        function playNextInQueue() {
+            const player = document.getElementById('studioPlayer');
+            const currentItem = masterQueue[currentIndex];
+
+            if (activeInterruption && activeInterruption.isAd) {
+                const source = document.getElementById('videoSource');
+                source.src = currentItem.url;
+                player.load();
+                player.currentTime = activeInterruption.returnTime;
+                
+                activeInterruption = null;
+                player.play();
+
+                setupMediaSession(currentItem.title, currentItem.time);
+                document.getElementById('tickerText').innerText = `🔴 RESUMING BROADCAST: ${currentItem.title} — ANSO GOLD HD`;
+                return;
+            }
+
+            if (masterQueue.length > 0) {
+                currentIndex = (currentIndex + 1) % masterQueue.length;
+                loadAndPlayCurrent();
+            }
+        }
+
+        function setupMediaSession(title, timeSlot) {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: title,
+                    artist: 'ANSO GOLD HD Live Studio',
+                    album: timeSlot
+                });
+
+                navigator.mediaSession.setActionHandler('nexttrack', () => {
+                    playNextInQueue();
+                });
+            }
+        }
+    </script>
+</body>
+              </html>
