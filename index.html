@@ -6,6 +6,9 @@
     <title>Professional Office Attendance - Jarvis</title>
     <!-- Face-API.js CDN -->
     <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
+    <!-- Firebase App & Realtime Database CDN -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -294,7 +297,26 @@
 <img id="hiddenImage" style="display:none;" />
 
 <script>
-    let registeredFaces = JSON.parse(localStorage.getItem("savedFacesData")) || [];
+    // --- FIREBASE CLOUD DATABASE SETUP ---
+    // (मोहम्मद अंसार: अपनी Firebase Web Config नीचे यहाँ डालें ताकि डेटा क्लाउड पर लाइव सिंक हो सके)
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        databaseURL: "YOUR_DATABASE_URL",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET.appspot.com",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
+
+    let registeredFaces = [];
+    let masterLogs = [];
     let isModelLoaded = false;
     
     const posesList = [
@@ -310,6 +332,19 @@
         
         let randomPose = posesList[Math.floor(Math.random() * posesList.length)];
         instructionEl.innerHTML = randomPose;
+
+        // Load data from Firebase Realtime Database in real-time
+        db.ref('employees').on('value', (snapshot) => {
+            const data = snapshot.val();
+            registeredFaces = data ? Object.values(data) : [];
+            loadRegisteredEmployees();
+        });
+
+        db.ref('attendanceLogs').on('value', (snapshot) => {
+            const data = snapshot.val();
+            masterLogs = data ? Object.values(data) : [];
+            loadAdminLogs();
+        });
 
         try {
             const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
@@ -399,7 +434,7 @@
         }
 
         regStatus.style.color = "#e67e22";
-        regStatus.textContent = "Processing and resizing image... / تصویر پراسیس ہو رہی ہے...";
+        regStatus.textContent = "Processing and saving to cloud... / ڈیٹا کلاउड پر محفوظ ہو رہا ہے...";
 
         processImageFile(fileInput.files[0], async (imgElement) => {
             try {
@@ -411,28 +446,29 @@
                     return;
                 }
 
-                registeredFaces.push({ 
+                const newEmp = { 
                     name: name, 
                     pose: pose,
                     descriptor: Array.from(detection.descriptor) 
-                });
-                localStorage.setItem("savedFacesData", JSON.stringify(registeredFaces));
+                };
+
+                // Push to Firebase Cloud Database
+                await db.ref('employees').push(newEmp);
 
                 regStatus.style.color = "#27ae60";
-                regStatus.textContent = `Success! ${name} registered successfully. / کامیابی سے محفوظ ہو گیا!`;
+                regStatus.textContent = `Success! ${name} registered on cloud. / کامیابی سے کلاؤڈ پر محفوظ ہو گیا!`;
                 document.getElementById("regName").value = "";
                 document.getElementById("regGalleryInput").value = "";
-                loadRegisteredEmployees();
-                loadAdminLogs();
             } catch (err) {
                 regStatus.style.color = "#c0392b";
-                regStatus.textContent = "Error processing image. / خرابی پیش آگئی۔";
+                regStatus.textContent = "Error saving to cloud. / کلاؤड पर सेव करने में एरर।";
             }
         });
     }
 
     function loadRegisteredEmployees() {
         const listEl = document.getElementById("registeredList");
+        if (!listEl) return;
         if (registeredFaces.length === 0) {
             listEl.textContent = "No employees registered yet. / کوئی ملازم رجسٹرڈ نہیں ہے۔";
             return;
@@ -496,34 +532,30 @@
     }
 
     function recordAttendance(name, attendanceStatus) {
-        let masterLogs = JSON.parse(localStorage.getItem("masterAttendanceLogs")) || [];
-
         const now = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' };
         const fullDateTimeString = now.toLocaleDateString('en-US', options);
 
-        masterLogs.push({
+        const newLog = {
             name: name,
             status: attendanceStatus,
             dateTime: fullDateTimeString
-        });
+        };
 
-        localStorage.setItem("masterAttendanceLogs", JSON.stringify(masterLogs));
+        // Push attendance directly to Firebase Cloud Database (Syncs to Admin Panel instantly)
+        db.ref('attendanceLogs').push(newLog);
         
         const statusEl = document.getElementById("mainStatus");
         statusEl.style.color = "#27ae60";
         statusEl.innerHTML = `✔ सक्सेसफुली حاضری اوکے!<br>Successfully Marked: <b>${name}</b> (${attendanceStatus})`;
         
-        alert(`✅ सक्सेसफुली حاضری اوکے!\n\nHi ${name},\nYour ${attendanceStatus} has been marked successfully!`);
+        alert(`✅ सक्सेसफुली حاضری اوکے!\n\nHi ${name},\nYour ${attendanceStatus} has been marked successfully and sent to Admin!`);
         
         document.getElementById("attendanceImageInput").value = "";
-        loadAdminLogs();
     }
 
     function getFilteredLogs() {
-        let masterLogs = JSON.parse(localStorage.getItem("masterAttendanceLogs")) || [];
         let searchQuery = document.getElementById("searchEmployeeInput").value.trim().toLowerCase();
-        
         if (!searchQuery) {
             return masterLogs;
         }
@@ -532,6 +564,7 @@
 
     function loadAdminLogs() {
         const tbody = document.getElementById("adminLogTable");
+        if (!tbody) return;
         tbody.innerHTML = "";
         let filteredLogs = getFilteredLogs();
 
@@ -562,7 +595,9 @@
     function updateSelectionCounter() {
         const checkedBoxes = document.querySelectorAll('.log-checkbox:checked');
         const counterEl = document.getElementById("selectionCounter");
-        counterEl.textContent = `Selected Count: ${checkedBoxes.length} / منتخب شدہ: ${checkedBoxes.length}`;
+        if (counterEl) {
+            counterEl.textContent = `Selected Count: ${checkedBoxes.length} / منتخب شدہ: ${checkedBoxes.length}`;
+        }
     }
 
     function getSelectedLogs() {
@@ -620,8 +655,8 @@
     }
 
     function clearAllLogs() {
-        if (confirm("Are you sure you want to delete all stored attendance records? / کیا آپ تمام ریکارڈ ڈیلیٹ کرنا چاہتے ہیں؟")) {
-            localStorage.removeItem("masterAttendanceLogs");
+        if (confirm("Are you sure you want to delete all stored attendance records from cloud? / کیا آپ کلاؤڈ سے تمام ریکارڈ ڈیلیٹ کرنا چاہتے ہیں؟")) {
+            db.ref('attendanceLogs').remove();
             loadAdminLogs();
         }
     }
