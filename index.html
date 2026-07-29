@@ -198,7 +198,7 @@
         <label>Upload Photo from Gallery / گیلری سے تصویر اپ لوڈ کریں:</label>
         <input type="file" id="attendanceImageInput" accept="image/*">
 
-        <div id="mainStatus" class="status-box">Loading AI System... / اے آئی سسٹم لوڈ ہو رہا ہے...</div>
+        <div id="mainStatus" class="status-box">Loading AI System & Checking Location... / اے آئی سسٹم لوڈ اور لوکیشن چیک ہو رہی ہے...</div>
         
         <!-- Two separate action buttons with English & Urdu -->
         <button class="btn btn-success" onclick="processAttendance('Check-In')">🟢 Check-In <br><span style="font-size: 12px;">(حاضरी / حاضری اوکے - ان)</span></button>
@@ -224,7 +224,7 @@
             <div class="admin-section">
                 <h4>Register Employee / ملازم کا اندراج</h4>
                 
-                <label>Employee Name & Details / ملازم کا نام اور تفصیل:</label>
+                <label>Employee Name & Details / ملازم का नाम और تفصیل:</label>
                 <input type="text" id="regName" placeholder="e.g. Rashid Khan (Manager)">
 
                 <label>Required Pose / مطلوبہ پोज़:</label>
@@ -271,11 +271,12 @@
                                 <th style="width: 35px;">Select / انتخاب</th>
                                 <th>Name / نام</th>
                                 <th>Status / اسٹیٹس</th>
+                                <th>Location / مقام</th>
                                 <th>Date & Time / تاریخ اور وقت</th>
                             </tr>
                         </thead>
                         <tbody id="adminLogTable">
-                            <tr><td colspan="4" style="text-align: center;">No records found. / کوئی ریکارڈ نہیں ملا۔</td></tr>
+                            <tr><td colspan="5" style="text-align: center;">No records found. / کوئی ریکارڈ نہیں ملا۔</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -298,7 +299,6 @@
 
 <script>
     // --- FIREBASE CLOUD DATABASE SETUP ---
-    // (मोहम्मद अंसार: अपनी Firebase Web Config नीचे यहाँ डालें ताकि डेटा क्लाउड पर लाइव सिंक हो सके)
     const firebaseConfig = {
         apiKey: "YOUR_API_KEY",
         authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -452,7 +452,6 @@
                     descriptor: Array.from(detection.descriptor) 
                 };
 
-                // Push to Firebase Cloud Database
                 await db.ref('employees').push(newEmp);
 
                 regStatus.style.color = "#27ae60";
@@ -461,7 +460,7 @@
                 document.getElementById("regGalleryInput").value = "";
             } catch (err) {
                 regStatus.style.color = "#c0392b";
-                regStatus.textContent = "Error saving to cloud. / کلاؤड पर सेव करने में एरर।";
+                regStatus.textContent = "Error saving to cloud. / کलाउड पर सेव करने में एरर।";
             }
         });
     }
@@ -480,6 +479,7 @@
         listEl.innerHTML = html;
     }
 
+    // --- Mandatory Location & Attendance Process ---
     async function processAttendance(attendanceType) {
         const nameInput = document.getElementById("employeeNameInput").value.trim();
         if (!nameInput) {
@@ -500,38 +500,60 @@
 
         const statusEl = document.getElementById("mainStatus");
         statusEl.style.color = "#2980b9";
-        statusEl.textContent = "Optimizing image & verifying face... / تصویر چیک کی جا رہی ہے...";
+        statusEl.textContent = "Checking your location (GPS)... / لوکیشن چیک کی جا रही ہے...";
 
-        processImageFile(fileInput.files[0], async (imgElement) => {
-            try {
-                const detection = await faceapi.detectSingleFace(imgElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
+        // Check for Geolocation (Mandatory)
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser / آپ کا براؤज़र لوکیشن سپورٹ نہیں کرتا۔");
+            return;
+        }
 
-                if (!detection) {
-                    statusEl.style.color = "#c0392b";
-                    statusEl.textContent = "Face not detected clearly! / چہرہ واضح نہیں ملا۔";
-                    alert("Face not detected clearly! / چہرہ واضح نہیں ملا۔");
-                    return;
-                }
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                const locationString = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
 
-                const labeledDescriptors = registeredFaces.map(emp => new faceapi.LabeledFaceDescriptors(emp.name, [new Float32Array(emp.descriptor)]));
-                const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.55);
-                const match = faceMatcher.findBestMatch(detection.descriptor);
+                statusEl.textContent = "Optimizing image & verifying face... / تصویر چیک کی جا رہی ہے...";
 
-                if (match.label === "unknown") {
-                    statusEl.style.color = "#c0392b";
-                    statusEl.textContent = "Face not recognized! You are not registered. / چہرہ شناخت نہیں ہوا!";
-                    alert("Face not recognized! You are not registered. / چہرہ شناخت نہیں ہوا!");
-                } else {
-                    recordAttendance(match.label, attendanceType);
-                }
-            } catch (err) {
+                processImageFile(fileInput.files[0], async (imgElement) => {
+                    try {
+                        const detection = await faceapi.detectSingleFace(imgElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
+
+                        if (!detection) {
+                            statusEl.style.color = "#c0392b";
+                            statusEl.textContent = "Face not detected clearly! / چہرہ واضح نہیں ملا۔";
+                            alert("Face not detected clearly! / چہرہ واضح نہیں ملا۔");
+                            return;
+                        }
+
+                        const labeledDescriptors = registeredFaces.map(emp => new faceapi.LabeledFaceDescriptors(emp.name, [new Float32Array(emp.descriptor)]));
+                        const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.55);
+                        const match = faceMatcher.findBestMatch(detection.descriptor);
+
+                        if (match.label === "unknown") {
+                            statusEl.style.color = "#c0392b";
+                            statusEl.textContent = "Face not recognized! You are not registered. / چہرہ شناخت نہیں ہوا!";
+                            alert("Face not recognized! You are not registered. / چہرہ شناخت نہیں ہوا!");
+                        } else {
+                            recordAttendance(match.label, attendanceType, locationString);
+                        }
+                    } catch (err) {
+                        statusEl.style.color = "#c0392b";
+                        statusEl.textContent = "Error processing face verification. / تصدیق میں خرابی۔";
+                    }
+                });
+            },
+            (error) => {
                 statusEl.style.color = "#c0392b";
-                statusEl.textContent = "Error processing face verification. / تصدیق میں خرابی۔";
-            }
-        });
+                statusEl.textContent = "Location is turned OFF! Please enable GPS. / براہ کرم اپنے فون کی لوکیشن (GPS) آن کریں!";
+                alert("⚠ Location Error: Please turn on your phone's GPS/Location to mark attendance! / حاضری کے لیے لوکیشن آن کرنا لازمی ہے۔");
+            },
+            { timeout: 10000, enableHighAccuracy: true }
+        );
     }
 
-    function recordAttendance(name, attendanceStatus) {
+    function recordAttendance(name, attendanceStatus, locationString) {
         const now = new Date();
         const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' };
         const fullDateTimeString = now.toLocaleDateString('en-US', options);
@@ -539,17 +561,17 @@
         const newLog = {
             name: name,
             status: attendanceStatus,
+            location: locationString,
             dateTime: fullDateTimeString
         };
 
-        // Push attendance directly to Firebase Cloud Database (Syncs to Admin Panel instantly)
         db.ref('attendanceLogs').push(newLog);
         
         const statusEl = document.getElementById("mainStatus");
         statusEl.style.color = "#27ae60";
         statusEl.innerHTML = `✔ सक्सेसफुली حاضری اوکے!<br>Successfully Marked: <b>${name}</b> (${attendanceStatus})`;
         
-        alert(`✅ सक्सेसफुली حاضری اوکے!\n\nHi ${name},\nYour ${attendanceStatus} has been marked successfully and sent to Admin!`);
+        alert(`✅ सक्सेसफुली حاضری اوکے!\n\nHi ${name},\nYour ${attendanceStatus} has been marked successfully with location and sent to Admin!`);
         
         document.getElementById("attendanceImageInput").value = "";
     }
@@ -569,7 +591,7 @@
         let filteredLogs = getFilteredLogs();
 
         if (filteredLogs.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center;">No attendance history found. / کوئی ریکارڈ نہیں ملا۔</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No attendance history found. / کوئی ریکارڈ نہیں ملا۔</td></tr>`;
             updateSelectionCounter();
             return;
         }
@@ -580,6 +602,7 @@
                     <td style="text-align: center;"><input type="checkbox" class="log-checkbox" data-index="${index}" onchange="updateSelectionCounter()"></td>
                     <td><b>${l.name}</b></td>
                     <td style="color:${l.status==='Check-In'?'#27ae60':'#c0392b'}; font-weight:bold;">${l.status}</td>
+                    <td style="font-size: 11px; color: #555;">📍 ${l.location || 'N/A'}</td>
                     <td>📅 ${l.dateTime}</td>
                 </tr>`;
         });
@@ -623,7 +646,7 @@
 
         let textToCopy = "--- SELECTED ATTENDANCE RECORDS ---\n";
         selectedLogs.forEach(l => {
-            textToCopy += `Name: ${l.name} | Status: ${l.status} | Date & Time: ${l.dateTime}\n`;
+            textToCopy += `Name: ${l.name} | Status: ${l.status} | Location: ${l.location} | Date & Time: ${l.dateTime}\n`;
         });
 
         navigator.clipboard.writeText(textToCopy).then(() => {
@@ -636,13 +659,13 @@
     function downloadSelectedCSVFile() {
         let selectedLogs = getSelectedLogs();
         if (selectedLogs.length === 0) {
-            alert("Please select at least one record using checkboxes! / براہ کرم ڈاؤن لوڈ کے لیے کم از کم ایک ریکارڈ ٹک کریں!");
+            alert("Please select at least one record using checkboxes! / براہ کرم ڈاؤن لوڈ के लिए کم از کم ایک ریکارڈ ٹک کریں!");
             return;
         }
 
-        let csvContent = "data:text/csv;charset=utf-8,Employee Name,Status,Date and Time\n";
+        let csvContent = "data:text/csv;charset=utf-8,Employee Name,Status,Location,Date and Time\n";
         selectedLogs.forEach(l => {
-            csvContent += `"${l.name}","${l.status}","${l.dateTime}"\n`;
+            csvContent += `"${l.name}","${l.status}","${l.location || 'N/A'}","${l.dateTime}"\n`;
         });
 
         let encodedUri = encodeURI(csvContent);
@@ -655,7 +678,7 @@
     }
 
     function clearAllLogs() {
-        if (confirm("Are you sure you want to delete all stored attendance records from cloud? / کیا آپ کلاؤڈ سے تمام ریکارڈ ڈیلیٹ کرنا چاہتے ہیں؟")) {
+        if (confirm("Are you sure you want to delete all stored attendance records from cloud? / کیا آپ کلاؤڈ سے تمام ریکارڈ ڈیلیٹ کرنا चाहते हैं؟")) {
             db.ref('attendanceLogs').remove();
             loadAdminLogs();
         }
