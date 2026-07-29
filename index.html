@@ -1,234 +1,631 @@
 <!DOCTYPE html>
-<html lang="ur">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ANSO GOLD HD - Studio & Live System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Office Attendance - Jarvis</title>
+    <!-- Face-API.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        body { background-color: #0b0b0b; color: #ffffff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
-        /* General Styles */
-        .top-header { background-color: #161616; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #282828; height: 50px; flex-shrink: 0; }
-        .channel-title { font-size: 16px; font-weight: bold; color: #00e5bc; }
-        .live-badge { background: #ff3333; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; letter-spacing: 1px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 15px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .header h2 {
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        .gear-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .gear-btn:hover { background: #34495e; }
         
-        .workspace { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .broadcast-view { width: 100%; flex-grow: 1; background-color: #000000; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        video { width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 2; }
+        .scanner-section { text-align: center; }
+        
+        .instruction-card {
+            background: #e8f4fd;
+            border-left: 5px solid #2980b9;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .instruction-card h4 { color: #2980b9; margin-bottom: 5px; font-size: 15px; }
+        .instruction-card p { font-size: 14px; color: #333; font-weight: bold; line-height: 1.5; }
 
-        /* No Signal */
-        .no-signal-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 5; display: none; }
-        .no-signal-screen.active { display: flex; }
-        .no-signal-badge { background: rgba(20,20,20,0.95); border: 2px solid #ff3333; padding: 12px 25px; border-radius: 6px; color: #ff3333; font-weight: bold; font-size: 14px; letter-spacing: 2px; }
+        .status-box {
+            font-size: 14px;
+            font-weight: bold;
+            color: #e67e22;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #fdf2e9;
+            border-radius: 6px;
+            line-height: 1.4;
+        }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            transition: 0.3s;
+            margin-bottom: 10px;
+        }
+        .btn-primary { background-color: #2980b9; }
+        .btn-primary:hover { background-color: #2471a3; }
+        .btn-success { background-color: #27ae60; }
+        .btn-success:hover { background-color: #219653; }
+        .btn-danger-custom { background-color: #c0392b; }
+        .btn-danger-custom:hover { background-color: #a93226; }
+        .btn-warning { background-color: #f39c12; }
+        .btn-warning:hover { background-color: #d68910; }
 
-        /* Logo Watermark */
-        .anso-logo-box { position: absolute; top: 15px; left: 15px; display: flex; align-items: center; z-index: 10; pointer-events: none; display: none; }
-        .anso-logo-box.active { display: flex; }
-        .anso-logo-scale { display: flex; align-items: center; transform: scale(0.2); transform-origin: top left; }
-        .circle-sphere { width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #00e5bc 0%, #008f82 40%, #004d40 80%, #002620 100%); display: flex; align-items: center; justify-content: center; }
-        .circle-text { font-size: 52px; font-weight: 900; color: #fff; }
-        .outer-logo-text { margin-left: 20px; font-size: 52px; font-weight: 900; color: #fff; text-shadow: 3px 3px 8px rgba(0,0,0,0.9); }
+        input[type="text"], select, input[type="file"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        label { display: block; font-weight: bold; font-size: 13px; color: #555; margin-bottom: 5px; text-align: left; }
 
-        /* Ticker */
-        .ticker-bar { height: 32px; background-color: #b30000; color: #fff; display: flex; align-items: center; overflow: hidden; white-space: nowrap; font-size: 13px; font-weight: bold; flex-shrink: 0; }
-        .ticker-content { display: inline-block; padding-left: 100%; animation: tickerScroll 25s linear infinite; }
-        @keyframes tickerScroll { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-100%,0,0); } }
-
-        /* Admin Panel Styles (Hidden by default, shown via URL routing) */
-        #adminView { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #121212; z-index: 100; overflow-y: auto; padding: 15px; }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 11px; color: #ccc; margin-bottom: 4px; }
-        .form-control { width: 100%; padding: 10px; background-color: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; font-size: 13px; }
-        .btn-submit { width: 100%; padding: 12px; background-color: #00e5bc; color: #121212; border: none; font-weight: bold; border-radius: 4px; font-size: 14px; cursor: pointer; margin-top: 5px; }
-        .nav-link-box { background: #1a1a1a; padding: 10px; border-radius: 6px; border: 1px solid #00e5bc; margin-bottom: 15px; }
+        /* Admin Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #fff;
+            width: 100%;
+            max-width: 650px;
+            padding: 20px;
+            border-radius: 12px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .close-modal {
+            float: right;
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .admin-section {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: left;
+        }
+        .table-container { margin-top: 15px; overflow-x: auto; max-height: 250px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 8px; border-bottom: 1px solid #ddd; font-size: 12px; }
+        th { background-color: #2c3e50; color: white; position: sticky; top: 0; }
+        .btn-danger { background-color: #c0392b; margin-top: 10px; }
+        .employee-list-box {
+            font-size: 13px;
+            background: #fff;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .selection-counter {
+            font-size: 13px;
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 8px;
+            background: #e8f4fd;
+            padding: 6px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
 
-    <!-- TV / Channel View -->
-    <div id="channelView" style="display: flex; flex-direction: column; height: 100vh; width: 100%;">
-        <div class="top-header">
-            <div class="channel-title">ANSO GOLD HD - TV Player</div>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <a href="#admin" onclick="switchToAdmin()" style="background: #2a2a2a; color: #00e5bc; padding: 5px 10px; border-radius: 4px; font-size: 11px; text-decoration: none; border: 1px solid #00e5bc;">⚙️ Open Admin</a>
-                <div class="live-badge">LIVE</div>
-            </div>
-        </div>
-
-        <div class="workspace">
-            <div class="broadcast-view">
-                <div class="no-signal-screen active" id="noSignalScreen">
-                    <div class="no-signal-badge">🔴 NO SIGNAL - WAITING FOR ADMIN UPLOAD</div>
-                </div>
-                <div class="anso-logo-box" id="ansoLogoBox">
-                    <div class="anso-logo-scale">
-                        <div class="circle-sphere"><span class="circle-text">ANSO</span></div>
-                        <div class="outer-logo-text">GOLD HD</div>
-                    </div>
-                </div>
-                <video id="tvPlayer" autoplay playsinline onended="playNextShow()">
-                    <source id="tvVideoSource" src="" type="video/mp4">
-                </video>
-            </div>
-            <div class="ticker-bar">
-                <div class="ticker-content" id="tvTickerText">🔴 ANSO GOLD HD 24/7 LIVE TRANSMISSION — CONTROLLED VIA MOBILE ADMIN PANEL</div>
-            </div>
-        </div>
+<div class="container">
+    <div class="header">
+        <h2>Office Attendance Portal<br><span style="font-size: 13px; color: #666;">آفس حاضری پورٹل</span></h2>
+        <button class="gear-btn" onclick="openAdminPanel()" title="Admin Panel">⚙️</button>
     </div>
 
-    <!-- Admin Panel View -->
-    <div id="adminView">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <h3 style="color: #00e5bc;">⚙️ ANSO Mobile Admin Panel</h3>
-            <a href="#" onclick="switchToChannel()" style="background: #333; color: #fff; padding: 6px 12px; border-radius: 4px; font-size: 12px; text-decoration: none;">📺 Go to TV Player</a>
+    <!-- Main Employee Attendance Screen -->
+    <div class="scanner-section">
+        <div class="instruction-card">
+            <h4>📌 Instructions / ہدایات:</h4>
+            <p id="dynamicInstruction">Loading required instruction...</p>
         </div>
 
-        <div class="nav-link-box">
-            <label style="color: #00e5bc; font-weight: bold;">💡 URL Tips:</label>
-            <p style="font-size: 11px; color: #ddd; margin-top: 4px;">
-                - TV Link: Your website URL (e.g. <code>...github.io/anso/</code>)<br>
-                - Admin Link: Add <b>#admin</b> at the end (e.g. <code>...github.io/anso/#admin</code>)
-            </p>
-        </div>
+        <label>Enter Your Full Name / اپنا پورا نام لکھیں:</label>
+        <input type="text" id="employeeNameInput" placeholder="e.g. Mohammad Ali / محمد علی">
 
-        <div class="form-group">
-            <label>Drama / Show Title</label>
-            <input type="text" id="movieTitleInput" class="form-control" placeholder="e.g. Episode 1 - Drama">
-        </div>
+        <label>Upload Photo from Gallery / گیلری سے تصویر اپ لوڈ کریں:</label>
+        <input type="file" id="attendanceImageInput" accept="image/*">
 
-        <div class="form-group">
-            <label>Broadcast Time Slot</label>
-            <input type="text" id="movieTimeInput" class="form-control" placeholder="e.g. 08:00 PM - 09:00 PM">
-        </div>
-
-        <div class="form-group">
-            <label>Direct Video Link (.mp4 / Direct URL)</label>
-            <input type="text" id="directUrlInput" class="form-control" placeholder="Paste direct video URL here">
-        </div>
-
-        <button class="btn-submit" onclick="addNewSchedule()">🚀 Add to TV Queue & Publish</button>
-        <button class="btn-submit" style="background-color: #ff3333; color: #fff; margin-top: 10px;" onclick="clearSchedule()">🗑️ Clear Queue</button>
+        <div id="mainStatus" class="status-box">Loading AI System... / اے آئی سسٹم لوڈ ہو رہا ہے...</div>
         
-        <div style="margin-top: 20px; font-size: 12px; color: #888;" id="adminQueueStatus"></div>
+        <!-- Two separate action buttons with English & Urdu -->
+        <button class="btn btn-success" onclick="processAttendance('Check-In')">🟢 Check-In <br><span style="font-size: 12px;">(حاضरी / حاضری اوکے - ان)</span></button>
+        <button class="btn btn-danger-custom" onclick="processAttendance('Check-Out')">🔴 Check-Out <br><span style="font-size: 12px;">(چھٹی / حاضری اوکے - آؤٹ)</span></button>
     </div>
+</div>
 
-    <script>
-        // URL Routing Check (Hash based routing)
-        function checkRoute() {
-            if (window.location.hash === '#admin') {
-                document.getElementById('adminView').style.display = 'block';
-                document.getElementById('channelView').style.display = 'none';
-                renderAdminQueue();
-            } else {
-                document.getElementById('adminView').style.display = 'none';
-                document.getElementById('channelView').style.display = 'flex';
-                checkAndUpdateTV();
-            }
-        }
+<!-- Admin Panel Modal -->
+<div id="adminModal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeAdminPanel()">✕ Close / بند کریں</button>
+        <h3>Admin Control Panel <br><span style="font-size: 13px; color: #666;">ایڈمن کنٹرول پینل</span></h3>
+        
+        <div id="adminLoginBox" style="margin-top: 15px;">
+            <label>Login Password / لاگ ان پاسورڈ</label>
+            <input type="password" id="adminPass" placeholder="Enter password...">
+            <button class="btn btn-primary" onclick="verifyAdmin()">Login / لاگ ان کریں</button>
+        </div>
 
-        function switchToAdmin() {
-            window.location.hash = 'admin';
-            checkRoute();
-        }
-
-        function switchToChannel() {
-            window.location.hash = '';
-            checkRoute();
-        }
-
-        window.addEventListener('hashchange', checkRoute);
-        window.addEventListener('DOMContentLoaded', checkRoute);
-
-        // Admin Logic
-        function addNewSchedule() {
-            const title = document.getElementById('movieTitleInput').value.trim();
-            const time = document.getElementById('movieTimeInput').value.trim();
-            const url = document.getElementById('directUrlInput').value.trim();
-
-            if (!title || !time || !url) {
-                alert('Please fill all fields!');
-                return;
-            }
-
-            let queue = JSON.parse(localStorage.getItem('anso_master_queue') || '[]');
-            queue.push({ title, time, url });
-            localStorage.setItem('anso_master_queue', JSON.stringify(queue));
+        <div id="adminDashboard" style="display: none;">
             
-            if (queue.length === 1) {
-                localStorage.setItem('anso_current_index', '0');
-            }
-
-            alert('Added successfully! It will now play on your TV.');
-            document.getElementById('movieTitleInput').value = '';
-            document.getElementById('movieTimeInput').value = '';
-            document.getElementById('directUrlInput').value = '';
-            renderAdminQueue();
-        }
-
-        function clearSchedule() {
-            if (confirm('Clear entire queue?')) {
-                localStorage.removeItem('anso_master_queue');
-                localStorage.removeItem('anso_current_index');
-                alert('Queue cleared.');
-                renderAdminQueue();
-            }
-        }
-
-        function renderAdminQueue() {
-            let queue = JSON.parse(localStorage.getItem('anso_master_queue') || '[]');
-            let statusBox = document.getElementById('adminQueueStatus');
-            statusBox.innerHTML = `<b>Current Queue (${queue.length} Shows):</b><br>` + queue.map((q, i) => `${i+1}. ${q.title} (${q.time})`).join('<br>');
-        }
-
-        // TV Player Logic
-        function checkAndUpdateTV() {
-            try {
-                const savedQueue = localStorage.getItem('anso_master_queue');
-                const savedIndex = localStorage.getItem('anso_current_index');
+            <!-- Register Employee Section -->
+            <div class="admin-section">
+                <h4>Register Employee / ملازم کا اندراج</h4>
                 
-                if (savedQueue) {
-                    const masterQueue = JSON.parse(savedQueue);
-                    const currentIndex = savedIndex ? parseInt(savedIndex) : 0;
+                <label>Employee Name & Details / ملازم کا نام اور تفصیل:</label>
+                <input type="text" id="regName" placeholder="e.g. Rashid Khan (Manager)">
 
-                    if (masterQueue.length > 0 && currentIndex < masterQueue.length) {
-                        const currentShow = masterQueue[currentIndex];
-                        const player = document.getElementById('tvPlayer');
-                        const source = document.getElementById('tvVideoSource');
+                <label>Required Pose / مطلوبہ پोज़:</label>
+                <select id="regPoseSelect">
+                    <option value="Smiling Face">😊 Smiling Face / مسکراتا ہوا چہرہ</option>
+                    <option value="Two Fingers Pose">✌️ Two Fingers Pose / دو انگلیاں سامنے رکھ کر</option>
+                    <option value="Eyes Closed / Relaxed">😌 Eyes Closed / ہلکی آنکھیں بند کر کے</option>
+                    <option value="Straight Neutral Face">😐 Straight Neutral Face / بالکل سیدھا سنجیدہ چہرہ</option>
+                </select>
 
-                        if (source.src !== currentShow.url) {
-                            source.src = currentShow.url;
-                            player.load();
-                            player.play().catch(e => {});
+                <label>Select Photo from Gallery / گیلری سے تصویر منتخب کریں:</label>
+                <input type="file" id="regGalleryInput" accept="image/*">
 
-                            document.getElementById('noSignalScreen').classList.remove('active');
-                            document.getElementById('ansoLogoBox').classList.add('active');
-                            document.getElementById('tvTickerText').innerText = `🔴 NOW BROADCASTING: ${currentShow.title} (${currentShow.time}) — ANSO GOLD HD`;
-                        }
-                    }
+                <button class="btn btn-primary" onclick="registerEmployeeWithPose()">Save Employee Face / ملازم کا چہرہ محفوظ کریں</button>
+                <div id="regStatus" style="font-size: 13px; margin-top: 8px; font-weight: bold;"></div>
+            </div>
+
+            <!-- Registered Employees List -->
+            <div class="admin-section">
+                <h4>Registered Employees Database / رجسٹرڈ ملازمین کا ڈیٹا</h4>
+                <div id="registeredList" class="employee-list-box">No employees registered yet. / ابھی تک کوئی ملازم رجسٹر نہیں ہوا۔</div>
+            </div>
+
+            <!-- Detailed Attendance Report with Search & Row Checkboxes -->
+            <div class="admin-section">
+                <h4>📅 Attendance History & Selection / حاضری کی ہسٹری اور سلیکشن</h4>
+                
+                <label>Search / Select Employee Name / ملازم کا نام تلاش کریں:</label>
+                <input type="text" id="searchEmployeeInput" placeholder="Type employee name to search/filter... / نام یہاں لکھیں..." onkeyup="loadAdminLogs()">
+
+                <!-- Live Selection Counter -->
+                <div id="selectionCounter" class="selection-counter">Selected Count: 0 / منتخب شدہ: 0</div>
+
+                <div style="margin-bottom: 8px;">
+                    <label style="display: inline-block; cursor: pointer; font-size: 12px; color: #2980b9;">
+                        <input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll(this)"> Select All Displayed / تمام ظاہر ہونے والے منتخب کریں
+                    </label>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 35px;">Select / انتخاب</th>
+                                <th>Name / نام</th>
+                                <th>Status / اسٹیٹس</th>
+                                <th>Date & Time / تاریخ اور وقت</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminLogTable">
+                            <tr><td colspan="4" style="text-align: center;">No records found. / کوئی ریکارڈ نہیں ملا۔</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                    <button class="btn btn-warning" onclick="copySelectedLogsToClipboard()">📋 Copy Checked Logs / صرف منتخب شدہ کاپی کریں</button>
+                    <button class="btn btn-success" onclick="downloadSelectedCSVFile()">📥 Download Checked CSV / صرف منتخب شدہ ڈاؤن لوڈ کریں</button>
+                </div>
+
+                <button class="btn btn-danger" onclick="clearAllLogs()">Clear All Logs / تمام ریکارڈ ڈیلیٹ کریں</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Hidden canvas and image elements -->
+<canvas id="imageCanvas" style="display:none;"></canvas>
+<img id="hiddenImage" style="display:none;" />
+
+<script>
+    let registeredFaces = JSON.parse(localStorage.getItem("savedFacesData")) || [];
+    let isModelLoaded = false;
+    
+    const posesList = [
+        "😊 Please upload photo with a Smiling Face.<br>براہ کرم مسکراتے ہوئے چہرے کی تصویر اپ لوڈ کریں۔",
+        "✌️ Please upload photo showing Two Fingers.<br>براہ کرم دو انگلیاں سامنے رکھ کر تصویر اپ لوڈ کریں۔",
+        "😌 Please upload photo with Relaxed/Eyes Closed expression.<br>براہ کرم ہلکی آنکھیں بند کر کے تصویر اپ لوڈ کریں۔",
+        "😐 Please upload photo with Straight Neutral Face.<br>براہ کرم بالکل سیدھی اور سنجیدہ تصویر اپ لوڈ کریں۔"
+    ];
+
+    window.addEventListener("DOMContentLoaded", async () => {
+        const statusEl = document.getElementById("mainStatus");
+        const instructionEl = document.getElementById("dynamicInstruction");
+        
+        let randomPose = posesList[Math.floor(Math.random() * posesList.length)];
+        instructionEl.innerHTML = randomPose;
+
+        try {
+            const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
+            await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+            await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+            await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+            
+            isModelLoaded = true;
+            statusEl.style.color = "#27ae60";
+            statusEl.textContent = "System Ready! Enter name, upload image, and click Check-In or Check-Out.\nسسٹم تیار ہے! نام لکھیں، تصویر اپ لوڈ کریں اور چیک ان یا آؤٹ دبائیں۔";
+        } catch (error) {
+            statusEl.style.color = "#c0392b";
+            statusEl.textContent = "AI Model load failed. Check internet connection.\nاے آئی ماڈل لوڈ ہونے میں ناکامی۔ انٹرنیٹ کنکشن چیک کریں۔";
+        }
+    });
+
+    function openAdminPanel() {
+        document.getElementById("adminModal").style.display = "flex";
+    }
+
+    function closeAdminPanel() {
+        document.getElementById("adminModal").style.display = "none";
+        document.getElementById("adminDashboard").style.display = "none";
+        document.getElementById("adminPass").value = "";
+    }
+
+    function verifyAdmin() {
+        const pass = document.getElementById("adminPass").value;
+        if (pass === "707670") {
+            document.getElementById("adminLoginBox").style.display = "none";
+            document.getElementById("adminDashboard").style.display = "block";
+            loadRegisteredEmployees();
+            loadAdminLogs();
+        } else {
+            alert("Incorrect Password! / غلط پاسওয়ার্ড!");
+        }
+    }
+
+    function processImageFile(file, callback) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.getElementById("imageCanvas");
+                const ctx = canvas.getContext("2d");
+                
+                let width = img.width;
+                let height = img.height;
+                const maxDim = 1000;
+                
+                if (width > height && width > maxDim) {
+                    height = Math.round((height * maxDim) / width);
+                    width = maxDim;
+                } else if (height > maxDim) {
+                    width = Math.round((width * maxDim) / height);
+                    height = maxDim;
                 }
-            } catch (e) {}
+                
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                const resizedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+                const processedImg = document.getElementById("hiddenImage");
+                processedImg.src = resizedDataUrl;
+                processedImg.onload = () => callback(processedImg);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async function registerEmployeeWithPose() {
+        if (!isModelLoaded) return alert("AI models are still loading... / ماڈل لوڈ ہو رہا ہے...");
+        const name = document.getElementById("regName").value.trim();
+        const pose = document.getElementById("regPoseSelect").value;
+        const fileInput = document.getElementById("regGalleryInput");
+        const regStatus = document.getElementById("regStatus");
+
+        if (!name) {
+            alert("Please enter employee name first! / براہ کرم پہلے ملازم کا نام لکھیں!");
+            return;
+        }
+        if (fileInput.files.length === 0) {
+            alert("Please select a clear photo from gallery! / گیلری سے تصویر منتخب کریں!");
+            return;
         }
 
-        function playNextShow() {
+        regStatus.style.color = "#e67e22";
+        regStatus.textContent = "Processing and resizing image... / تصویر پراسیس ہو رہی ہے...";
+
+        processImageFile(fileInput.files[0], async (imgElement) => {
             try {
-                const savedQueue = localStorage.getItem('anso_master_queue');
-                if (savedQueue) {
-                    let masterQueue = JSON.parse(savedQueue);
-                    let currentIndex = parseInt(localStorage.getItem('anso_current_index') || 0);
-                    currentIndex = (currentIndex + 1) % masterQueue.length;
-                    localStorage.setItem('anso_current_index', currentIndex);
-                    checkAndUpdateTV();
+                const detection = await faceapi.detectSingleFace(imgElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
+
+                if (!detection) {
+                    regStatus.style.color = "#c0392b";
+                    regStatus.textContent = "No face found in photo! / تصویر میں چہرہ نہیں ملا۔";
+                    return;
                 }
-            } catch(e) {}
+
+                registeredFaces.push({ 
+                    name: name, 
+                    pose: pose,
+                    descriptor: Array.from(detection.descriptor) 
+                });
+                localStorage.setItem("savedFacesData", JSON.stringify(registeredFaces));
+
+                regStatus.style.color = "#27ae60";
+                regStatus.textContent = `Success! ${name} registered successfully. / کامیابی سے محفوظ ہو گیا!`;
+                document.getElementById("regName").value = "";
+                document.getElementById("regGalleryInput").value = "";
+                loadRegisteredEmployees();
+                loadAdminLogs();
+            } catch (err) {
+                regStatus.style.color = "#c0392b";
+                regStatus.textContent = "Error processing image. / خرابی پیش آگئی۔";
+            }
+        });
+    }
+
+    function loadRegisteredEmployees() {
+        const listEl = document.getElementById("registeredList");
+        if (registeredFaces.length === 0) {
+            listEl.textContent = "No employees registered yet. / کوئی ملازم رجسٹرڈ نہیں ہے۔";
+            return;
+        }
+        let html = "";
+        registeredFaces.forEach((emp, index) => {
+            html += `${index + 1}. <b>${emp.name}</b> — <i>[Pose: ${emp.pose}]</i><br>`;
+        });
+        listEl.innerHTML = html;
+    }
+
+    async function processAttendance(attendanceType) {
+        const nameInput = document.getElementById("employeeNameInput").value.trim();
+        if (!nameInput) {
+            alert("Please enter your name first! / براہ کرم اپنا نام درج کریں!");
+            document.getElementById("employeeNameInput").focus();
+            return;
         }
 
-        // Auto sync TV every 3 seconds
-        setInterval(() => {
-            if (window.location.hash !== '#admin') {
-                checkAndUpdateTV();
+        const fileInput = document.getElementById("attendanceImageInput");
+        if (fileInput.files.length === 0) {
+            alert("Please upload your photo from gallery first! / گیلری سے اپنی تصویر اپ لوڈ کریں!");
+            fileInput.focus();
+            return;
+        }
+
+        if (!isModelLoaded) return alert("AI models are loading, please wait... / ماڈل لوڈ ہو رہا ہے...");
+        if (registeredFaces.length === 0) return alert("No employees registered in the system yet. / سسٹم میں کوئی ملازم رجسٹرڈ نہیں ہے۔");
+
+        const statusEl = document.getElementById("mainStatus");
+        statusEl.style.color = "#2980b9";
+        statusEl.textContent = "Optimizing image & verifying face... / تصویر چیک کی جا رہی ہے...";
+
+        processImageFile(fileInput.files[0], async (imgElement) => {
+            try {
+                const detection = await faceapi.detectSingleFace(imgElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
+
+                if (!detection) {
+                    statusEl.style.color = "#c0392b";
+                    statusEl.textContent = "Face not detected clearly! / چہرہ واضح نہیں ملا۔";
+                    alert("Face not detected clearly! / چہرہ واضح نہیں ملا۔");
+                    return;
+                }
+
+                const labeledDescriptors = registeredFaces.map(emp => new faceapi.LabeledFaceDescriptors(emp.name, [new Float32Array(emp.descriptor)]));
+                const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.55);
+                const match = faceMatcher.findBestMatch(detection.descriptor);
+
+                if (match.label === "unknown") {
+                    statusEl.style.color = "#c0392b";
+                    statusEl.textContent = "Face not recognized! You are not registered. / چہرہ شناخت نہیں ہوا!";
+                    alert("Face not recognized! You are not registered. / چہرہ شناخت نہیں ہوا!");
+                } else {
+                    recordAttendance(match.label, attendanceType);
+                }
+            } catch (err) {
+                statusEl.style.color = "#c0392b";
+                statusEl.textContent = "Error processing face verification. / تصدیق میں خرابی۔";
             }
-        }, 3000);
-    </script>
+        });
+    }
+
+    function recordAttendance(name, attendanceStatus) {
+        let masterLogs = JSON.parse(localStorage.getItem("masterAttendanceLogs")) || [];
+
+        const now = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        const fullDateTimeString = now.toLocaleDateString('en-US', options);
+
+        masterLogs.push({
+            name: name,
+            status: attendanceStatus,
+            dateTime: fullDateTimeString
+        });
+
+        localStorage.setItem("masterAttendanceLogs", JSON.stringify(masterLogs));
+        
+        const statusEl = document.getElementById("mainStatus");
+        statusEl.style.color = "#27ae60";
+        statusEl.innerHTML = `✔ सक्सेसफुली حاضری اوکے!<br>Successfully Marked: <b>${name}</b> (${attendanceStatus})`;
+        
+        alert(`✅ सक्सेसफुली حاضری اوکے!\n\nHi ${name},\nYour ${attendanceStatus} has been marked successfully!`);
+        
+        document.getElementById("attendanceImageInput").value = "";
+        loadAdminLogs();
+    }
+
+    function getFilteredLogs() {
+        let masterLogs = JSON.parse(localStorage.getItem("masterAttendanceLogs")) || [];
+        let searchQuery = document.getElementById("searchEmployeeInput").value.trim().toLowerCase();
+        
+        if (!searchQuery) {
+            return masterLogs;
+        }
+        return masterLogs.filter(l => l.name.toLowerCase().includes(searchQuery));
+    }
+
+    function loadAdminLogs() {
+        const tbody = document.getElementById("adminLogTable");
+        tbody.innerHTML = "";
+        let filteredLogs = getFilteredLogs();
+
+        if (filteredLogs.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center;">No attendance history found. / کوئی ریکارڈ نہیں ملا۔</td></tr>`;
+            updateSelectionCounter();
+            return;
+        }
+
+        filteredLogs.slice().reverse().forEach((l, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td style="text-align: center;"><input type="checkbox" class="log-checkbox" data-index="${index}" onchange="updateSelectionCounter()"></td>
+                    <td><b>${l.name}</b></td>
+                    <td style="color:${l.status==='Check-In'?'#27ae60':'#c0392b'}; font-weight:bold;">${l.status}</td>
+                    <td>📅 ${l.dateTime}</td>
+                </tr>`;
+        });
+        updateSelectionCounter();
+    }
+
+    function toggleSelectAll(masterCheckbox) {
+        const checkboxes = document.querySelectorAll('.log-checkbox');
+        checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+        updateSelectionCounter();
+    }
+
+    function updateSelectionCounter() {
+        const checkedBoxes = document.querySelectorAll('.log-checkbox:checked');
+        const counterEl = document.getElementById("selectionCounter");
+        counterEl.textContent = `Selected Count: ${checkedBoxes.length} / منتخب شدہ: ${checkedBoxes.length}`;
+    }
+
+    function getSelectedLogs() {
+        let filteredLogs = getFilteredLogs().slice().reverse();
+        let checkboxes = document.querySelectorAll('.log-checkbox');
+        let selectedList = [];
+
+        checkboxes.forEach((cb) => {
+            if (cb.checked) {
+                let idx = parseInt(cb.getAttribute('data-index'));
+                selectedList.push(filteredLogs[idx]);
+            }
+        });
+        return selectedList;
+    }
+
+    function copySelectedLogsToClipboard() {
+        let selectedLogs = getSelectedLogs();
+        if (selectedLogs.length === 0) {
+            alert("Please select at least one record using checkboxes! / براہ کرم کم از کم ایک ریکارڈ ٹک کریں!");
+            return;
+        }
+
+        let textToCopy = "--- SELECTED ATTENDANCE RECORDS ---\n";
+        selectedLogs.forEach(l => {
+            textToCopy += `Name: ${l.name} | Status: ${l.status} | Date & Time: ${l.dateTime}\n`;
+        });
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            alert(`✔ ${selectedLogs.length} selected record(s) copied successfully! / ${selectedLogs.length} منتخب ریکارڈ کاپی ہو گئے!`);
+        }).catch(err => {
+            alert("Failed to copy text. / کاپی کرنے میں ناکامی۔");
+        });
+    }
+
+    function downloadSelectedCSVFile() {
+        let selectedLogs = getSelectedLogs();
+        if (selectedLogs.length === 0) {
+            alert("Please select at least one record using checkboxes! / براہ کرم ڈاؤن لوڈ کے لیے کم از کم ایک ریکارڈ ٹک کریں!");
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,Employee Name,Status,Date and Time\n";
+        selectedLogs.forEach(l => {
+            csvContent += `"${l.name}","${l.status}","${l.dateTime}"\n`;
+        });
+
+        let encodedUri = encodeURI(csvContent);
+        let link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "Selected_Attendance_Records.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function clearAllLogs() {
+        if (confirm("Are you sure you want to delete all stored attendance records? / کیا آپ تمام ریکارڈ ڈیلیٹ کرنا چاہتے ہیں؟")) {
+            localStorage.removeItem("masterAttendanceLogs");
+            loadAdminLogs();
+        }
+    }
+</script>
+
 </body>
 </html>
