@@ -224,7 +224,7 @@
             <div class="admin-section">
                 <h4>Register Employee / ملازم کا اندراج</h4>
                 
-                <label>Employee Name & Details / ملازم का नाम और تفصیل:</label>
+                <label>Employee Name & Details / ملازم کا نام اور تفصیل:</label>
                 <input type="text" id="regName" placeholder="e.g. Rashid Khan (Manager)">
 
                 <label>Required Pose / مطلوبہ پोज़:</label>
@@ -309,7 +309,7 @@
         appId: "YOUR_APP_ID"
     };
 
-    // Initialize Firebase
+    // Initialize Firebase safely
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
@@ -333,16 +333,30 @@
         let randomPose = posesList[Math.floor(Math.random() * posesList.length)];
         instructionEl.innerHTML = randomPose;
 
-        // Load data from Firebase Realtime Database in real-time
+        // Real-time synchronization listeners for Firebase (Office to Home sync via internet)
         db.ref('employees').on('value', (snapshot) => {
             const data = snapshot.val();
-            registeredFaces = data ? Object.values(data) : [];
+            if (data) {
+                registeredFaces = Object.keys(data).map(key => ({
+                    id: key,
+                    ...data[key]
+                }));
+            } else {
+                registeredFaces = [];
+            }
             loadRegisteredEmployees();
         });
 
         db.ref('attendanceLogs').on('value', (snapshot) => {
             const data = snapshot.val();
-            masterLogs = data ? Object.values(data) : [];
+            if (data) {
+                masterLogs = Object.keys(data).map(key => ({
+                    id: key,
+                    ...data[key]
+                }));
+            } else {
+                masterLogs = [];
+            }
             loadAdminLogs();
         });
 
@@ -393,7 +407,7 @@
                 
                 let width = img.width;
                 let height = img.height;
-                const maxDim = 1000;
+                const maxDim = 800;
                 
                 if (width > height && width > maxDim) {
                     height = Math.round((height * maxDim) / width);
@@ -409,16 +423,21 @@
                 
                 const resizedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
                 const processedImg = document.getElementById("hiddenImage");
-                processedImg.src = resizedDataUrl;
                 processedImg.onload = () => callback(processedImg);
+                processedImg.src = resizedDataUrl;
             };
             img.src = e.target.result;
         };
         reader.readAsDataURL(file);
     }
 
+    // --- Employee Registration Function ---
     async function registerEmployeeWithPose() {
-        if (!isModelLoaded) return alert("AI models are still loading... / ماڈل لوڈ ہو رہا ہے...");
+        if (!isModelLoaded) {
+            alert("AI models are still loading... Please wait. / ماڈل لوڈ ہو رہا ہے، براہ کرم انتظار کریں...");
+            return;
+        }
+
         const name = document.getElementById("regName").value.trim();
         const pose = document.getElementById("regPoseSelect").value;
         const fileInput = document.getElementById("regGalleryInput");
@@ -434,7 +453,7 @@
         }
 
         regStatus.style.color = "#e67e22";
-        regStatus.textContent = "Processing and saving to cloud... / ڈیٹا کلاउड پر محفوظ ہو رہا ہے...";
+        regStatus.textContent = "Processing photo & detecting face... / تصویر پراسیس اور چہرہ تلاش کیا جا رہا ہے...";
 
         processImageFile(fileInput.files[0], async (imgElement) => {
             try {
@@ -442,9 +461,12 @@
 
                 if (!detection) {
                     regStatus.style.color = "#c0392b";
-                    regStatus.textContent = "No face found in photo! / تصویر میں چہرہ نہیں ملا۔";
+                    regStatus.textContent = "No face found in photo! Please upload a clearer face photo. / تصویر میں چہرہ نہیں ملا۔";
+                    alert("No face found in photo! Please try another photo.");
                     return;
                 }
+
+                regStatus.textContent = "Saving to cloud database... / ڈیٹا بیس پر سیو ہو رہا ہے...";
 
                 const newEmp = { 
                     name: name, 
@@ -455,12 +477,16 @@
                 await db.ref('employees').push(newEmp);
 
                 regStatus.style.color = "#27ae60";
-                regStatus.textContent = `Success! ${name} registered on cloud. / کامیابی سے کلاؤڈ پر محفوظ ہو گیا!`;
+                regStatus.textContent = `Success! ${name} registered on cloud. / کامیابی سے محفوظ ہو گیا!`;
+                alert(`✅ Success!\nEmployee "${name}" has been registered successfully.`);
+                
                 document.getElementById("regName").value = "";
                 document.getElementById("regGalleryInput").value = "";
             } catch (err) {
+                console.error(err);
                 regStatus.style.color = "#c0392b";
-                regStatus.textContent = "Error saving to cloud. / کलाउड पर सेव करने में एरर।";
+                regStatus.textContent = "Error saving to cloud! Check internet or database rules.";
+                alert("⚠ Error saving to cloud! Please check your Firebase Database rules or internet connection.");
             }
         });
     }
@@ -500,9 +526,8 @@
 
         const statusEl = document.getElementById("mainStatus");
         statusEl.style.color = "#2980b9";
-        statusEl.textContent = "Checking your location (GPS)... / لوکیشن چیک کی جا रही ہے...";
+        statusEl.textContent = "Checking your location (GPS)... / لوکیشن چیک کی جا رہی ہے...";
 
-        // Check for Geolocation (Mandatory)
         if (!navigator.geolocation) {
             alert("Geolocation is not supported by your browser / آپ کا براؤज़र لوکیشن سپورٹ نہیں کرتا۔");
             return;
@@ -547,7 +572,7 @@
             (error) => {
                 statusEl.style.color = "#c0392b";
                 statusEl.textContent = "Location is turned OFF! Please enable GPS. / براہ کرم اپنے فون کی لوکیشن (GPS) آن کریں!";
-                alert("⚠ Location Error: Please turn on your phone's GPS/Location to mark attendance! / حاضری کے لیے لوکیشن آن کرنا لازمی ہے۔");
+                alert("⚠ Location Error: Please turn on your phone's GPS/Location to mark attendance! / حاضری کے لیے لوکیشن آن करना لازمی ہے۔");
             },
             { timeout: 10000, enableHighAccuracy: true }
         );
@@ -569,9 +594,9 @@
         
         const statusEl = document.getElementById("mainStatus");
         statusEl.style.color = "#27ae60";
-        statusEl.innerHTML = `✔ सक्सेसफुली حاضری اوکے!<br>Successfully Marked: <b>${name}</b> (${attendanceStatus})`;
+        statusEl.innerHTML = `✔ حاضری کامیابی سے اوکے ہو گئی!<br>Successfully Marked: <b>${name}</b> (${attendanceStatus})`;
         
-        alert(`✅ सक्सेसफुली حاضری اوکے!\n\nHi ${name},\nYour ${attendanceStatus} has been marked successfully with location and sent to Admin!`);
+        alert(`✅ حاضری کامیابی سے اوکے ہو گئی!\n\nHi ${name},\nYour ${attendanceStatus} has been marked successfully with location and sent to Admin!`);
         
         document.getElementById("attendanceImageInput").value = "";
     }
@@ -659,7 +684,7 @@
     function downloadSelectedCSVFile() {
         let selectedLogs = getSelectedLogs();
         if (selectedLogs.length === 0) {
-            alert("Please select at least one record using checkboxes! / براہ کرم ڈاؤن لوڈ के लिए کم از کم ایک ریکارڈ ٹک کریں!");
+            alert("Please select at least one record using checkboxes! / براہ کرم ڈاؤن لوڈ کے لیے کم از کم ایک ریکارڈ ٹک کریں!");
             return;
         }
 
