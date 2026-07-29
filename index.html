@@ -1,609 +1,360 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Office Attendance - Jarvis</title>
-    <!-- Firebase App & Realtime Database CDN -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <title>Staff Attendance System</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
         body {
-            background-color: #f4f6f9;
-            color: #333;
-            padding: 15px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            position: relative;
-        }
-        .header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-        }
-        .header h2 {
-            color: #2c3e50;
-            font-size: 18px;
-        }
-        .gear-btn {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            align-items: center;
+            min-height: 100vh;
         }
-        .gear-btn:hover { background: #34495e; }
-        
-        .scanner-section { text-align: center; }
-        
-        .instruction-card {
-            background: #e8f4fd;
-            border-left: 5px solid #2980b9;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            text-align: left;
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        .instruction-card h4 { color: #2980b9; margin-bottom: 5px; font-size: 15px; }
-        .instruction-card p { font-size: 14px; color: #333; font-weight: bold; line-height: 1.5; }
-
-        .status-box {
-            font-size: 14px;
+        /* Toast Notification Banner Style */
+        #toastBanner {
+            position: absolute;
+            top: -60px;
+            left: 0;
+            width: 100%;
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px;
             font-weight: bold;
-            color: #e67e22;
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #fdf2e9;
-            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+            transition: top 0.4s ease-in-out;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            z-index: 100;
+            box-sizing: border-box;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 22px;
             line-height: 1.4;
         }
-        .btn {
+        input, .file-label {
             width: 100%;
             padding: 14px;
-            border: none;
+            margin-bottom: 15px;
+            border: 1px solid #dcdde1;
             border-radius: 8px;
             font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
+            display: block;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+        }
+        input {
+            text-align: left;
+            direction: ltr;
+        }
+        .file-label {
+            background-color: #3498db;
             color: white;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
             transition: 0.3s;
-            margin-bottom: 10px;
         }
-        .btn-primary { background-color: #2980b9; }
-        .btn-primary:hover { background-color: #2471a3; }
-        .btn-success { background-color: #27ae60; }
-        .btn-success:hover { background-color: #219653; }
-        .btn-danger-custom { background-color: #c0392b; }
-        .btn-danger-custom:hover { background-color: #a93226; }
-        .btn-warning { background-color: #f39c12; }
-        .btn-warning:hover { background-color: #d68910; }
-
-        input[type="text"], select, input[type="file"], input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-            margin-bottom: 12px;
+        .file-label:hover {
+            background-color: #2980b9;
         }
-        label { display: block; font-weight: bold; font-size: 13px; color: #555; margin-bottom: 5px; text-align: left; }
-
-        /* Admin Modal */
-        .modal {
+        input[type="file"] {
             display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-            z-index: 1000;
         }
-        .modal-content {
-            background: #fff;
-            width: 100%;
-            max-width: 650px;
-            padding: 20px;
-            border-radius: 12px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        .btn-group {
+            display: flex;
+            gap: 12px;
         }
-        .close-modal {
-            float: right;
-            background: #c0392b;
+        button {
+            flex: 1;
+            padding: 14px;
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-in { background-color: #2ecc71; }
+        .btn-in:hover { background-color: #27ae60; }
+        .btn-out { background-color: #e74c3c; }
+        .btn-out:hover { background-color: #c0392b; }
+        
+        .admin-icon-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #34495e;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
             cursor: pointer;
             font-weight: bold;
         }
-        .admin-section {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
+        
+        #adminPanel {
+            display: none;
             text-align: left;
+            margin-top: 10px;
         }
-        .table-container { margin-top: 15px; overflow-x: auto; max-height: 250px; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th, td { padding: 8px; border-bottom: 1px solid #ddd; font-size: 12px; }
-        th { background-color: #2c3e50; color: white; position: sticky; top: 0; }
-        .btn-danger { background-color: #c0392b; margin-top: 10px; }
-        .employee-list-box {
-            font-size: 13px;
-            background: #fff;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        .selection-counter {
-            font-size: 13px;
+        .admin-header {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 15px;
             font-weight: bold;
-            color: #2980b9;
-            margin-bottom: 8px;
-            background: #e8f4fd;
-            padding: 6px 10px;
-            border-radius: 4px;
-            display: inline-block;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        .search-box {
+            width: 100%;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: left;
+            box-sizing: border-box;
+        }
+        .record-box {
+            background: #fdfefe;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            border: 1px solid #e1e8ed;
+            border-left: 5px solid #3498db;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .record-box b {
+            color: #2c3e50;
+        }
+        .back-btn {
+            background-color: #7f8c8d;
+            width: 100%;
+            margin-top: 12px;
+        }
+        .download-btn {
+            background-color: #f1c40f;
+            color: #2c3e50;
+            width: 100%;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .download-btn:hover {
+            background-color: #f39c12;
+        }
+        .clear-btn {
+            background-color: #c0392b;
+            color: white;
+            width: 100%;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+        .clear-btn:hover {
+            background-color: #a93226;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h2>Office Attendance Portal<br><span style="font-size: 13px; color: #666;">آفس حاضری پورٹل</span></h2>
-        <button class="gear-btn" onclick="openAdminPanel()" title="Admin Panel">⚙️</button>
-    </div>
+    <div class="card">
+        <!-- Success Toast Notification Banner -->
+        <div id="toastBanner">Success! Attendance Recorded.</div>
 
-    <!-- Main Employee Attendance Screen -->
-    <div class="scanner-section">
-        <div class="instruction-card">
-            <h4>📌 Instructions / ہدایات:</h4>
-            <p id="dynamicInstruction">Loading required instruction...</p>
-        </div>
+        <!-- Admin Button -->
+        <button class="admin-icon-btn" onclick="openAdmin()">⚙️ Admin Panel</button>
 
-        <label>Enter Your Full Name / اپنا پورا نام لکھیں:</label>
-        <input type="text" id="employeeNameInput" placeholder="e.g. Mohammad Ali / محمد علی">
-
-        <label>Upload Photo for Attendance / حاضری کے لیے تصویر اپ لوڈ کریں:</label>
-        <input type="file" id="attendanceImageInput" accept="image/*">
-
-        <div id="mainStatus" class="status-box">System Ready & Location Checking Enabled... / سسٹم تیار ہے اور لوکیشن چیک ہو رہی ہے...</div>
-        
-        <!-- Two separate action buttons with English & Urdu -->
-        <button class="btn btn-success" onclick="processAttendance('Check-In')">🟢 Check-In <br><span style="font-size: 12px;">(حاضरी / حاضری اوکے - ان)</span></button>
-        <button class="btn btn-danger-custom" onclick="processAttendance('Check-Out')">🔴 Check-Out <br><span style="font-size: 12px;">(چھٹی / حاضری اوکے - آؤٹ)</span></button>
-    </div>
-</div>
-
-<!-- Admin Panel Modal -->
-<div id="adminModal" class="modal">
-    <div class="modal-content">
-        <button class="close-modal" onclick="closeAdminPanel()">✕ Close / بند کریں</button>
-        <h3>Admin Control Panel <br><span style="font-size: 13px; color: #666;">ایڈمن کنٹرول پینل</span></h3>
-        
-        <div id="adminLoginBox" style="margin-top: 15px;">
-            <label>Login Password / لاگ ان پاسورड</label>
-            <input type="password" id="adminPass" placeholder="Enter password...">
-            <button class="btn btn-primary" onclick="verifyAdmin()">Login / لاگ ان کریں</button>
-        </div>
-
-        <div id="adminDashboard" style="display: none;">
+        <!-- Main Form (English Only) -->
+        <div id="userForm">
+            <h2>Staff Attendance System</h2>
             
-            <!-- Register Employee Section -->
-            <div class="admin-section">
-                <h4>Register Employee / ملازم کا اندراج</h4>
-                
-                <label>Employee Name & Details / ملازم का नाम और تفصیل:</label>
-                <input type="text" id="regName" placeholder="e.g. Rashid Khan (Manager)">
+            <input type="text" id="empName" placeholder="Enter Full Name" required>
+            
+            <label for="empPhoto" class="file-label" id="photoLabel">📁 Select Photo</label>
+            <input type="file" id="empPhoto" accept="image/*" onchange="previewPhoto()">
 
-                <label>Required Pose / مطلوبہ پोज़:</label>
-                <select id="regPoseSelect">
-                    <option value="Smiling Face">😊 Smiling Face / مسکراتا ہوا چہرہ</option>
-                    <option value="Two Fingers Pose">✌️ Two Fingers Pose / دو انگلیاں سامنے رکھ कर</option>
-                    <option value="Eyes Closed / Relaxed">😌 Eyes Closed / ہلکی آنکھیں بند کر کے</option>
-                    <option value="Straight Neutral Face">😐 Straight Neutral Face / بالکل سیدھا سنجیدہ چہرہ</option>
-                </select>
-
-                <button class="btn btn-primary" onclick="registerEmployeeSimple()">Save Employee Name / ملازم کا نام محفوظ کریں</button>
-                <div id="regStatus" style="font-size: 13px; margin-top: 8px; font-weight: bold;"></div>
-            </div>
-
-            <!-- Registered Employees List -->
-            <div class="admin-section">
-                <h4>Registered Employees Database / رجسٹرڈ ملازمین کا ڈیٹا</h4>
-                <div id="registeredList" class="employee-list-box">No employees registered yet. / ابھی तक कोई ملازم رجسٹر नहीं ہوا۔</div>
-            </div>
-
-            <!-- Detailed Attendance Report with Search & Row Checkboxes -->
-            <div class="admin-section">
-                <h4>📅 Attendance History & Selection / حاضری کی ہسٹری اور سلیکشن</h4>
-                
-                <label>Search / Select Employee Name / ملازم का नाम तलाश करें:</label>
-                <input type="text" id="searchEmployeeInput" placeholder="Type employee name to search/filter... / नाम यहां लिख लिखें..." onkeyup="loadAdminLogs()">
-
-                <!-- Live Selection Counter -->
-                <div id="selectionCounter" class="selection-counter">Selected Count: 0 / منتخب شدہ: 0</div>
-
-                <div style="margin-bottom: 8px;">
-                    <label style="display: inline-block; cursor: pointer; font-size: 12px; color: #2980b9;">
-                        <input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll(this)"> Select All Displayed / تمام ظاہر ہونے वाले منتخب کریں
-                    </label>
-                </div>
-
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width: 35px;">Select / انتخاب</th>
-                                <th>Name / نام</th>
-                                <th>Status / اسٹیٹس</th>
-                                <th>Location / مقام</th>
-                                <th>Date & Time / تاریخ اور وقت</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminLogTable">
-                            <tr><td colspan="5" style="text-align: center;">No records found. / कोई ریکارڈ ਨਹੀਂ मिला۔</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div style="margin-top: 15px; display: flex; gap: 10px;">
-                    <button class="btn btn-warning" onclick="copySelectedLogsToClipboard()">📋 Copy Checked Logs / صرف منتخب شدہ کاپی کریں</button>
-                    <button class="btn btn-success" onclick="downloadSelectedCSVFile()">📥 Download Checked CSV / صرف منتخب شدہ ڈاؤن لوڈ کریں</button>
-                </div>
-
-                <button class="btn btn-danger" onclick="clearAllLogs()">Clear All Logs / تمام ریکارڈ ڈیلیٹ کریں</button>
+            <div class="btn-group">
+                <button class="btn-in" onclick="markAttendance('Check-In')">Check-In</button>
+                <button class="btn-out" onclick="markAttendance('Check-Out')">Check-Out</button>
             </div>
         </div>
 
+        <!-- Admin Panel (English Only) -->
+        <div id="adminPanel">
+            <div class="admin-header">🛡️ Admin Dashboard</div>
+            
+            <button class="download-btn" onclick="downloadCSV()">📥 Download All Data (CSV)</button>
+            <button class="clear-btn" onclick="clearAllData()">🗑️ Clear All Records</button>
+            
+            <input type="text" id="searchEmp" class="search-box" placeholder="🔍 Search by name..." onkeyup="filterRecords()">
+
+            <div id="recordsList" style="max-height: 220px; overflow-y: auto; padding-right: 5px;"></div>
+            
+            <button class="back-btn" onclick="closeAdmin()">🔙 Back</button>
+        </div>
     </div>
-</div>
 
-<script>
-    // --- INTEGRATED PUBLIC FIREBASE CONFIGURATION (Ready to use instantly) ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyD-JarvisOfficeDemoProjectKeyTest99",
-        authDomain: "jarvis-office-attendance.firebaseapp.com",
-        databaseURL: "https://jarvis-office-attendance-default-rtdb.firebaseio.com/",
-        projectId: "jarvis-office-attendance",
-        storageBucket: "jarvis-office-attendance.appspot.com",
-        messagingSenderId: "1234567890",
-        appId: "1:1234567890:web:abcdef123456"
-    };
-
-    // Initialize Firebase safely
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.database();
-
-    let registeredFaces = [];
-    let masterLogs = [];
-    
-    const posesList = [
-        "😊 Please upload photo with a Smiling Face.<br>براہ کرم مسکراتے ہوئے چہرے کی تصویر اپ لوڈ کریں۔",
-        "✌️ Please upload photo showing Two Fingers.<br>براہ کرم دو انگلیاں سامنے رکھ कर تصویر اپ لوڈ کریں۔",
-        "😌 Please upload photo with Relaxed/Eyes Closed expression.<br>براہ کرم ہلکی آنکھیں بند کر के تصویر اپ لوڈ کریں۔",
-        "😐 Please upload photo with Straight Neutral Face.<br>براہ کرم बिल्कुल سیدھی और سنجیدہ تصویر اپ لوڈ करें।"
-    ];
-
-    window.addEventListener("DOMContentLoaded", () => {
-        const instructionEl = document.getElementById("dynamicInstruction");
-        let randomPose = posesList[Math.floor(Math.random() * posesList.length)];
-        instructionEl.innerHTML = randomPose;
-
-        // Real-time synchronization listeners for Firebase
-        db.ref('employees').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                registeredFaces = Object.keys(data).map(key => ({
-                    id: key,
-                    ...data[key]
-                }));
-            } else {
-                registeredFaces = [];
+    <script>
+        function previewPhoto() {
+            const fileInput = document.getElementById('empPhoto');
+            const label = document.getElementById('photoLabel');
+            if (fileInput.files && fileInput.files[0]) {
+                label.style.backgroundColor = "#2ecc71";
+                label.innerText = "✓ Photo Selected";
             }
-            loadRegisteredEmployees();
-        });
-
-        db.ref('attendanceLogs').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                masterLogs = Object.keys(data).map(key => ({
-                    id: key,
-                    ...data[key]
-                }));
-            } else {
-                masterLogs = [];
-            }
-            loadAdminLogs();
-        });
-    });
-
-    function openAdminPanel() {
-        document.getElementById("adminModal").style.display = "flex";
-    }
-
-    function closeAdminPanel() {
-        document.getElementById("adminModal").style.display = "none";
-        document.getElementById("adminDashboard").style.display = "none";
-        document.getElementById("adminPass").value = "";
-    }
-
-    function verifyAdmin() {
-        const pass = document.getElementById("adminPass").value;
-        if (pass === "707670") {
-            document.getElementById("adminLoginBox").style.display = "none";
-            document.getElementById("adminDashboard").style.display = "block";
-            loadRegisteredEmployees();
-            loadAdminLogs();
-        } else {
-            alert("Incorrect Password! / غلط پاسওয়ার্ড!");
-        }
-    }
-
-    async function registerEmployeeSimple() {
-        const name = document.getElementById("regName").value.trim();
-        const pose = document.getElementById("regPoseSelect").value;
-        const regStatus = document.getElementById("regStatus");
-
-        if (!name) {
-            alert("Please enter employee name! / براہ کرم ملازم کا نام درج کریں!");
-            return;
         }
 
-        regStatus.style.color = "#e67e22";
-        regStatus.textContent = "Saving to cloud database... / ڈیٹا بیس پر محفوظ کیا جا रहा है...";
+        function showToast(message) {
+            const toast = document.getElementById("toastBanner");
+            toast.innerText = message;
+            toast.style.top = "0px";
+            setTimeout(() => {
+                toast.style.top = "-60px";
+            }, 3000);
+        }
 
-        try {
-            const newEmp = { 
-                name: name, 
-                pose: pose 
+        function markAttendance(type) {
+            const name = document.getElementById("empName").value.trim();
+            const fileInput = document.getElementById("empPhoto");
+
+            if (!name) {
+                alert("Please enter your name!");
+                return;
+            }
+
+            if (fileInput.files.length === 0) {
+                alert("Please select your photo!");
+                return;
+            }
+
+            // Generate clean timestamp: YYYY-MM-DD HH:MM:SS
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+            saveDataLocally(name, type, formattedDateTime);
+        }
+
+        function saveDataLocally(name, type, timestamp) {
+            const record = {
+                name: name,
+                status: type,
+                time: timestamp
             };
 
-            await db.ref('employees').push(newEmp);
+            let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+            allRecords.push(record);
+            localStorage.setItem('attendanceRecords', JSON.stringify(allRecords));
 
-            regStatus.style.color = "#27ae60";
-            regStatus.textContent = `Success! ${name} registered on cloud. / کامیابی से محفوظ ہو گیا!`;
-            alert(`✅ Success!\nEmployee "${name}" has been registered successfully.`);
+            // Show success toast bar
+            showToast(`✓ ${type} Successful for ${name} (OK)`);
             
-            document.getElementById("regName").value = "";
-        } catch (err) {
-            console.error(err);
-            regStatus.style.color = "#c0392b";
-            regStatus.textContent = "Error saving to cloud! Check internet.";
-            alert("⚠ Error saving to cloud! Please check your internet connection.");
-        }
-    }
-
-    function loadRegisteredEmployees() {
-        const listEl = document.getElementById("registeredList");
-        if (!listEl) return;
-        if (registeredFaces.length === 0) {
-            listEl.textContent = "No employees registered yet. / کوئی ملازم رجسٹرڈ نہیں ہے۔";
-            return;
-        }
-        let html = "";
-        registeredFaces.forEach((emp, index) => {
-            html += `${index + 1}. <b>${emp.name}</b> — <i>[Pose: ${emp.pose}]</i><br>`;
-        });
-        listEl.innerHTML = html;
-    }
-
-    function processAttendance(attendanceType) {
-        const nameInput = document.getElementById("employeeNameInput").value.trim();
-        if (!nameInput) {
-            alert("Please enter your name first! / براہ کرم اپنا نام درج کریں!");
-            document.getElementById("employeeNameInput").focus();
-            return;
+            // Reset form fields
+            document.getElementById("empName").value = "";
+            document.getElementById("empPhoto").value = "";
+            document.getElementById("photoLabel").style.backgroundColor = "#3498db";
+            document.getElementById("photoLabel").innerText = "📁 Select Photo";
         }
 
-        const fileInput = document.getElementById("attendanceImageInput");
-        if (fileInput.files.length === 0) {
-            alert("Please upload your photo first! / براہ کرم اپنی تصویر اپ لوڈ کریں!");
-            fileInput.focus();
-            return;
-        }
-
-        if (registeredFaces.length === 0) {
-            alert("No employees registered in the system yet. / سسٹم میں کوئی ملازم رجسٹرڈ نہیں ہے۔");
-            return;
-        }
-
-        const matchedEmp = registeredFaces.find(emp => emp.name.toLowerCase() === nameInput.toLowerCase());
-
-        if (!matchedEmp) {
-            alert("Name not found in registered database! Please type your correct registered name. / درج کردہ نام رجسٹرڈ ڈیٹا بیس میں موجود نہیں ہے!");
-            return;
-        }
-
-        const statusEl = document.getElementById("mainStatus");
-        statusEl.style.color = "#2980b9";
-        statusEl.textContent = "Checking your location (GPS)... / لوکیشن چیک کی جا रही है...";
-
-        if (!navigator.geolocation) {
-            alert("Geolocation is not supported by your browser / آپ کا براؤज़र لوکیشن سپورٹ نہیں کرتا۔");
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                const locationString = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
-
-                recordAttendance(matchedEmp.name, attendanceType, locationString);
-            },
-            (error) => {
-                statusEl.style.color = "#c0392b";
-                statusEl.textContent = "Location is turned OFF! Please enable GPS. / براہ کرم اپنے فون کی لوکیشن (GPS) آن کریں!";
-                alert("⚠ Location Error: Please turn on your phone's GPS/Location to mark attendance! / حاضری کے لیے لوکیشن آن کرنا لازمی ہے۔");
-            },
-            { timeout: 10000, enableHighAccuracy: true }
-        );
-    }
-
-    function recordAttendance(name, attendanceStatus, locationString) {
-        const now = new Date();
-        const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-        const fullDateTimeString = now.toLocaleDateString('en-US', options);
-
-        const newLog = {
-            name: name,
-            status: attendanceStatus,
-            location: locationString,
-            dateTime: fullDateTimeString
-        };
-
-        db.ref('attendanceLogs').push(newLog);
-        
-        const statusEl = document.getElementById("mainStatus");
-        statusEl.style.color = "#27ae60";
-        statusEl.innerHTML = `✔ حاضری کامیابی से اوکے ہو گئی!<br>Successfully Marked: <b>${name}</b> (${attendanceStatus})`;
-        
-        alert(`✅ حاضری کامیابی سے اوکے ہو گئی!\n\nHi ${name},\nYour ${attendanceStatus} has been marked successfully with location and sent to Admin!`);
-        
-        document.getElementById("employeeNameInput").value = "";
-        document.getElementById("attendanceImageInput").value = "";
-    }
-
-    function getFilteredLogs() {
-        let searchQuery = document.getElementById("searchEmployeeInput").value.trim().toLowerCase();
-        if (!searchQuery) {
-            return masterLogs;
-        }
-        return masterLogs.filter(l => l.name.toLowerCase().includes(searchQuery));
-    }
-
-    function loadAdminLogs() {
-        const tbody = document.getElementById("adminLogTable");
-        if (!tbody) return;
-        tbody.innerHTML = "";
-        let filteredLogs = getFilteredLogs();
-
-        if (filteredLogs.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No attendance history found. / کوئی ریکارڈ नहीं मिला।</td></tr>`;
-            updateSelectionCounter();
-            return;
-        }
-
-        filteredLogs.slice().reverse().forEach((l, index) => {
-            tbody.innerHTML += `
-                <tr>
-                    <td style="text-align: center;"><input type="checkbox" class="log-checkbox" data-index="${index}" onchange="updateSelectionCounter()"></td>
-                    <td><b>${l.name}</b></td>
-                    <td style="color:${l.status==='Check-In'?'#27ae60':'#c0392b'}; font-weight:bold;">${l.status}</td>
-                    <td style="font-size: 11px; color: #555;">📍 ${l.location || 'N/A'}</td>
-                    <td>📅 ${l.dateTime}</td>
-                </tr>`;
-        });
-        updateSelectionCounter();
-    }
-
-    function toggleSelectAll(masterCheckbox) {
-        const checkboxes = document.querySelectorAll('.log-checkbox');
-        checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
-        updateSelectionCounter();
-    }
-
-    function updateSelectionCounter() {
-        const checkedBoxes = document.querySelectorAll('.log-checkbox:checked');
-        const counterEl = document.getElementById("selectionCounter");
-        if (counterEl) {
-            counterEl.textContent = `Selected Count: ${checkedBoxes.length} / منتخب شدہ: ${checkedBoxes.length}`;
-        }
-    }
-
-    function getSelectedLogs() {
-        let filteredLogs = getFilteredLogs().slice().reverse();
-        let checkboxes = document.querySelectorAll('.log-checkbox');
-        let selectedList = [];
-
-        checkboxes.forEach((cb) => {
-            if (cb.checked) {
-                let idx = parseInt(cb.getAttribute('data-index'));
-                selectedList.push(filteredLogs[idx]);
+        function openAdmin() {
+            let pass = prompt("Enter Admin Password:");
+            if (pass === "707670") {
+                document.getElementById("userForm").style.display = "none";
+                document.getElementById("adminPanel").style.display = "block";
+                loadRecords();
+            } else if (pass !== null) {
+                alert("Incorrect Password!");
             }
-        });
-        return selectedList;
-    }
-
-    function copySelectedLogsToClipboard() {
-        let selectedLogs = getSelectedLogs();
-        if (selectedLogs.length === 0) {
-            alert("Please select at least one record using checkboxes! / براہ کرم کم از کم ایک ریکارڈ ٹک کریں!");
-            return;
         }
 
-        let textToCopy = "--- SELECTED ATTENDANCE RECORDS ---\n";
-        selectedLogs.forEach(l => {
-            textToCopy += `Name: ${l.name} | Status: ${l.status} | Location: ${l.location} | Date & Time: ${l.dateTime}\n`;
-        });
-
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            alert(`✔ ${selectedLogs.length} selected record(s) copied successfully! / ${selectedLogs.length} منتخب ریکارڈ کاپی ہو گئے!`);
-        }).catch(err => {
-            alert("Failed to copy text. / کاپی کرنے میں ناکامی۔");
-        });
-    }
-
-    function downloadSelectedCSVFile() {
-        let selectedLogs = getSelectedLogs();
-        if (selectedLogs.length === 0) {
-            alert("Please select at least one record using checkboxes! / براہ کرم ڈاؤن لوڈ کے لیے کم از کم ایک ریکارڈ ٹک کریں!");
-            return;
+        function closeAdmin() {
+            document.getElementById("adminPanel").style.display = "none";
+            document.getElementById("userForm").style.display = "block";
         }
 
-        let csvContent = "data:text/csv;charset=utf-8,Employee Name,Status,Location,Date and Time\n";
-        selectedLogs.forEach(l => {
-            csvContent += `"${l.name}","${l.status}","${l.location || 'N/A'}","${l.dateTime}"\n`;
-        });
+        function loadRecords(filter = "") {
+            const listDiv = document.getElementById("recordsList");
+            let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+            
+            if (allRecords.length === 0) {
+                listDiv.innerHTML = "<p style='color: #7f8c8d; text-align:center;'>No records found.</p>";
+                return;
+            }
 
-        let encodedUri = encodeURI(csvContent);
-        let link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "Selected_Attendance_Records.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function clearAllLogs() {
-        if (confirm("Are you sure you want to delete all stored attendance records from cloud? / क्या आप क्लाउड से सभी रिकॉर्ड डिलीट करना चाहते हैं?")) {
-            db.ref('attendanceLogs').remove();
-            loadAdminLogs();
+            let html = "";
+            allRecords.reverse().forEach((rec) => {
+                if (filter === "" || rec.name.toLowerCase().includes(filter.toLowerCase())) {
+                    html += `<div class="record-box">
+                        <b>Name:</b> ${rec.name}<br>
+                        <b>Status:</b> <span style="color:${rec.status === 'Check-In' ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${rec.status}</span><br>
+                        <b>Date & Time:</b> ${rec.time}
+                    </div>`;
+                }
+            });
+            listDiv.innerHTML = html || "<p style='color: #7f8c8d; text-align:center;'>No results found.</p>";
         }
-    }
-</script>
+
+        function filterRecords() {
+            let query = document.getElementById("searchEmp").value;
+            loadRecords(query);
+        }
+
+        function downloadCSV() {
+            let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+            if (allRecords.length === 0) {
+                alert("No data available to download!");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,Name,Status,Date_Time\n";
+            allRecords.forEach(rec => {
+                csvContent += `"${rec.name}","${rec.status}","${rec.time}"\n`;
+            });
+
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Attendance_Report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function clearAllData() {
+            if (confirm("Are you sure you want to clear all attendance records? This cannot be undone!")) {
+                localStorage.removeItem('attendanceRecords');
+                loadRecords();
+                alert("All records cleared successfully!");
+            }
+        }
+    </script>
 
 </body>
 </html>
