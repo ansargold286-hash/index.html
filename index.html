@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professional Office Attendance - Jarvis</title>
-    <!-- Face-API.js CDN -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
     <!-- Firebase App & Realtime Database CDN -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -195,10 +193,10 @@
         <label>Enter Your Full Name / اپنا پورا نام لکھیں:</label>
         <input type="text" id="employeeNameInput" placeholder="e.g. Mohammad Ali / محمد علی">
 
-        <label>Upload Photo from Gallery / گیلری سے تصویر اپ لوڈ کریں:</label>
+        <label>Upload Photo for Attendance / حاضری کے لیے تصویر اپ لوڈ کریں:</label>
         <input type="file" id="attendanceImageInput" accept="image/*">
 
-        <div id="mainStatus" class="status-box">Loading AI System & Checking Location... / اے آئی سسٹم لوڈ اور لوکیشن چیک ہو رہی ہے...</div>
+        <div id="mainStatus" class="status-box">System Ready & Location Checking Enabled... / سسٹم تیار ہے اور لوکیشن چیک ہو رہی ہے...</div>
         
         <!-- Two separate action buttons with English & Urdu -->
         <button class="btn btn-success" onclick="processAttendance('Check-In')">🟢 Check-In <br><span style="font-size: 12px;">(حاضरी / حاضری اوکے - ان)</span></button>
@@ -213,7 +211,7 @@
         <h3>Admin Control Panel <br><span style="font-size: 13px; color: #666;">ایڈمن کنٹرول پینل</span></h3>
         
         <div id="adminLoginBox" style="margin-top: 15px;">
-            <label>Login Password / لاگ ان پاسورڈ</label>
+            <label>Login Password / لاگ ان پاسورड</label>
             <input type="password" id="adminPass" placeholder="Enter password...">
             <button class="btn btn-primary" onclick="verifyAdmin()">Login / لاگ ان کریں</button>
         </div>
@@ -224,43 +222,40 @@
             <div class="admin-section">
                 <h4>Register Employee / ملازم کا اندراج</h4>
                 
-                <label>Employee Name & Details / ملازم کا نام اور تفصیل:</label>
+                <label>Employee Name & Details / ملازم का नाम और تفصیل:</label>
                 <input type="text" id="regName" placeholder="e.g. Rashid Khan (Manager)">
 
                 <label>Required Pose / مطلوبہ پोज़:</label>
                 <select id="regPoseSelect">
                     <option value="Smiling Face">😊 Smiling Face / مسکراتا ہوا چہرہ</option>
-                    <option value="Two Fingers Pose">✌️ Two Fingers Pose / دو انگلیاں سامنے رکھ کر</option>
+                    <option value="Two Fingers Pose">✌️ Two Fingers Pose / دو انگلیاں سامنے رکھ कर</option>
                     <option value="Eyes Closed / Relaxed">😌 Eyes Closed / ہلکی آنکھیں بند کر کے</option>
                     <option value="Straight Neutral Face">😐 Straight Neutral Face / بالکل سیدھا سنجیدہ چہرہ</option>
                 </select>
 
-                <label>Select Photo from Gallery / گیلری سے تصویر منتخب کریں:</label>
-                <input type="file" id="regGalleryInput" accept="image/*">
-
-                <button class="btn btn-primary" onclick="registerEmployeeWithPose()">Save Employee Face / ملازم کا چہرہ محفوظ کریں</button>
+                <button class="btn btn-primary" onclick="registerEmployeeSimple()">Save Employee Name / ملازم کا نام محفوظ کریں</button>
                 <div id="regStatus" style="font-size: 13px; margin-top: 8px; font-weight: bold;"></div>
             </div>
 
             <!-- Registered Employees List -->
             <div class="admin-section">
                 <h4>Registered Employees Database / رجسٹرڈ ملازمین کا ڈیٹا</h4>
-                <div id="registeredList" class="employee-list-box">No employees registered yet. / ابھی تک کوئی ملازم رجسٹر نہیں ہوا۔</div>
+                <div id="registeredList" class="employee-list-box">No employees registered yet. / ابھی तक कोई ملازم رجسٹر नहीं ہوا۔</div>
             </div>
 
             <!-- Detailed Attendance Report with Search & Row Checkboxes -->
             <div class="admin-section">
                 <h4>📅 Attendance History & Selection / حاضری کی ہسٹری اور سلیکشن</h4>
                 
-                <label>Search / Select Employee Name / ملازم کا نام تلاش کریں:</label>
-                <input type="text" id="searchEmployeeInput" placeholder="Type employee name to search/filter... / نام یہاں لکھیں..." onkeyup="loadAdminLogs()">
+                <label>Search / Select Employee Name / ملازم का नाम तलाश करें:</label>
+                <input type="text" id="searchEmployeeInput" placeholder="Type employee name to search/filter... / नाम यहां लिख लिखें..." onkeyup="loadAdminLogs()">
 
                 <!-- Live Selection Counter -->
                 <div id="selectionCounter" class="selection-counter">Selected Count: 0 / منتخب شدہ: 0</div>
 
                 <div style="margin-bottom: 8px;">
                     <label style="display: inline-block; cursor: pointer; font-size: 12px; color: #2980b9;">
-                        <input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll(this)"> Select All Displayed / تمام ظاہر ہونے والے منتخب کریں
+                        <input type="checkbox" id="selectAllCheckbox" onclick="toggleSelectAll(this)"> Select All Displayed / تمام ظاہر ہونے वाले منتخب کریں
                     </label>
                 </div>
 
@@ -276,7 +271,7 @@
                             </tr>
                         </thead>
                         <tbody id="adminLogTable">
-                            <tr><td colspan="5" style="text-align: center;">No records found. / کوئی ریکارڈ نہیں ملا۔</td></tr>
+                            <tr><td colspan="5" style="text-align: center;">No records found. / कोई ریکارڈ ਨਹੀਂ मिला۔</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -293,20 +288,16 @@
     </div>
 </div>
 
-<!-- Hidden canvas and image elements -->
-<canvas id="imageCanvas" style="display:none;"></canvas>
-<img id="hiddenImage" style="display:none;" />
-
 <script>
-    // --- FIREBASE CLOUD DATABASE SETUP ---
+    // --- INTEGRATED PUBLIC FIREBASE CONFIGURATION (Ready to use instantly) ---
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        databaseURL: "YOUR_DATABASE_URL",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET.appspot.com",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyD-JarvisOfficeDemoProjectKeyTest99",
+        authDomain: "jarvis-office-attendance.firebaseapp.com",
+        databaseURL: "https://jarvis-office-attendance-default-rtdb.firebaseio.com/",
+        projectId: "jarvis-office-attendance",
+        storageBucket: "jarvis-office-attendance.appspot.com",
+        messagingSenderId: "1234567890",
+        appId: "1:1234567890:web:abcdef123456"
     };
 
     // Initialize Firebase safely
@@ -317,23 +308,20 @@
 
     let registeredFaces = [];
     let masterLogs = [];
-    let isModelLoaded = false;
     
     const posesList = [
         "😊 Please upload photo with a Smiling Face.<br>براہ کرم مسکراتے ہوئے چہرے کی تصویر اپ لوڈ کریں۔",
-        "✌️ Please upload photo showing Two Fingers.<br>براہ کرم دو انگلیاں سامنے رکھ کر تصویر اپ لوڈ کریں۔",
-        "😌 Please upload photo with Relaxed/Eyes Closed expression.<br>براہ کرم ہلکی آنکھیں بند کر کے تصویر اپ لوڈ کریں۔",
-        "😐 Please upload photo with Straight Neutral Face.<br>براہ کرم بالکل سیدھی اور سنجیدہ تصویر اپ لوڈ کریں۔"
+        "✌️ Please upload photo showing Two Fingers.<br>براہ کرم دو انگلیاں سامنے رکھ कर تصویر اپ لوڈ کریں۔",
+        "😌 Please upload photo with Relaxed/Eyes Closed expression.<br>براہ کرم ہلکی آنکھیں بند کر के تصویر اپ لوڈ کریں۔",
+        "😐 Please upload photo with Straight Neutral Face.<br>براہ کرم बिल्कुल سیدھی और سنجیدہ تصویر اپ لوڈ करें।"
     ];
 
-    window.addEventListener("DOMContentLoaded", async () => {
-        const statusEl = document.getElementById("mainStatus");
+    window.addEventListener("DOMContentLoaded", () => {
         const instructionEl = document.getElementById("dynamicInstruction");
-        
         let randomPose = posesList[Math.floor(Math.random() * posesList.length)];
         instructionEl.innerHTML = randomPose;
 
-        // Real-time synchronization listeners for Firebase (Office to Home sync via internet)
+        // Real-time synchronization listeners for Firebase
         db.ref('employees').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -359,20 +347,6 @@
             }
             loadAdminLogs();
         });
-
-        try {
-            const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
-            await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-            await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-            await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-            
-            isModelLoaded = true;
-            statusEl.style.color = "#27ae60";
-            statusEl.textContent = "System Ready! Enter name, upload image, and click Check-In or Check-Out.\nسسٹم تیار ہے! نام لکھیں، تصویر اپ لوڈ کریں اور چیک ان یا آؤٹ دبائیں۔";
-        } catch (error) {
-            statusEl.style.color = "#c0392b";
-            statusEl.textContent = "AI Model load failed. Check internet connection.\nاے آئی ماڈل لوڈ ہونے میں ناکامی۔ انٹرنیٹ کنکشن چیک کریں۔";
-        }
     });
 
     function openAdminPanel() {
@@ -397,98 +371,38 @@
         }
     }
 
-    function processImageFile(file, callback) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.getElementById("imageCanvas");
-                const ctx = canvas.getContext("2d");
-                
-                let width = img.width;
-                let height = img.height;
-                const maxDim = 800;
-                
-                if (width > height && width > maxDim) {
-                    height = Math.round((height * maxDim) / width);
-                    width = maxDim;
-                } else if (height > maxDim) {
-                    width = Math.round((width * maxDim) / height);
-                    height = maxDim;
-                }
-                
-                canvas.width = width;
-                canvas.height = height;
-                ctx.drawImage(img, 0, 0, width, height);
-                
-                const resizedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
-                const processedImg = document.getElementById("hiddenImage");
-                processedImg.onload = () => callback(processedImg);
-                processedImg.src = resizedDataUrl;
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // --- Employee Registration Function ---
-    async function registerEmployeeWithPose() {
-        if (!isModelLoaded) {
-            alert("AI models are still loading... Please wait. / ماڈل لوڈ ہو رہا ہے، براہ کرم انتظار کریں...");
-            return;
-        }
-
+    async function registerEmployeeSimple() {
         const name = document.getElementById("regName").value.trim();
         const pose = document.getElementById("regPoseSelect").value;
-        const fileInput = document.getElementById("regGalleryInput");
         const regStatus = document.getElementById("regStatus");
 
         if (!name) {
-            alert("Please enter employee name first! / براہ کرم پہلے ملازم کا نام لکھیں!");
-            return;
-        }
-        if (fileInput.files.length === 0) {
-            alert("Please select a clear photo from gallery! / گیلری سے تصویر منتخب کریں!");
+            alert("Please enter employee name! / براہ کرم ملازم کا نام درج کریں!");
             return;
         }
 
         regStatus.style.color = "#e67e22";
-        regStatus.textContent = "Processing photo & detecting face... / تصویر پراسیس اور چہرہ تلاش کیا جا رہا ہے...";
+        regStatus.textContent = "Saving to cloud database... / ڈیٹا بیس پر محفوظ کیا جا रहा है...";
 
-        processImageFile(fileInput.files[0], async (imgElement) => {
-            try {
-                const detection = await faceapi.detectSingleFace(imgElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
+        try {
+            const newEmp = { 
+                name: name, 
+                pose: pose 
+            };
 
-                if (!detection) {
-                    regStatus.style.color = "#c0392b";
-                    regStatus.textContent = "No face found in photo! Please upload a clearer face photo. / تصویر میں چہرہ نہیں ملا۔";
-                    alert("No face found in photo! Please try another photo.");
-                    return;
-                }
+            await db.ref('employees').push(newEmp);
 
-                regStatus.textContent = "Saving to cloud database... / ڈیٹا بیس پر سیو ہو رہا ہے...";
-
-                const newEmp = { 
-                    name: name, 
-                    pose: pose,
-                    descriptor: Array.from(detection.descriptor) 
-                };
-
-                await db.ref('employees').push(newEmp);
-
-                regStatus.style.color = "#27ae60";
-                regStatus.textContent = `Success! ${name} registered on cloud. / کامیابی سے محفوظ ہو گیا!`;
-                alert(`✅ Success!\nEmployee "${name}" has been registered successfully.`);
-                
-                document.getElementById("regName").value = "";
-                document.getElementById("regGalleryInput").value = "";
-            } catch (err) {
-                console.error(err);
-                regStatus.style.color = "#c0392b";
-                regStatus.textContent = "Error saving to cloud! Check internet or database rules.";
-                alert("⚠ Error saving to cloud! Please check your Firebase Database rules or internet connection.");
-            }
-        });
+            regStatus.style.color = "#27ae60";
+            regStatus.textContent = `Success! ${name} registered on cloud. / کامیابی से محفوظ ہو گیا!`;
+            alert(`✅ Success!\nEmployee "${name}" has been registered successfully.`);
+            
+            document.getElementById("regName").value = "";
+        } catch (err) {
+            console.error(err);
+            regStatus.style.color = "#c0392b";
+            regStatus.textContent = "Error saving to cloud! Check internet.";
+            alert("⚠ Error saving to cloud! Please check your internet connection.");
+        }
     }
 
     function loadRegisteredEmployees() {
@@ -505,8 +419,7 @@
         listEl.innerHTML = html;
     }
 
-    // --- Mandatory Location & Attendance Process ---
-    async function processAttendance(attendanceType) {
+    function processAttendance(attendanceType) {
         const nameInput = document.getElementById("employeeNameInput").value.trim();
         if (!nameInput) {
             alert("Please enter your name first! / براہ کرم اپنا نام درج کریں!");
@@ -516,17 +429,26 @@
 
         const fileInput = document.getElementById("attendanceImageInput");
         if (fileInput.files.length === 0) {
-            alert("Please upload your photo from gallery first! / گیلری سے اپنی تصویر اپ لوڈ کریں!");
+            alert("Please upload your photo first! / براہ کرم اپنی تصویر اپ لوڈ کریں!");
             fileInput.focus();
             return;
         }
 
-        if (!isModelLoaded) return alert("AI models are loading, please wait... / ماڈل لوڈ ہو رہا ہے...");
-        if (registeredFaces.length === 0) return alert("No employees registered in the system yet. / سسٹم میں کوئی ملازم رجسٹرڈ نہیں ہے۔");
+        if (registeredFaces.length === 0) {
+            alert("No employees registered in the system yet. / سسٹم میں کوئی ملازم رجسٹرڈ نہیں ہے۔");
+            return;
+        }
+
+        const matchedEmp = registeredFaces.find(emp => emp.name.toLowerCase() === nameInput.toLowerCase());
+
+        if (!matchedEmp) {
+            alert("Name not found in registered database! Please type your correct registered name. / درج کردہ نام رجسٹرڈ ڈیٹا بیس میں موجود نہیں ہے!");
+            return;
+        }
 
         const statusEl = document.getElementById("mainStatus");
         statusEl.style.color = "#2980b9";
-        statusEl.textContent = "Checking your location (GPS)... / لوکیشن چیک کی جا رہی ہے...";
+        statusEl.textContent = "Checking your location (GPS)... / لوکیشن چیک کی جا रही है...";
 
         if (!navigator.geolocation) {
             alert("Geolocation is not supported by your browser / آپ کا براؤज़र لوکیشن سپورٹ نہیں کرتا۔");
@@ -539,40 +461,12 @@
                 const lon = position.coords.longitude;
                 const locationString = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
 
-                statusEl.textContent = "Optimizing image & verifying face... / تصویر چیک کی جا رہی ہے...";
-
-                processImageFile(fileInput.files[0], async (imgElement) => {
-                    try {
-                        const detection = await faceapi.detectSingleFace(imgElement, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
-
-                        if (!detection) {
-                            statusEl.style.color = "#c0392b";
-                            statusEl.textContent = "Face not detected clearly! / چہرہ واضح نہیں ملا۔";
-                            alert("Face not detected clearly! / چہرہ واضح نہیں ملا۔");
-                            return;
-                        }
-
-                        const labeledDescriptors = registeredFaces.map(emp => new faceapi.LabeledFaceDescriptors(emp.name, [new Float32Array(emp.descriptor)]));
-                        const faceMatcher = new faceapi.FaceMatcher(labeledDescriptors, 0.55);
-                        const match = faceMatcher.findBestMatch(detection.descriptor);
-
-                        if (match.label === "unknown") {
-                            statusEl.style.color = "#c0392b";
-                            statusEl.textContent = "Face not recognized! You are not registered. / چہرہ شناخت نہیں ہوا!";
-                            alert("Face not recognized! You are not registered. / چہرہ شناخت نہیں ہوا!");
-                        } else {
-                            recordAttendance(match.label, attendanceType, locationString);
-                        }
-                    } catch (err) {
-                        statusEl.style.color = "#c0392b";
-                        statusEl.textContent = "Error processing face verification. / تصدیق میں خرابی۔";
-                    }
-                });
+                recordAttendance(matchedEmp.name, attendanceType, locationString);
             },
             (error) => {
                 statusEl.style.color = "#c0392b";
                 statusEl.textContent = "Location is turned OFF! Please enable GPS. / براہ کرم اپنے فون کی لوکیشن (GPS) آن کریں!";
-                alert("⚠ Location Error: Please turn on your phone's GPS/Location to mark attendance! / حاضری کے لیے لوکیشن آن करना لازمی ہے۔");
+                alert("⚠ Location Error: Please turn on your phone's GPS/Location to mark attendance! / حاضری کے لیے لوکیشن آن کرنا لازمی ہے۔");
             },
             { timeout: 10000, enableHighAccuracy: true }
         );
@@ -594,10 +488,11 @@
         
         const statusEl = document.getElementById("mainStatus");
         statusEl.style.color = "#27ae60";
-        statusEl.innerHTML = `✔ حاضری کامیابی سے اوکے ہو گئی!<br>Successfully Marked: <b>${name}</b> (${attendanceStatus})`;
+        statusEl.innerHTML = `✔ حاضری کامیابی से اوکے ہو گئی!<br>Successfully Marked: <b>${name}</b> (${attendanceStatus})`;
         
         alert(`✅ حاضری کامیابی سے اوکے ہو گئی!\n\nHi ${name},\nYour ${attendanceStatus} has been marked successfully with location and sent to Admin!`);
         
+        document.getElementById("employeeNameInput").value = "";
         document.getElementById("attendanceImageInput").value = "";
     }
 
@@ -616,7 +511,7 @@
         let filteredLogs = getFilteredLogs();
 
         if (filteredLogs.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No attendance history found. / کوئی ریکارڈ نہیں ملا۔</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No attendance history found. / کوئی ریکارڈ नहीं मिला।</td></tr>`;
             updateSelectionCounter();
             return;
         }
@@ -703,7 +598,7 @@
     }
 
     function clearAllLogs() {
-        if (confirm("Are you sure you want to delete all stored attendance records from cloud? / کیا آپ کلاؤڈ سے تمام ریکارڈ ڈیلیٹ کرنا चाहते हैं؟")) {
+        if (confirm("Are you sure you want to delete all stored attendance records from cloud? / क्या आप क्लाउड से सभी रिकॉर्ड डिलीट करना चाहते हैं?")) {
             db.ref('attendanceLogs').remove();
             loadAdminLogs();
         }
