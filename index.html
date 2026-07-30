@@ -1,360 +1,790 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Attendance System</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .card {
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 420px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        /* Toast Notification Banner Style */
-        #toastBanner {
-            position: absolute;
-            top: -60px;
-            left: 0;
-            width: 100%;
-            background-color: #2ecc71;
-            color: white;
-            padding: 12px;
-            font-weight: bold;
-            font-size: 14px;
-            text-align: center;
-            transition: top 0.4s ease-in-out;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            z-index: 100;
-            box-sizing: border-box;
-        }
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 22px;
-            line-height: 1.4;
-        }
-        input, .file-label {
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 15px;
-            border: 1px solid #dcdde1;
-            border-radius: 8px;
-            font-size: 15px;
-            display: block;
-            box-sizing: border-box;
-            background-color: #f9f9f9;
-        }
-        input {
-            text-align: left;
-            direction: ltr;
-        }
-        .file-label {
-            background-color: #3498db;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            text-align: center;
-            transition: 0.3s;
-        }
-        .file-label:hover {
-            background-color: #2980b9;
-        }
-        input[type="file"] {
-            display: none;
-        }
-        .btn-group {
-            display: flex;
-            gap: 12px;
-        }
-        button {
-            flex: 1;
-            padding: 14px;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .btn-in { background-color: #2ecc71; }
-        .btn-in:hover { background-color: #27ae60; }
-        .btn-out { background-color: #e74c3c; }
-        .btn-out:hover { background-color: #c0392b; }
-        
-        .admin-icon-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #34495e;
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-size: 13px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        #adminPanel {
-            display: none;
-            text-align: left;
-            margin-top: 10px;
-        }
-        .admin-header {
-            font-size: 20px;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-weight: bold;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 10px;
-            text-align: center;
-        }
-        .search-box {
-            width: 100%;
-            padding: 10px 14px;
-            margin-bottom: 12px;
-            border: 1px solid #bdc3c7;
-            border-radius: 6px;
-            font-size: 14px;
-            text-align: left;
-            box-sizing: border-box;
-        }
-        .record-box {
-            background: #fdfefe;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            border: 1px solid #e1e8ed;
-            border-left: 5px solid #3498db;
-            text-align: left;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-        .record-box b {
-            color: #2c3e50;
-        }
-        .back-btn {
-            background-color: #7f8c8d;
-            width: 100%;
-            margin-top: 12px;
-        }
-        .download-btn {
-            background-color: #f1c40f;
-            color: #2c3e50;
-            width: 100%;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-        .download-btn:hover {
-            background-color: #f39c12;
-        }
-        .clear-btn {
-            background-color: #c0392b;
-            color: white;
-            width: 100%;
-            margin-bottom: 12px;
-            font-weight: bold;
-        }
-        .clear-btn:hover {
-            background-color: #a93226;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NICH Employee Attendance</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: #121418;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 15px;
+    }
+
+    /* Outer Device Chassis */
+    .zk-device {
+      width: 440px;
+      background: linear-gradient(145deg, #2b2e36, #1c1e24);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8),
+                  inset 0 1px 2px rgba(255, 255, 255, 0.1);
+      border: 1px solid #383c47;
+      position: relative;
+    }
+
+    /* Top Layout: Screen & Speaker */
+    .top-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    /* Display Screen Frame */
+    .screen-frame {
+      width: 240px;
+      height: 160px;
+      background: #000;
+      border: 4px solid #111;
+      border-radius: 6px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Screen Interface Inside (Original ZKTeco LCD Style) */
+    .lcd-screen {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0b2b52 0%, #154c86 50%, #08203e 100%);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 8px 10px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .lcd-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #9ec5fe;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 3px;
+    }
+
+    .lcd-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .status-icon {
+      font-size: 20px;
+      margin-bottom: 2px;
+      display: none;
+    }
+
+    .status-msg-main {
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 0.3px;
+    }
+
+    .status-msg-sub {
+      font-size: 9px;
+      color: #a0c4ff;
+      margin-top: 2px;
+    }
+
+    /* Input Code Screen Display */
+    #codeDisplayBox {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid #4a90e2;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #00ffcc;
+      margin-top: 3px;
+      min-width: 90px;
+      text-align: center;
+    }
+
+    .lcd-footer {
+      font-size: 9px;
+      color: #88aacc;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding-top: 2px;
+    }
+
+    /* Admin Panel Inside Small LCD Screen */
+    #adminScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      color: #2c3e50;
+      padding: 6px 8px;
+      display: none;
+      flex-direction: column;
+      z-index: 50;
+      overflow-y: auto;
+      text-align: left;
+    }
+
+    .admin-title-bar {
+      font-size: 10px;
+      font-weight: bold;
+      color: #ffffff;
+      background: #2c3e50;
+      padding: 3px;
+      text-align: center;
+      border-radius: 2px;
+      margin-bottom: 4px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 3px;
+      font-size: 9px;
+      margin-bottom: 4px;
+      border: 1px solid #bdc3c7;
+      border-radius: 3px;
+    }
+
+    .record-box {
+      background: #f8f9fa;
+      padding: 4px;
+      margin-bottom: 3px;
+      border-radius: 3px;
+      font-size: 8px;
+      border-left: 3px solid #3498db;
+      color: #2c3e50;
+    }
+
+    .admin-btn-row {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 3px;
+    }
+
+    .admin-sm-btn {
+      flex: 1;
+      padding: 3px;
+      font-size: 8px;
+      font-weight: bold;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      color: white;
+      text-align: center;
+    }
+    .btn-csv { background-color: #f39c12; }
+    .btn-del { background-color: #e74c3c; }
+    .btn-back { background-color: #7f8c8d; width: 100%; margin-top: 2px; padding: 3px; font-size: 8px; color: white; border: none; border-radius: 3px; cursor: pointer; }
+
+    /* Speaker Grill Header */
+    .speaker-grill {
+      display: grid;
+      grid-template-columns: repeat(4, 5px);
+      grid-gap: 5px;
+      padding-top: 10px;
+    }
+
+    .speaker-hole {
+      width: 5px;
+      height: 5px;
+      background: #111317;
+      border-radius: 50%;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,0.8);
+    }
+
+    /* Bottom Panel Layout */
+    .bottom-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    /* Keypad Layout */
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 56px);
+      grid-gap: 10px;
+    }
+
+    .key {
+      height: 36px;
+      background: linear-gradient(180deg, #3a3d47 0%, #25272e 100%);
+      color: #e0e0e0;
+      border: 1px solid #1a1b20;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      box-shadow: 0 3px 0 #121317, inset 0 1px 0 rgba(255,255,255,0.1);
+      cursor: pointer;
+    }
+
+    .key:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #121317;
+    }
+
+    /* Right Section: Scanner & Branding */
+    .right-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Fingerprint Scanner Housing */
+    .scanner-housing {
+      width: 100px;
+      height: 125px;
+      background: #141519;
+      border-radius: 12px;
+      border: 2px solid #2d313b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    /* Glowing Fingerprint Glass */
+    .scanner-glass {
+      width: 72px;
+      height: 95px;
+      background: #082412;
+      border-radius: 8px;
+      border: 2px solid #00ff66;
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.4), inset 0 0 15px rgba(0, 255, 102, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .scanner-glass.scanning {
+      background: #0e4420;
+      box-shadow: 0 0 25px rgba(0, 255, 102, 0.8), inset 0 0 20px rgba(0, 255, 102, 0.8);
+      transform: scale(0.97);
+    }
+
+    /* Fingerprint Icon SVG */
+    .fp-icon {
+      width: 50px;
+      height: 50px;
+      fill: #00ff66;
+      opacity: 0.6;
+      transition: all 0.3s;
+    }
+
+    .scanner-glass.scanning .fp-icon {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    /* Scanning Light Beam */
+    .scan-beam {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #ffffff;
+      box-shadow: 0 0 12px #00ff66, 0 0 20px #00ff66;
+      display: none;
+      animation: scanMove 1.2s infinite ease-in-out;
+    }
+
+    @keyframes scanMove {
+      0% { top: 5%; }
+      50% { top: 90%; }
+      100% { top: 5%; }
+    }
+
+    /* Custom NICH Brand Text (Replaced ZKTeco Logo area) */
+    .brand-logo {
+      margin-top: 15px;
+      text-align: center;
+      width: 100px;
+    }
+
+    .brand-title {
+      font-size: 13px;
+      font-weight: 900;
+      color: #00ff66;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+    }
+
+    .brand-model {
+      font-size: 10px;
+      font-weight: bold;
+      color: #9ca3af;
+      margin-top: 2px;
+      letter-spacing: 0.3px;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="card">
-        <!-- Success Toast Notification Banner -->
-        <div id="toastBanner">Success! Attendance Recorded.</div>
+  <!-- Physical Device Box -->
+  <div class="zk-device">
+    
+    <!-- Top Area: Screen & Speaker -->
+    <div class="top-panel">
+      
+      <!-- LCD Screen Frame -->
+      <div class="screen-frame">
+        <div class="lcd-screen" id="lcd">
+          
+          <div class="lcd-header">
+            <span>ZKTeco</span>
+            <span id="clock">10:05 AM</span>
+          </div>
 
-        <!-- Admin Button -->
-        <button class="admin-icon-btn" onclick="openAdmin()">⚙️ Admin Panel</button>
+          <div class="lcd-body">
+            <div id="statusIcon" class="status-icon">✅</div>
+            <div id="msgMain" class="status-msg-main">Enter Code First</div>
+            <div id="codeDisplayBox">_</div>
+            <div id="msgSub" class="status-msg-sub">Then Press Finger / M/OK</div>
+          </div>
 
-        <!-- Main Form (English Only) -->
-        <div id="userForm">
-            <h2>Staff Attendance System</h2>
-            
-            <input type="text" id="empName" placeholder="Enter Full Name" required>
-            
-            <label for="empPhoto" class="file-label" id="photoLabel">📁 Select Photo</label>
-            <input type="file" id="empPhoto" accept="image/*" onchange="previewPhoto()">
+          <div class="lcd-footer">
+            <span>Biometric & Code Terminal</span>
+          </div>
 
-            <div class="btn-group">
-                <button class="btn-in" onclick="markAttendance('Check-In')">Check-In</button>
-                <button class="btn-out" onclick="markAttendance('Check-Out')">Check-Out</button>
+          <!-- Full Admin Panel Inside Small LCD Screen -->
+          <div id="adminScreen">
+            <div class="admin-title-bar">ADMIN PANEL</div>
+            <div class="admin-btn-row">
+              <button class="admin-sm-btn btn-csv" onclick="downloadCSV()">📥 CSV</button>
+              <button class="admin-sm-btn btn-del" onclick="clearAllData()">🗑️ Clear</button>
             </div>
-        </div>
+            <input type="text" id="searchEmp" class="search-box" placeholder="Search by name..." onkeyup="filterRecords()">
+            <div id="recordsList" style="max-height: 72px; overflow-y: auto; margin-bottom: 3px;"></div>
+            <button class="btn-back" onclick="closeAdminScreen()">Back to Main</button>
+          </div>
 
-        <!-- Admin Panel (English Only) -->
-        <div id="adminPanel">
-            <div class="admin-header">🛡️ Admin Dashboard</div>
-            
-            <button class="download-btn" onclick="downloadCSV()">📥 Download All Data (CSV)</button>
-            <button class="clear-btn" onclick="clearAllData()">🗑️ Clear All Records</button>
-            
-            <input type="text" id="searchEmp" class="search-box" placeholder="🔍 Search by name..." onkeyup="filterRecords()">
-
-            <div id="recordsList" style="max-height: 220px; overflow-y: auto; padding-right: 5px;"></div>
-            
-            <button class="back-btn" onclick="closeAdmin()">🔙 Back</button>
         </div>
+      </div>
+
+      <!-- Speaker Grill -->
+      <div class="speaker-grill">
+        <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
+        <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
+        <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
+        <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
+      </div>
     </div>
 
-    <script>
-        function previewPhoto() {
-            const fileInput = document.getElementById('empPhoto');
-            const label = document.getElementById('photoLabel');
-            if (fileInput.files && fileInput.files[0]) {
-                label.style.backgroundColor = "#2ecc71";
-                label.innerText = "✓ Photo Selected";
-            }
+    <!-- Bottom Area: Keypad & Fingerprint Sensor -->
+    <div class="bottom-panel">
+      
+      <!-- Fully Working Keypad -->
+      <div class="keypad">
+        <div class="key" onclick="pressKey('1')">1</div>
+        <div class="key" onclick="pressKey('2')">2 ABC</div>
+        <div class="key" onclick="pressKey('3')">3 DEF</div>
+        <div class="key" onclick="pressKey('4')">4 GHI</div>
+        <div class="key" onclick="pressKey('5')">5 JKL</div>
+        <div class="key" onclick="pressKey('6')">6 MNO</div>
+        <div class="key" onclick="pressKey('7')">7 PQRS</div>
+        <div class="key" onclick="pressKey('8')">8 TUV</div>
+        <div class="key" onclick="pressKey('9')">9 WXYZ</div>
+        <div class="key" onclick="pressClear()">ESC</div>
+        <div class="key" onclick="pressKey('0')">0</div>
+        <div class="key" onclick="pressOK()">M/OK</div>
+      </div>
+
+      <!-- Right Area: Scanner and Custom NICH Text -->
+      <div class="right-section">
+        
+        <!-- Fingerprint Sensor Area -->
+        <div class="scanner-housing" id="scannerBtn">
+          <div class="scanner-glass" id="scannerGlass">
+            <div class="scan-beam" id="scanBeam"></div>
+            <!-- Fingerprint Icon -->
+            <svg class="fp-icon" viewBox="0 0 24 24">
+              <path d="M17.81 4.42A10.006 10.006 0 0 0 12 2.75c-2.73 0-5.23 1.1-7.05 2.87l1.41 1.42A7.99 7.99 0 0 1 12 4.75c2.18 0 4.18.88 5.64 2.3l1.41-1.42Z"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Custom NICH Attendance Logo Text -->
+        <div class="brand-logo">
+          <div class="brand-title">NICH</div>
+          <div class="brand-model">ATTENDANCE</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const employeeDatabase = {
+      "101": { name: "Mohammad Ansar", status: "Check-In" },
+      "102": { name: "Mohammad Ansar", status: "Check-Out" },
+      "6424": { name: "Shahzad", status: "Check-In" },
+      "6499": { name: "Shahzad", status: "Check-Out" }
+    };
+
+    let enteredCode = "";
+    let verifiedCode = ""; 
+    let codeValidTimer = null; 
+    let scanTimer = null;
+    let isPressed = false;
+    let scanCompleted = false;
+
+    const scannerBtn = document.getElementById('scannerBtn');
+    const glass = document.getElementById('scannerGlass');
+    const beam = document.getElementById('scanBeam');
+    const statusIcon = document.getElementById('statusIcon');
+    const msgMain = document.getElementById('msgMain');
+    const msgSub = document.getElementById('msgSub');
+
+    // Live Clock Functionality
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      document.getElementById('clock').innerText = hours + ':' + minutes + ' ' + ampm;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Sound Generator (Beep Sound)
+    function playBeep(freq, duration) {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        setTimeout(() => {
+          osc.stop();
+          audioCtx.close();
+        }, duration);
+      } catch (e) {}
+    }
+
+    // Voice Output Function (Assistant Speech)
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = 'en-US';
+        speech.rate = 0.95;
+        window.speechSynthesis.speak(speech);
+      }
+    }
+
+    // Keypad Press Functions with TTS Voice
+    function pressKey(num) {
+      playBeep(600, 80);
+      speakText(num);
+      if (enteredCode.length < 8) {
+        enteredCode += num;
+        document.getElementById('codeDisplayBox').innerText = enteredCode;
+      }
+    }
+
+    function pressClear() {
+      playBeep(400, 100);
+      speakText("Cleared");
+      enteredCode = "";
+      document.getElementById('codeDisplayBox').innerText = "_";
+    }
+
+    // Process attendance verification using stored or entered code
+    function processAttendance(targetCode) {
+      if (targetCode === "707670") {
+        enteredCode = "";
+        verifiedCode = "";
+        document.getElementById('codeDisplayBox').innerText = "_";
+        document.getElementById('adminScreen').style.display = 'flex';
+        loadRecords();
+        speakText("Admin panel opened.");
+        return;
+      }
+
+      const empData = employeeDatabase[targetCode];
+      statusIcon.style.display = 'block';
+
+      if (empData) {
+        statusIcon.innerText = '✅';
+        msgMain.innerText = `Successfully ${empData.name}`;
+        msgSub.innerText = `${empData.status} Recorded`;
+        msgSub.style.color = '#00ff88';
+        
+        playBeep(1200, 150);
+        setTimeout(() => playBeep(1500, 200), 160);
+        
+        // Assistant voice announcement with full names as requested previously
+        speakText(`Successfully attendance marked for ${empData.name}. ${empData.status}.`);
+
+        saveAttendanceRecord(empData.name, empData.status);
+      } else {
+        statusIcon.innerText = '❌';
+        msgMain.innerText = 'Invalid Code!';
+        msgSub.innerText = 'Try Again';
+        msgSub.style.color = '#ff8080';
+        
+        playBeep(300, 300);
+        speakText("Invalid code.");
+      }
+
+      verifiedCode = "";
+      if (codeValidTimer) clearTimeout(codeValidTimer);
+
+      setTimeout(resetDeviceScreen, 3500);
+    }
+
+    // When M/OK is pressed
+    function pressOK() {
+      playBeep(900, 100);
+      speakText("OK");
+
+      if (enteredCode === "") {
+        statusIcon.style.display = 'block';
+        statusIcon.innerText = '❌';
+        msgMain.innerText = 'Enter Code First!';
+        msgSub.innerText = 'Required Before OK';
+        msgSub.style.color = '#ff8080';
+        playBeep(300, 300);
+        speakText("Please enter code first.");
+        setTimeout(resetDeviceScreen, 2500);
+        return;
+      }
+
+      if (enteredCode === "707670") {
+        processAttendance(enteredCode);
+        return;
+      }
+
+      if (employeeDatabase[enteredCode]) {
+        verifiedCode = enteredCode;
+        
+        statusIcon.style.display = 'block';
+        statusIcon.innerText = '⏳';
+        msgMain.innerText = 'Code Verified';
+        msgSub.innerText = 'Scan Finger Within 5s';
+        msgSub.style.color = '#00ffcc';
+        playBeep(1000, 100);
+        speakText("Code verified. Please scan finger.");
+
+        if (codeValidTimer) clearTimeout(codeValidTimer);
+        codeValidTimer = setTimeout(() => {
+          if (verifiedCode !== "") {
+            verifiedCode = "";
+            resetDeviceScreen();
+          }
+        }, 5000);
+
+        enteredCode = "";
+        document.getElementById('codeDisplayBox').innerText = "_";
+      } else {
+        processAttendance(enteredCode);
+      }
+    }
+
+    // Fingerprint Hold & Scan Logic
+    function startHoldScan(e) {
+      if (e) e.preventDefault();
+      
+      if (verifiedCode === "") {
+        statusIcon.style.display = 'block';
+        statusIcon.innerText = '❌';
+        msgMain.innerText = 'Enter Code First!';
+        msgSub.innerText = 'Scan Not Allowed';
+        msgSub.style.color = '#ff8080';
+        playBeep(300, 300);
+        speakText("Please enter code first.");
+        setTimeout(resetDeviceScreen, 2500);
+        return;
+      }
+
+      if (isPressed || scanCompleted) return;
+
+      isPressed = true;
+      glass.classList.add('scanning');
+      beam.style.display = 'block';
+      statusIcon.style.display = 'none';
+
+      msgMain.innerText = 'Scanning...';
+      msgSub.innerText = 'Hold Finger On Sensor';
+      msgSub.style.color = '#ffcc00';
+
+      playBeep(800, 150);
+
+      const codeToProcess = verifiedCode;
+
+      scanTimer = setTimeout(() => {
+        scanCompleted = true;
+        beam.style.display = 'none';
+        glass.classList.remove('scanning');
+
+        if (codeValidTimer) clearTimeout(codeValidTimer);
+        processAttendance(codeToProcess);
+
+      }, 2200);
+    }
+
+    function stopHoldScan(e) {
+      if (e) e.preventDefault();
+      if (!isPressed) return;
+
+      isPressed = false;
+
+      if (!scanCompleted && verifiedCode !== "") {
+        clearTimeout(scanTimer);
+        beam.style.display = 'none';
+        glass.classList.remove('scanning');
+
+        statusIcon.style.display = 'block';
+        statusIcon.innerText = '❌';
+        msgMain.innerText = 'Scan Failed!';
+        msgSub.innerText = 'Removed Too Fast';
+        msgSub.style.color = '#ff8080';
+
+        playBeep(300, 300);
+        speakText("Scan failed. Removed too fast.");
+
+        setTimeout(resetDeviceScreen, 2000);
+      }
+    }
+
+    function resetDeviceScreen() {
+      statusIcon.style.display = 'none';
+      msgMain.innerText = 'Enter Code First';
+      msgSub.innerText = 'Then Press Finger / M/OK';
+      msgSub.style.color = '#a0c4ff';
+      enteredCode = "";
+      verifiedCode = "";
+      if (codeValidTimer) clearTimeout(codeValidTimer);
+      document.getElementById('codeDisplayBox').innerText = "_";
+      scanCompleted = false;
+      isPressed = false;
+    }
+
+    function saveAttendanceRecord(name, status) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const timeStr = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+      const record = {
+        name: name,
+        status: status,
+        time: timeStr
+      };
+
+      let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+      allRecords.push(record);
+      localStorage.setItem('attendanceRecords', JSON.stringify(allRecords));
+    }
+
+    function closeAdminScreen() {
+      document.getElementById('adminScreen').style.display = 'none';
+      resetDeviceScreen();
+    }
+
+    function loadRecords(filter = "") {
+      const listDiv = document.getElementById("recordsList");
+      let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+      
+      if (allRecords.length === 0) {
+        listDiv.innerHTML = "<p style='color: #7f8c8d; text-align:center; font-size:8px;'>No records found.</p>";
+        return;
+      }
+
+      let html = "";
+      allRecords.reverse().forEach((rec) => {
+        if (filter === "" || rec.name.toLowerCase().includes(filter.toLowerCase())) {
+          html += `<div class="record-box">
+            <b>${rec.name}</b> (${rec.status})<br>${rec.time}
+          </div>`;
         }
+      });
+      listDiv.innerHTML = html;
+    }
 
-        function showToast(message) {
-            const toast = document.getElementById("toastBanner");
-            toast.innerText = message;
-            toast.style.top = "0px";
-            setTimeout(() => {
-                toast.style.top = "-60px";
-            }, 3000);
-        }
+    function filterRecords() {
+      let query = document.getElementById("searchEmp").value;
+      loadRecords(query);
+    }
 
-        function markAttendance(type) {
-            const name = document.getElementById("empName").value.trim();
-            const fileInput = document.getElementById("empPhoto");
+    function downloadCSV() {
+      let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+      if (allRecords.length === 0) {
+        alert("No data available to download!");
+        return;
+      }
 
-            if (!name) {
-                alert("Please enter your name!");
-                return;
-            }
+      let csvContent = "data:text/csv;charset=utf-8,Name,Status,Date_Time\n";
+      allRecords.forEach(rec => {
+        csvContent += `"${rec.name}","${rec.status}","${rec.time}"\n`;
+      });
 
-            if (fileInput.files.length === 0) {
-                alert("Please select your photo!");
-                return;
-            }
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "Attendance_Report.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
 
-            // Generate clean timestamp: YYYY-MM-DD HH:MM:SS
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    function clearAllData() {
+      if (confirm("Clear all attendance records?")) {
+        localStorage.removeItem('attendanceRecords');
+        loadRecords();
+        alert("All records cleared successfully!");
+      }
+    }
 
-            saveDataLocally(name, type, formattedDateTime);
-        }
+    // Event Listeners for Fingerprint Sensor Hold
+    scannerBtn.addEventListener('mousedown', startHoldScan);
+    scannerBtn.addEventListener('mouseup', stopHoldScan);
+    scannerBtn.addEventListener('mouseleave', stopHoldScan);
 
-        function saveDataLocally(name, type, timestamp) {
-            const record = {
-                name: name,
-                status: type,
-                time: timestamp
-            };
-
-            let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
-            allRecords.push(record);
-            localStorage.setItem('attendanceRecords', JSON.stringify(allRecords));
-
-            // Show success toast bar
-            showToast(`✓ ${type} Successful for ${name} (OK)`);
-            
-            // Reset form fields
-            document.getElementById("empName").value = "";
-            document.getElementById("empPhoto").value = "";
-            document.getElementById("photoLabel").style.backgroundColor = "#3498db";
-            document.getElementById("photoLabel").innerText = "📁 Select Photo";
-        }
-
-        function openAdmin() {
-            let pass = prompt("Enter Admin Password:");
-            if (pass === "707670") {
-                document.getElementById("userForm").style.display = "none";
-                document.getElementById("adminPanel").style.display = "block";
-                loadRecords();
-            } else if (pass !== null) {
-                alert("Incorrect Password!");
-            }
-        }
-
-        function closeAdmin() {
-            document.getElementById("adminPanel").style.display = "none";
-            document.getElementById("userForm").style.display = "block";
-        }
-
-        function loadRecords(filter = "") {
-            const listDiv = document.getElementById("recordsList");
-            let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
-            
-            if (allRecords.length === 0) {
-                listDiv.innerHTML = "<p style='color: #7f8c8d; text-align:center;'>No records found.</p>";
-                return;
-            }
-
-            let html = "";
-            allRecords.reverse().forEach((rec) => {
-                if (filter === "" || rec.name.toLowerCase().includes(filter.toLowerCase())) {
-                    html += `<div class="record-box">
-                        <b>Name:</b> ${rec.name}<br>
-                        <b>Status:</b> <span style="color:${rec.status === 'Check-In' ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${rec.status}</span><br>
-                        <b>Date & Time:</b> ${rec.time}
-                    </div>`;
-                }
-            });
-            listDiv.innerHTML = html || "<p style='color: #7f8c8d; text-align:center;'>No results found.</p>";
-        }
-
-        function filterRecords() {
-            let query = document.getElementById("searchEmp").value;
-            loadRecords(query);
-        }
-
-        function downloadCSV() {
-            let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
-            if (allRecords.length === 0) {
-                alert("No data available to download!");
-                return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8,Name,Status,Date_Time\n";
-            allRecords.forEach(rec => {
-                csvContent += `"${rec.name}","${rec.status}","${rec.time}"\n`;
-            });
-
-            var encodedUri = encodeURI(csvContent);
-            var link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Attendance_Report.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function clearAllData() {
-            if (confirm("Are you sure you want to clear all attendance records? This cannot be undone!")) {
-                localStorage.removeItem('attendanceRecords');
-                loadRecords();
-                alert("All records cleared successfully!");
-            }
-        }
-    </script>
-
+    scannerBtn.addEventListener('touchstart', startHoldScan);
+    scannerBtn.addEventListener('touchend', stopHoldScan);
+    scannerBtn.addEventListener('touchcancel', stopHoldScan);
+  </script>
 </body>
 </html>
