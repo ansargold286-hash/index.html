@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+l<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NICH Employee Attendance</title>
+  <title> NICH Mobile Portal - Complete Apps & Admin Panel</title>
   <style>
     * {
       box-sizing: border-box;
@@ -13,121 +13,431 @@
       user-select: none;
     }
 
-    body {
-      background-color: #121418;
+    body, html {
+      width: 100%;
+      height: 100%;
+      background-color: #0b0c10;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      padding: 15px;
-    }
-
-    /* Outer Device Chassis */
-    .zk-device {
-      width: 440px;
-      background: linear-gradient(145deg, #2b2e36, #1c1e24);
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8),
-                  inset 0 1px 2px rgba(255, 255, 255, 0.1);
-      border: 1px solid #383c47;
-      position: relative;
-    }
-
-    /* Top Layout: Screen & Speaker */
-    .top-panel {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 24px;
-    }
-
-    /* Display Screen Frame */
-    .screen-frame {
-      width: 240px;
-      height: 160px;
-      background: #000;
-      border: 4px solid #111;
-      border-radius: 6px;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-      position: relative;
       overflow: hidden;
     }
 
-    /* Screen Interface Inside (Original ZKTeco LCD Style) */
+    @keyframes rgbBorderAnim {
+      0% { border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.4), inset 0 0 15px rgba(0, 255, 204, 0.2); }
+      33% { border-color: #ff007f; box-shadow: 0 0 15px rgba(255, 0, 127, 0.4), inset 0 0 15px rgba(255, 0, 127, 0.2); }
+      66% { border-color: #7f00ff; box-shadow: 0 0 15px rgba(127, 0, 255, 0.4), inset 0 0 15px rgba(127, 0, 255, 0.2); }
+      100% { border-color: #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.4), inset 0 0 15px rgba(0, 255, 204, 0.2); }
+    }
+
+    .zk-device {
+      width: 94vw;
+      max-width: 320px;
+      height: 92vh;
+      max-height: 640px;
+      background: linear-gradient(145deg, #2b2e36, #1c1e24);
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 18px;
+      border: 3px solid #00ffcc;
+      animation: rgbBorderAnim 6s infinite linear;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+    }
+
+    .zk-device.success-device {
+      border-color: #00ff66 !important;
+      box-shadow: 0 0 25px rgba(0, 255, 102, 0.8), inset 0 0 20px rgba(0, 255, 102, 0.5) !important;
+      animation: none !important;
+    }
+
+    .zk-device.error-device {
+      border-color: #ff3333 !important;
+      box-shadow: 0 0 25px rgba(255, 51, 51, 0.8), inset 0 0 20px rgba(255, 51, 51, 0.5) !important;
+      animation: none !important;
+    }
+
+    .screen-frame {
+      width: 100%;
+      flex: 1;
+      background: #000;
+      border: 3px solid #111;
+      border-radius: 10px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
     .lcd-screen {
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #0b2b52 0%, #154c86 50%, #08203e 100%);
+      background: linear-gradient(135deg, #071e3d 0%, #0b2b52 50%, #041022 100%);
       color: #ffffff;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 8px 10px;
+      padding: 4px 0px;
       box-sizing: border-box;
       position: relative;
+    }
+
+    #homeLauncher {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #1b2838 0%, #090e17 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      z-index: 60;
+      padding: 12px;
+    }
+
+    .home-top-bar {
+      font-size: 8px;
+      color: #9ec5fe;
+      margin-bottom: 12px;
+      width: 100%;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 4px;
+      font-weight: bold;
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+    }
+
+    .app-icon-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .app-icon-container:active {
+      transform: scale(0.92);
+    }
+
+    .app-icon {
+      width: 46px;
+      height: 46px;
+      background: linear-gradient(135deg, #00ffcc, #0077ff);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0, 255, 204, 0.3);
+      font-size: 20px;
+      border: 2px solid rgba(255,255,255,0.4);
+      margin-bottom: 4px;
+    }
+
+    .app-icon.admin-app-icon {
+      background: linear-gradient(135deg, #f39c12, #e74c3c);
+      box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
+    }
+
+    .app-icon.info-app-icon {
+      background: linear-gradient(135deg, #9b59b6, #8e44ad);
+      box-shadow: 0 4px 10px rgba(155, 89, 182, 0.3);
+    }
+
+    .app-name {
+      font-size: 8px;
+      font-weight: bold;
+      color: #ffffff;
+      text-align: center;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
     }
 
     .lcd-header {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
+      align-items: center;
+      font-size: 9px;
       color: #9ec5fe;
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-      padding-bottom: 3px;
+      padding: 0 6px 2px 6px;
+      z-index: 10;
+    }
+
+    .lcd-header-icons {
+      display: flex;
+      gap: 5px;
+      font-size: 8px;
+      color: #00ffcc;
     }
 
     .lcd-body {
-      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       text-align: center;
+      position: relative;
+      z-index: 10;
+      padding-top: 1px;
+      width: 100%;
+      flex: 1;
     }
 
     .status-icon {
-      font-size: 20px;
-      margin-bottom: 2px;
+      font-size: 12px;
+      margin-bottom: 1px;
       display: none;
     }
 
     .status-msg-main {
-      font-size: 11px;
+      font-size: 9px;
       font-weight: bold;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.5px;
     }
 
     .status-msg-sub {
-      font-size: 9px;
+      font-size: 6.5px;
       color: #a0c4ff;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
-    /* Input Code Screen Display */
     #codeDisplayBox {
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.5);
       border: 1px solid #4a90e2;
       border-radius: 4px;
       padding: 2px 6px;
-      font-size: 13px;
+      font-size: 10px;
       font-weight: bold;
       letter-spacing: 2px;
       color: #00ffcc;
-      margin-top: 3px;
-      min-width: 90px;
+      margin: 2px 0;
+      min-width: 70px;
       text-align: center;
+    }
+
+    .custom-image-slot {
+      width: 100%;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2px;
+      margin-bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      border-top: 1px solid #4a90e2;
+      border-bottom: 1px solid #4a90e2;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .custom-image-slot img, .custom-image-slot video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+      width: 100%;
+      margin-top: 0;
+      padding: 0 4px 2px 4px;
+    }
+
+    .key-btn {
+      background: linear-gradient(145deg, #1f242d, #14171f);
+      border: 1px solid #3a4454;
+      border-radius: 4px;
+      color: #00ffcc;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 7px 0;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      transition: all 0.1s ease;
+    }
+
+    .key-btn:active {
+      background: #00ffcc;
+      color: #000;
+    }
+
+    .progress-container {
+      width: 70%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin-top: 2px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #00ffcc;
+      transition: width 0.1s linear;
     }
 
     .lcd-footer {
-      font-size: 9px;
+      font-size: 7px;
       color: #88aacc;
       text-align: center;
       border-top: 1px solid rgba(255, 255, 255, 0.15);
-      padding-top: 2px;
+      padding: 2px 6px 0 6px;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
     }
 
-    /* Admin Panel Inside Small LCD Screen */
+    .back-home-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      font-size: 6px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    #adminLoginScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #071e3d;
+      color: #ffffff;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 70;
+      text-align: center;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 220px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #f39c12;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+
+    .login-title {
+      font-size: 10px;
+      font-weight: bold;
+      color: #f39c12;
+      margin-bottom: 8px;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 5px;
+      font-size: 9px;
+      margin-bottom: 6px;
+      border: 1px solid #4a90e2;
+      border-radius: 4px;
+      background: #0b2b52;
+      color: #fff;
+      text-align: center;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 5px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    .login-back-btn {
+      width: 100%;
+      padding: 4px;
+      background: #7f8c8d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 8px;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    #infoScreen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0b2b52;
+      color: #ffffff;
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      z-index: 75;
+      text-align: left;
+    }
+
+    .info-title-bar {
+      font-size: 9px;
+      font-weight: bold;
+      color: #f39c12;
+      background: rgba(0,0,0,0.5);
+      padding: 4px;
+      text-align: center;
+      border-radius: 3px;
+      margin-bottom: 5px;
+    }
+
+    .code-card {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid #00ffcc;
+      border-radius: 4px;
+      padding: 5px;
+      margin-bottom: 4px;
+      font-size: 8px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 4px;
+    }
+
+    .search-action-btn {
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      padding: 3px 6px;
+      font-size: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     #adminScreen {
       position: absolute;
       top: 0;
@@ -139,51 +449,32 @@
       padding: 6px 8px;
       display: none;
       flex-direction: column;
-      z-index: 50;
+      z-index: 80;
       overflow-y: auto;
       text-align: left;
     }
 
     .admin-title-bar {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: bold;
       color: #ffffff;
       background: #2c3e50;
-      padding: 3px;
-      text-align: center;
-      border-radius: 2px;
-      margin-bottom: 4px;
-    }
-
-    .search-box {
-      width: 100%;
-      padding: 3px;
-      font-size: 9px;
-      margin-bottom: 4px;
-      border: 1px solid #bdc3c7;
-      border-radius: 3px;
-    }
-
-    .record-box {
-      background: #f8f9fa;
       padding: 4px;
-      margin-bottom: 3px;
+      text-align: center;
       border-radius: 3px;
-      font-size: 8px;
-      border-left: 3px solid #3498db;
-      color: #2c3e50;
+      margin-bottom: 4px;
     }
 
     .admin-btn-row {
       display: flex;
       gap: 3px;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
 
     .admin-sm-btn {
       flex: 1;
-      padding: 3px;
-      font-size: 8px;
+      padding: 3px 2px;
+      font-size: 7px;
       font-weight: bold;
       border: none;
       border-radius: 3px;
@@ -192,70 +483,78 @@
       text-align: center;
     }
     .btn-csv { background-color: #f39c12; }
+    .btn-summary { background-color: #27ae60; }
     .btn-del { background-color: #e74c3c; }
-    .btn-back { background-color: #7f8c8d; width: 100%; margin-top: 2px; padding: 3px; font-size: 8px; color: white; border: none; border-radius: 3px; cursor: pointer; }
+    .btn-img { background-color: #8e44ad; }
+    .btn-vid { background-color: #2980b9; }
 
-    /* Speaker Grill Header */
-    .speaker-grill {
-      display: grid;
-      grid-template-columns: repeat(4, 5px);
-      grid-gap: 5px;
-      padding-top: 10px;
-    }
-
-    .speaker-hole {
-      width: 5px;
-      height: 5px;
-      background: #111317;
-      border-radius: 50%;
-      box-shadow: inset 0 1px 1px rgba(0,0,0,0.8);
-    }
-
-    /* Bottom Panel Layout */
-    .bottom-panel {
+    .folders-container {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
+      gap: 4px;
+      margin-bottom: 4px;
     }
 
-    /* Keypad Layout */
-    .keypad {
-      display: grid;
-      grid-template-columns: repeat(3, 56px);
-      grid-gap: 10px;
-    }
-
-    .key {
-      height: 36px;
-      background: linear-gradient(180deg, #3a3d47 0%, #25272e 100%);
-      color: #e0e0e0;
-      border: 1px solid #1a1b20;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: bold;
-      box-shadow: 0 3px 0 #121317, inset 0 1px 0 rgba(255,255,255,0.1);
+    .folder-card {
+      flex: 1;
+      background: #f0f4f8;
+      border: 2px solid #3498db;
+      border-radius: 4px;
+      padding: 4px;
+      text-align: center;
       cursor: pointer;
+      font-weight: bold;
+      font-size: 8px;
+      color: #2c3e50;
+    }
+    .folder-card:active, .folder-card.active {
+      background: #3498db;
+      color: white;
     }
 
-    .key:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 #121317;
+    .search-box {
+      width: 100%;
+      padding: 3px 5px;
+      font-size: 8px;
+      margin-bottom: 4px;
+      border: 1px solid #bdc3c7;
+      border-radius: 3px;
     }
 
-    /* Right Section: Scanner & Branding */
-    .right-section {
+    .record-box {
+      background: #f8f9fa;
+      padding: 3px 5px;
+      margin-bottom: 2px;
+      border-radius: 3px;
+      font-size: 7px;
+      border-left: 3px solid #3498db;
+      color: #2c3e50;
+    }
+
+    .btn-back {
+      background-color: #7f8c8d;
+      width: 100%;
+      margin-top: 4px;
+      padding: 4px;
+      font-size: 8px;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .bottom-section {
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: 3px;
     }
 
-    /* Fingerprint Scanner Housing */
     .scanner-housing {
-      width: 100px;
-      height: 125px;
+      width: 70px;
+      height: 82px;
       background: #141519;
       border-radius: 12px;
       border: 2px solid #2d313b;
@@ -263,210 +562,299 @@
       align-items: center;
       justify-content: center;
       position: relative;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.9), 0 3px 8px rgba(0,0,0,0.5);
       cursor: pointer;
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
       overflow: hidden;
       touch-action: none;
     }
 
-    /* Glowing Fingerprint Glass */
     .scanner-glass {
-      width: 72px;
-      height: 95px;
+      width: 52px;
+      height: 64px;
       background: #082412;
-      border-radius: 8px;
+      border-radius: 6px;
       border: 2px solid #00ff66;
-      box-shadow: 0 0 15px rgba(0, 255, 102, 0.4), inset 0 0 15px rgba(0, 255, 102, 0.5);
+      box-shadow: 0 0 12px rgba(0, 255, 102, 0.5), inset 0 0 6px rgba(0, 255, 102, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-      transition: all 0.2s ease;
     }
 
-    .scanner-glass.scanning {
-      background: #0e4420;
-      box-shadow: 0 0 25px rgba(0, 255, 102, 0.8), inset 0 0 20px rgba(0, 255, 102, 0.8);
-      transform: scale(0.97);
-    }
-
-    /* Fingerprint Icon SVG */
     .fp-icon {
-      width: 50px;
-      height: 50px;
+      width: 30px;
+      height: 42px;
       fill: #00ff66;
-      opacity: 0.6;
-      transition: all 0.3s;
+      opacity: 0.9;
+      filter: drop-shadow(0 0 4px rgba(0,255,102,0.6));
     }
 
-    .scanner-glass.scanning .fp-icon {
-      opacity: 1;
-      transform: scale(1.05);
-    }
-
-    /* Scanning Light Beam */
-    .scan-beam {
+    .scan-laser {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 4px;
-      background: #ffffff;
-      box-shadow: 0 0 12px #00ff66, 0 0 20px #00ff66;
+      height: 3px;
+      background: #00ffcc;
+      box-shadow: 0 0 10px #00ffcc, 0 0 5px #ffffff;
       display: none;
-      animation: scanMove 1.2s infinite ease-in-out;
     }
 
-    @keyframes scanMove {
-      0% { top: 5%; }
+    @keyframes laserMoveFit {
+      0% { top: 0%; }
       50% { top: 90%; }
-      100% { top: 5%; }
+      100% { top: 0%; }
     }
 
-    /* Custom NICH Brand Text (Replaced ZKTeco Logo area) */
-    .brand-logo {
-      margin-top: 15px;
-      text-align: center;
-      width: 100px;
+    .scanning .scan-laser {
+      display: block;
+      animation: laserMoveFit 0.8s infinite linear;
     }
 
-    .brand-title {
-      font-size: 13px;
-      font-weight: 900;
-      color: #00ff66;
-      letter-spacing: 0.5px;
-      line-height: 1.2;
-    }
-
-    .brand-model {
+    .brand-logo-text {
       font-size: 10px;
-      font-weight: bold;
-      color: #9ca3af;
-      margin-top: 2px;
-      letter-spacing: 0.3px;
+      font-style: italic;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      text-align: center;
+      margin-top: 3px;
+    }
+    .brand-logo-text span {
+      color: #76b900;
     }
   </style>
 </head>
 <body>
 
-  <!-- Physical Device Box -->
-  <div class="zk-device">
+  <div class="zk-device" id="deviceContainer">
     
-    <!-- Top Area: Screen & Speaker -->
-    <div class="top-panel">
-      
-      <!-- LCD Screen Frame -->
-      <div class="screen-frame">
-        <div class="lcd-screen" id="lcd">
-          
-          <div class="lcd-header">
-            <span>ZKTeco</span>
-            <span id="clock">10:05 AM</span>
-          </div>
-
-          <div class="lcd-body">
-            <div id="statusIcon" class="status-icon">✅</div>
-            <div id="msgMain" class="status-msg-main">Enter Code First</div>
-            <div id="codeDisplayBox">_</div>
-            <div id="msgSub" class="status-msg-sub">Then Press Finger / M/OK</div>
-          </div>
-
-          <div class="lcd-footer">
-            <span>Biometric & Code Terminal</span>
-          </div>
-
-          <!-- Full Admin Panel Inside Small LCD Screen -->
-          <div id="adminScreen">
-            <div class="admin-title-bar">ADMIN PANEL</div>
-            <div class="admin-btn-row">
-              <button class="admin-sm-btn btn-csv" onclick="downloadCSV()">📥 CSV</button>
-              <button class="admin-sm-btn btn-del" onclick="clearAllData()">🗑️ Clear</button>
+    <div class="screen-frame">
+      <div class="lcd-screen" id="lcd">
+        
+        <!-- Home Launcher -->
+        <div id="homeLauncher">
+          <div class="home-top-bar">Samsung Mobile Portal</div>
+          <div class="apps-grid">
+            <div class="app-icon-container" onclick="openAttendanceApp()">
+              <div class="app-icon">🛡️</div>
+              <div class="app-name">NICH Attend</div>
             </div>
-            <input type="text" id="searchEmp" class="search-box" placeholder="Search by name..." onkeyup="filterRecords()">
-            <div id="recordsList" style="max-height: 72px; overflow-y: auto; margin-bottom: 3px;"></div>
-            <button class="btn-back" onclick="closeAdminScreen()">Back to Main</button>
+            <div class="app-icon-container" onclick="openAdminLogin()">
+              <div class="app-icon admin-app-icon">⚙️</div>
+              <div class="app-name">Admin Panel</div>
+            </div>
+            <div class="app-icon-container" onclick="openInfoScreen()">
+              <div class="app-icon info-app-icon">ℹ️</div>
+              <div class="app-name">Emp Codes</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lcd-header">
+          <span>ZKTeco Secure</span>
+          <div class="lcd-header-icons">
+            <span>📶</span>
+            <span>🔋</span>
+          </div>
+          <span id="clock">12:00 PM</span>
+        </div>
+
+        <div class="lcd-body">
+          <div style="font-size: 8px; color: #9ec5fe; margin-bottom: 2px;">Enter Code First</div>
+          <div id="codeDisplayBox">-</div>
+
+          <!-- Status & Message Display -->
+          <div id="statusIcon" class="status-icon"></div>
+          <div id="msgMain" class="status-msg-main" style="display:none;"></div>
+          <div id="msgSub" class="status-msg-sub" style="display:none;"></div>
+          <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
           </div>
 
+          <!-- Custom Media Area with exact same size styling as image slot -->
+          <div class="custom-image-slot" id="customImageSlot">
+            <span style="font-size: 7px; color: #5577aa;">[ No Custom Media Set ]</span>
+          </div>
         </div>
-      </div>
 
-      <!-- Speaker Grill -->
-      <div class="speaker-grill">
-        <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
-        <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
-        <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
-        <div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div><div class="speaker-hole"></div>
+        <div class="keypad-grid">
+          <button class="key-btn" onclick="pressKey('1')">1</button>
+          <button class="key-btn" onclick="pressKey('2')">2 ABC</button>
+          <button class="key-btn" onclick="pressKey('3')">3 DEF</button>
+          <button class="key-btn" onclick="pressKey('ESC')">ESC</button>
+          
+          <button class="key-btn" onclick="pressKey('4')">4</button>
+          <button class="key-btn" onclick="pressKey('5')">5 JKL</button>
+          <button class="key-btn" onclick="pressKey('6')">6 MNO</button>
+          <button class="key-btn" onclick="pressKey('UP')">▲</button>
+          
+          <button class="key-btn" onclick="pressKey('7')">7</button>
+          <button class="key-btn" onclick="pressKey('8')">8 TUV</button>
+          <button class="key-btn" onclick="pressKey('9')">9 WXYZ</button>
+          <button class="key-btn" onclick="pressKey('DOWN')">▼</button>
+          
+          <button class="key-btn" onclick="pressKey('0')">0</button>
+          <button class="key-btn" onclick="pressKey('0')">0</button>
+          <button class="key-btn" onclick="pressKey('OK')">▶</button>
+          <button class="key-btn" onclick="pressKey('M/OK')">M/OK</button>
+        </div>
+
+        <div class="lcd-footer">
+          <span>Secure Terminal</span>
+          <button class="back-home-btn" onclick="goToHome()">🏠 Home</button>
+        </div>
+
+        <!-- Admin Login Screen -->
+        <div id="adminLoginScreen">
+          <div class="login-box">
+            <div class="login-title">🔐 ADMIN LOGIN</div>
+            <input type="password" id="adminUser" class="login-input" placeholder="Username">
+            <input type="password" id="adminPass" class="login-input" placeholder="Password">
+            <button class="login-btn" onclick="verifyAdminLogin()">Login</button>
+            <button class="login-back-btn" onclick="closeAdminLogin()">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Employee Codes Info Screen -->
+        <div id="infoScreen">
+          <div class="info-title-bar">EMPLOYEE CODES DIRECTORY</div>
+          <div class="search-row">
+            <input type="text" id="searchCodeBox" class="search-box" placeholder="Search name or code..." style="margin-bottom:0;">
+            <button class="search-action-btn" onclick="filterEmployeeCodes()">🔍 Search</button>
+          </div>
+          <div id="codesListContainer" style="flex: 1; overflow-y: auto;">
+            <p style='font-size:7px; text-align:center; color:#a0c4ff; margin-top:20px;'>نام یا کوڈ لکھ کر سرچ بٹن پر کلک کریں...</p>
+          </div>
+          <button class="btn-back" onclick="closeInfoScreen()">Back to Home</button>
+        </div>
+
+        <!-- Full Admin Panel Screen -->
+        <div id="adminScreen">
+          <div class="admin-title-bar" id="adminTitleText">ADMIN PANEL - Samsung PORTAL</div>
+          
+          <div class="admin-btn-row" id="adminButtonsRow">
+            <button class="admin-sm-btn btn-csv" onclick="downloadCSVPrompt()">📥 CSV</button>
+            <button class="admin-sm-btn btn-summary" onclick="openMonthlySummary()">📊 Summary</button>
+            <button class="admin-sm-btn btn-img" onclick="triggerImageUpload()">🖼️ Img</button>
+            <button class="admin-sm-btn btn-vid" onclick="triggerVideoUpload()">🎥 Vid</button>
+            <button class="admin-sm-btn btn-del" onclick="clearAllData()">🗑️ Clear</button>
+          </div>
+
+          <input type="file" id="adminImageInput" accept="image/*" style="display:none;" onchange="handleAdminImageUpload(event)">
+          <input type="file" id="adminVideoInput" accept="video/*" style="display:none;" onchange="handleAdminVideoUpload(event)">
+
+          <div class="folders-container">
+            <div class="folder-card" id="folderMohammadAnsar" onclick="filterByFolder('Mohammad Ansar')">📁 Mohammad Ansar</div>
+            <div class="folder-card" id="folderShahzad" onclick="filterByFolder('Shahzad')">📁 Shahzad</div>
+          </div>
+
+          <input type="text" id="searchEmp" class="search-box" placeholder="Search by name..." onkeyup="filterRecords()">
+          
+          <div id="recordsList" style="flex: 1; overflow-y: auto; margin-bottom: 3px;"></div>
+          
+          <button class="btn-back" onclick="closeAdminScreen()">Back to Home</button>
+        </div>
+
       </div>
     </div>
 
-    <!-- Bottom Area: Keypad & Fingerprint Sensor -->
-    <div class="bottom-panel">
-      
-      <!-- Fully Working Keypad -->
-      <div class="keypad">
-        <div class="key" onclick="pressKey('1')">1</div>
-        <div class="key" onclick="pressKey('2')">2 ABC</div>
-        <div class="key" onclick="pressKey('3')">3 DEF</div>
-        <div class="key" onclick="pressKey('4')">4 GHI</div>
-        <div class="key" onclick="pressKey('5')">5 JKL</div>
-        <div class="key" onclick="pressKey('6')">6 MNO</div>
-        <div class="key" onclick="pressKey('7')">7 PQRS</div>
-        <div class="key" onclick="pressKey('8')">8 TUV</div>
-        <div class="key" onclick="pressKey('9')">9 WXYZ</div>
-        <div class="key" onclick="pressClear()">ESC</div>
-        <div class="key" onclick="pressKey('0')">0</div>
-        <div class="key" onclick="pressOK()">M/OK</div>
-      </div>
-
-      <!-- Right Area: Scanner and Custom NICH Text -->
-      <div class="right-section">
-        
-        <!-- Fingerprint Sensor Area -->
-        <div class="scanner-housing" id="scannerBtn">
-          <div class="scanner-glass" id="scannerGlass">
-            <div class="scan-beam" id="scanBeam"></div>
-            <!-- Fingerprint Icon -->
-            <svg class="fp-icon" viewBox="0 0 24 24">
-              <path d="M17.81 4.42A10.006 10.006 0 0 0 12 2.75c-2.73 0-5.23 1.1-7.05 2.87l1.41 1.42A7.99 7.99 0 0 1 12 4.75c2.18 0 4.18.88 5.64 2.3l1.41-1.42Z"/>
-            </svg>
-          </div>
+    <div class="bottom-section">
+      <div class="scanner-housing" id="scannerHousing">
+        <div class="scanner-glass">
+          <div class="scan-laser" id="scanLaser"></div>
+          <svg class="fp-icon" viewBox="0 0 24 24">
+            <path d="M12 2C9.24 2 7 4.24 7 7v2H6c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-9c0-1.1-.9-2-2-2h-1V7c0-2.76-2.24-5-5-5zm0 2c1.66 0 3 1.34 3 3v2H9V7c0-1.66 1.34-3 3-3zm0 7c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2s-2-.9-2-2v-4c0-1.1.9-2 2-2z"/>
+          </svg>
         </div>
-
-        <!-- Custom NICH Attendance Logo Text -->
-        <div class="brand-logo">
-          <div class="brand-title">NICH</div>
-          <div class="brand-model">ATTENDANCE</div>
-        </div>
-
       </div>
-
+      <div class="brand-logo-text">ZK<span>Teco</span></div>
     </div>
 
   </div>
 
   <script>
     const employeeDatabase = {
-      "101": { name: "Mohammad Ansar", status: "Check-In" },
-      "102": { name: "Mohammad Ansar", status: "Check-Out" },
-      "6424": { name: "Shahzad", status: "Check-In" },
-      "6499": { name: "Shahzad", status: "Check-Out" }
+      "12098": { name: "Mohammad Ansar", status: "Check-In" },
+      "10070": { name: "Mohammad Ansar", status: "Check-Out" },
+      "79452": { name: "Shahzad", status: "Check-In" },
+      "82592": { name: "Shahzad", status: "Check-Out" }
     };
 
+    let isHolding = false;
+    let codeVerified = false;
+    let holdTimer = null;
+    let progressInterval = null;
+    let scanWindowTimer = null;
     let enteredCode = "";
-    let verifiedCode = ""; 
-    let codeValidTimer = null; 
-    let scanTimer = null;
-    let isPressed = false;
-    let scanCompleted = false;
+    let currentFolderFilter = "";
 
-    const scannerBtn = document.getElementById('scannerBtn');
-    const glass = document.getElementById('scannerGlass');
-    const beam = document.getElementById('scanBeam');
+    const deviceContainer = document.getElementById('deviceContainer');
     const statusIcon = document.getElementById('statusIcon');
     const msgMain = document.getElementById('msgMain');
     const msgSub = document.getElementById('msgSub');
+    const codeDisplayBox = document.getElementById('codeDisplayBox');
+    const scannerHousing = document.getElementById('scannerHousing');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const homeLauncher = document.getElementById('homeLauncher');
+    const customImageSlot = document.getElementById('customImageSlot');
 
-    // Live Clock Functionality
+    window.addEventListener('DOMContentLoaded', () => {
+      loadCustomMedia();
+    });
+
+    function loadCustomMedia() {
+      const savedVideo = localStorage.getItem('adminCustomVideo');
+      const savedImage = localStorage.getItem('adminCustomImage');
+
+      if (savedVideo) {
+        customImageSlot.innerHTML = `<video src="${savedVideo}" autoplay loop muted playsinline></video>`;
+      } else if (savedImage) {
+        customImageSlot.innerHTML = `<img src="${savedImage}" alt="Custom Display">`;
+      }
+    }
+
+    function triggerImageUpload() {
+      document.getElementById('adminImageInput').click();
+    }
+
+    function triggerVideoUpload() {
+      document.getElementById('adminVideoInput').click();
+    }
+
+    function handleAdminImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          localStorage.removeItem('adminCustomVideo');
+          const base64Image = e.target.result;
+          localStorage.setItem('adminCustomImage', base64Image);
+          loadCustomMedia();
+          alert("تصویر کامیابی سے سیٹ کر دی گئی ہے!");
+          speakUrdu("تصویر کامیابی سے محفوظ کر دی گئی ہے۔");
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleAdminVideoUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          localStorage.removeItem('adminCustomImage');
+          const base64Video = e.target.result;
+          localStorage.setItem('adminCustomVideo', base64Video);
+          loadCustomMedia();
+          alert("ویڈیو کامیابی سے سیٹ کر دی گئی ہے!");
+          speakUrdu("ویڈیو کامیابی سے محفوظ کر دی گئی ہے۔");
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
     function updateClock() {
       const now = new Date();
       let hours = now.getHours();
@@ -480,7 +868,178 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Sound Generator (Beep Sound)
+    function speakUrdu(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = 'ur-PK';
+        speech.rate = 1.0;
+        window.speechSynthesis.speak(speech);
+      }
+    }
+
+    function openAttendanceApp() {
+      homeLauncher.style.display = 'none';
+      resetDeviceScreen();
+
+      const currentHour = new Date().getHours();
+      if (currentHour >= 9 && currentHour < 11) {
+        speakUrdu("خوش آمدید، آپ لوگ کام پہ آ گئے ہو، آپ کا دن آج اچھا جائے۔");
+      } else if (currentHour >= 16 && currentHour < 18) {
+        speakUrdu("خوش آمدید، آپ جا رہے ہو، اللہ حافظ!");
+      }
+    }
+
+    function goToHome() {
+      homeLauncher.style.display = 'flex';
+      resetDeviceScreen();
+    }
+
+    function openInfoScreen() {
+      homeLauncher.style.display = 'none';
+      document.getElementById('infoScreen').style.display = 'flex';
+      document.getElementById('searchCodeBox').value = "";
+      document.getElementById('codesListContainer').innerHTML = "<p style='font-size:7px; text-align:center; color:#a0c4ff; margin-top:20px;'>نام یا کوڈ لکھ کر سرچ بٹن پر کلک کریں...</p>";
+    }
+
+    function closeInfoScreen() {
+      document.getElementById('infoScreen').style.display = 'none';
+      goToHome();
+    }
+
+    function filterEmployeeCodes() {
+      let query = document.getElementById('searchCodeBox').value.trim().toLowerCase();
+      let listCont = document.getElementById('codesListContainer');
+      
+      if (!query) {
+        listCont.innerHTML = "<p style='font-size:7px; text-align:center; color:#ffcc00; margin-top:20px;'>براہ کرم پہلے نام یا کوڈ درج کرکے سرچ بٹن دبائیں!</p>";
+        speakUrdu("براہ کرم پہلے نام یا کوڈ درج کریں۔");
+        return;
+      }
+
+      let allEmps = [
+        { name: "Mohammad Ansar", checkIn: "12098", checkOut: "10070" },
+        { name: "Shahzad", checkIn: "79452", checkOut: "82592" }
+      ];
+
+      let html = "";
+      let found = false;
+      allEmps.forEach(emp => {
+        if (emp.name.toLowerCase().includes(query) || emp.checkIn.includes(query) || emp.checkOut.includes(query)) {
+          found = true;
+          html += `<div class="code-card">
+            <b>${emp.name}</b><br>
+            Check-In Code: <span style="color:#00ffcc;">${emp.checkIn}</span><br>
+            Check-Out Code: <span style="color:#ffcc00;">${emp.checkOut}</span>
+          </div>`;
+        }
+      });
+
+      if (found) {
+        listCont.innerHTML = html;
+        speakUrdu("ریکارڈ مل گیا ہے۔");
+      } else {
+        listCont.innerHTML = "<p style='font-size:7px; text-align:center; color:#ff6666; margin-top:20px;'>کوئی متعلقہ ریکارڈ نہیں ملا۔</p>";
+        speakUrdu("کوئی متعلقہ ریکارڈ نہیں ملا۔");
+      }
+    }
+
+    function pressKey(val) {
+      if (val === 'ESC') {
+        resetDeviceScreen();
+        speakUrdu("کینسل کر دیا گیا۔");
+      } else if (val === 'M/OK' || val === 'OK') {
+        if (enteredCode === "123") {
+          openAdminLogin();
+          speakUrdu("ایڈمن لاگ ان اسکرین۔");
+          return;
+        }
+
+        if (employeeDatabase[enteredCode]) {
+          codeVerified = true;
+          statusIcon.style.display = 'block';
+          statusIcon.innerText = '⏳';
+          msgMain.style.display = 'block';
+          msgSub.style.display = 'block';
+          msgMain.innerText = `${employeeDatabase[enteredCode].name}`;
+          msgSub.innerText = 'Scan within 5s (Hold 3s)';
+          msgSub.style.color = '#00ffcc';
+          codeDisplayBox.innerText = "READY";
+          deviceContainer.classList.remove('error-device', 'success-device');
+          playBeep(1000, 100);
+          speakUrdu("کوڈ درست ہے۔ اب انگلی سکینر پر تین سیکنڈ کے لیے رکھیں۔");
+
+          if (scanWindowTimer) clearTimeout(scanWindowTimer);
+          scanWindowTimer = setTimeout(() => {
+            if (codeVerified) {
+              codeVerified = false;
+              statusIcon.innerText = '❌';
+              msgMain.style.display = 'block';
+              msgSub.style.display = 'block';
+              msgMain.innerText = 'Scan Timeout!';
+              msgSub.innerText = 'Too slow, retry';
+              deviceContainer.classList.remove('success-device');
+              deviceContainer.classList.add('error-device');
+              playBeep(300, 300);
+              speakUrdu("وقت ختم ہو گیا ہے۔ دوبارہ کوشش کریں۔");
+              setTimeout(resetDeviceScreen, 2000);
+            }
+          }, 5000);
+        } else {
+          codeVerified = false;
+          statusIcon.style.display = 'block';
+          statusIcon.innerText = '❌';
+          msgMain.style.display = 'block';
+          msgSub.style.display = 'block';
+          msgMain.innerText = 'Invalid Code!';
+          msgSub.innerText = 'Wrong Code Entered';
+          codeDisplayBox.innerText = "ERROR";
+          deviceContainer.classList.remove('success-device');
+          deviceContainer.classList.add('error-device');
+          playBeep(300, 300);
+          speakUrdu("معذرت، غلط کوڈ درج کیا گیا ہے۔");
+          setTimeout(resetDeviceScreen, 2000);
+        }
+      } else {
+        if (codeDisplayBox.innerText === "-" || codeDisplayBox.innerText === "ERROR" || codeDisplayBox.innerText === "READY" || codeDisplayBox.innerText === "SUCCESS") {
+          enteredCode = "";
+          codeDisplayBox.innerText = "-";
+        }
+        if (val >= '0' && val <= '9') {
+          enteredCode += val;
+          codeDisplayBox.innerText = enteredCode;
+        }
+      }
+    }
+
+    function openAdminLogin() {
+      homeLauncher.style.display = 'none';
+      document.getElementById('adminLoginScreen').style.display = 'flex';
+      document.getElementById('adminUser').value = "";
+      document.getElementById('adminPass').value = "";
+    }
+
+    function closeAdminLogin() {
+      document.getElementById('adminLoginScreen').style.display = 'none';
+      goToHome();
+    }
+
+    function verifyAdminLogin() {
+      const user = document.getElementById('adminUser').value.trim();
+      const pass = document.getElementById('adminPass').value.trim();
+
+      if (user === "As" && pass === "707670") {
+        document.getElementById('adminLoginScreen').style.display = 'none';
+        document.getElementById('adminScreen').style.display = 'flex';
+        currentFolderFilter = "";
+        loadRecords();
+        speakUrdu("ایڈمن پینل کامیابی سے کھل گیا ہے۔");
+      } else {
+        alert("Invalid Username or Password!");
+        speakUrdu("غلط یوزر نام یا پاس ورڈ۔");
+      }
+    }
+
     function playBeep(freq, duration) {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -498,203 +1057,129 @@
       } catch (e) {}
     }
 
-    // Voice Output Function (Assistant Speech)
-    function speakText(text) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const speech = new SpeechSynthesisUtterance(text);
-        speech.lang = 'en-US';
-        speech.rate = 0.95;
-        window.speechSynthesis.speak(speech);
-      }
-    }
+    function startHold(e) {
+      e.preventDefault();
+      if (homeLauncher.style.display !== 'none') return;
 
-    // Keypad Press Functions with TTS Voice
-    function pressKey(num) {
-      playBeep(600, 80);
-      speakText(num);
-      if (enteredCode.length < 8) {
-        enteredCode += num;
-        document.getElementById('codeDisplayBox').innerText = enteredCode;
-      }
-    }
-
-    function pressClear() {
-      playBeep(400, 100);
-      speakText("Cleared");
-      enteredCode = "";
-      document.getElementById('codeDisplayBox').innerText = "_";
-    }
-
-    // Process attendance verification using stored or entered code
-    function processAttendance(targetCode) {
-      if (targetCode === "707670") {
-        enteredCode = "";
-        verifiedCode = "";
-        document.getElementById('codeDisplayBox').innerText = "_";
-        document.getElementById('adminScreen').style.display = 'flex';
-        loadRecords();
-        speakText("Admin panel opened.");
+      if (!codeVerified) {
+        playBeep(300, 200);
+        statusIcon.style.display = 'block';
+        statusIcon.innerText = '❌';
+        msgMain.style.display = 'block';
+        msgSub.style.display = 'block';
+        msgMain.innerText = 'Enter Code First!';
+        msgSub.innerText = 'Type code & press OK';
+        deviceContainer.classList.remove('success-device');
+        deviceContainer.classList.add('error-device');
+        speakUrdu("پہلے اپنا کوڈ درج کرکے اوکے دبائیں۔");
+        setTimeout(resetDeviceScreen, 2000);
         return;
       }
 
-      const empData = employeeDatabase[targetCode];
+      if (scanWindowTimer) clearTimeout(scanWindowTimer);
+      isHolding = true;
+      scannerHousing.classList.add('scanning');
+      playBeep(950, 100);
       statusIcon.style.display = 'block';
+      statusIcon.innerText = '🔍';
+      msgMain.style.display = 'block';
+      msgSub.style.display = 'block';
+      msgMain.innerText = 'Scanning... Hold!';
+      msgSub.innerText = 'Keep finger steady (3s)';
 
-      if (empData) {
-        statusIcon.innerText = '✅';
-        msgMain.innerText = `Successfully ${empData.name}`;
-        msgSub.innerText = `${empData.status} Recorded`;
-        msgSub.style.color = '#00ff88';
-        
-        playBeep(1200, 150);
-        setTimeout(() => playBeep(1500, 200), 160);
-        
-        // Assistant voice announcement with full names as requested previously
-        speakText(`Successfully attendance marked for ${empData.name}. ${empData.status}.`);
-
-        saveAttendanceRecord(empData.name, empData.status);
-      } else {
-        statusIcon.innerText = '❌';
-        msgMain.innerText = 'Invalid Code!';
-        msgSub.innerText = 'Try Again';
-        msgSub.style.color = '#ff8080';
-        
-        playBeep(300, 300);
-        speakText("Invalid code.");
-      }
-
-      verifiedCode = "";
-      if (codeValidTimer) clearTimeout(codeValidTimer);
-
-      setTimeout(resetDeviceScreen, 3500);
-    }
-
-    // When M/OK is pressed
-    function pressOK() {
-      playBeep(900, 100);
-      speakText("OK");
-
-      if (enteredCode === "") {
-        statusIcon.style.display = 'block';
-        statusIcon.innerText = '❌';
-        msgMain.innerText = 'Enter Code First!';
-        msgSub.innerText = 'Required Before OK';
-        msgSub.style.color = '#ff8080';
-        playBeep(300, 300);
-        speakText("Please enter code first.");
-        setTimeout(resetDeviceScreen, 2500);
-        return;
-      }
-
-      if (enteredCode === "707670") {
-        processAttendance(enteredCode);
-        return;
-      }
-
-      if (employeeDatabase[enteredCode]) {
-        verifiedCode = enteredCode;
-        
-        statusIcon.style.display = 'block';
-        statusIcon.innerText = '⏳';
-        msgMain.innerText = 'Code Verified';
-        msgSub.innerText = 'Scan Finger Within 5s';
-        msgSub.style.color = '#00ffcc';
-        playBeep(1000, 100);
-        speakText("Code verified. Please scan finger.");
-
-        if (codeValidTimer) clearTimeout(codeValidTimer);
-        codeValidTimer = setTimeout(() => {
-          if (verifiedCode !== "") {
-            verifiedCode = "";
-            resetDeviceScreen();
-          }
-        }, 5000);
-
-        enteredCode = "";
-        document.getElementById('codeDisplayBox').innerText = "_";
-      } else {
-        processAttendance(enteredCode);
-      }
-    }
-
-    // Fingerprint Hold & Scan Logic
-    function startHoldScan(e) {
-      if (e) e.preventDefault();
+      progressContainer.style.display = 'block';
+      progressBar.style.width = '0%';
+      let startTime = Date.now();
       
-      if (verifiedCode === "") {
-        statusIcon.style.display = 'block';
-        statusIcon.innerText = '❌';
-        msgMain.innerText = 'Enter Code First!';
-        msgSub.innerText = 'Scan Not Allowed';
-        msgSub.style.color = '#ff8080';
-        playBeep(300, 300);
-        speakText("Please enter code first.");
-        setTimeout(resetDeviceScreen, 2500);
-        return;
-      }
+      if (progressInterval) clearInterval(progressInterval);
+      progressInterval = setInterval(() => {
+        let elapsed = Date.now() - startTime;
+        let pct = Math.min((elapsed / 3000) * 100, 100);
+        progressBar.style.width = pct + '%';
+      }, 50);
 
-      if (isPressed || scanCompleted) return;
-
-      isPressed = true;
-      glass.classList.add('scanning');
-      beam.style.display = 'block';
-      statusIcon.style.display = 'none';
-
-      msgMain.innerText = 'Scanning...';
-      msgSub.innerText = 'Hold Finger On Sensor';
-      msgSub.style.color = '#ffcc00';
-
-      playBeep(800, 150);
-
-      const codeToProcess = verifiedCode;
-
-      scanTimer = setTimeout(() => {
-        scanCompleted = true;
-        beam.style.display = 'none';
-        glass.classList.remove('scanning');
-
-        if (codeValidTimer) clearTimeout(codeValidTimer);
-        processAttendance(codeToProcess);
-
-      }, 2200);
+      holdTimer = setTimeout(() => {
+        if (isHolding) {
+          isHolding = false;
+          clearInterval(progressInterval);
+          scannerHousing.classList.remove('scanning');
+          processAttendance();
+        }
+      }, 3000);
     }
 
-    function stopHoldScan(e) {
-      if (e) e.preventDefault();
-      if (!isPressed) return;
-
-      isPressed = false;
-
-      if (!scanCompleted && verifiedCode !== "") {
-        clearTimeout(scanTimer);
-        beam.style.display = 'none';
-        glass.classList.remove('scanning');
-
-        statusIcon.style.display = 'block';
-        statusIcon.innerText = '❌';
-        msgMain.innerText = 'Scan Failed!';
-        msgSub.innerText = 'Removed Too Fast';
-        msgSub.style.color = '#ff8080';
+    function endHold(e) {
+      e.preventDefault();
+      if (isHolding) {
+        isHolding = false;
+        clearTimeout(holdTimer);
+        clearInterval(progressInterval);
+        scannerHousing.classList.remove('scanning');
+        progressContainer.style.display = 'none';
 
         playBeep(300, 300);
-        speakText("Scan failed. Removed too fast.");
-
+        statusIcon.style.display = 'block';
+        statusIcon.innerText = '❌';
+        msgMain.style.display = 'block';
+        msgSub.style.display = 'block';
+        msgMain.innerText = 'Scan Cancelled!';
+        msgSub.innerText = 'Removed before 3s';
+        deviceContainer.classList.remove('success-device');
+        deviceContainer.classList.add('error-device');
+        speakUrdu("انگلی جلدی ہٹا دی گئی، سکین منسوخ ہو گیا۔");
+        
         setTimeout(resetDeviceScreen, 2000);
       }
     }
 
+    scannerHousing.addEventListener('pointerdown', startHold);
+    scannerHousing.addEventListener('pointerup', endHold);
+    scannerHousing.addEventListener('pointerleave', endHold);
+
+    function processAttendance() {
+      let empData = employeeDatabase[enteredCode];
+      statusIcon.style.display = 'block';
+      progressContainer.style.display = 'none';
+
+      if (empData) {
+        statusIcon.innerText = '✅';
+        msgMain.style.display = 'block';
+        msgSub.style.display = 'block';
+        msgMain.innerText = `Welcome ${empData.name}`;
+        msgSub.innerText = `${empData.status} Recorded`;
+        msgSub.style.color = '#00ff88';
+        codeDisplayBox.innerText = "SUCCESS";
+        deviceContainer.classList.remove('error-device');
+        deviceContainer.classList.add('success-device');
+        
+        playBeep(1200, 150);
+        setTimeout(() => playBeep(1500, 200), 160);
+
+        let speechText = empData.status === "Check-In" ? `${empData.name}، آپ کا چیک ان ہو گیا ہے۔` : `${empData.name}، آپ کا چیک آؤٹ ہو گیا ہے۔`;
+        speakUrdu(speechText);
+
+        saveAttendanceRecord(empData.name, empData.status);
+      }
+
+      setTimeout(resetDeviceScreen, 3000);
+    }
+
     function resetDeviceScreen() {
+      isHolding = false;
+      codeVerified = false;
+      if (holdTimer) clearTimeout(holdTimer);
+      if (progressInterval) clearInterval(progressInterval);
+      if (scanWindowTimer) clearTimeout(scanWindowTimer);
+      scannerHousing.classList.remove('scanning');
+      deviceContainer.classList.remove('success-device', 'error-device');
+      progressContainer.style.display = 'none';
+      progressBar.style.width = '0%';
       statusIcon.style.display = 'none';
-      msgMain.innerText = 'Enter Code First';
-      msgSub.innerText = 'Then Press Finger / M/OK';
+      msgMain.style.display = 'none';
+      msgSub.style.display = 'none';
       msgSub.style.color = '#a0c4ff';
       enteredCode = "";
-      verifiedCode = "";
-      if (codeValidTimer) clearTimeout(codeValidTimer);
-      document.getElementById('codeDisplayBox').innerText = "_";
-      scanCompleted = false;
-      isPressed = false;
+      codeDisplayBox.innerText = "-";
     }
 
     function saveAttendanceRecord(name, status) {
@@ -707,20 +1192,23 @@
       const seconds = String(now.getSeconds()).padStart(2, '0');
       const timeStr = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-      const record = {
-        name: name,
-        status: status,
-        time: timeStr
-      };
-
+      const record = { name: name, status: status, time: timeStr, timestamp: now.getTime() };
       let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+
+      const thirtyTwoDaysMs = 32 * 24 * 60 * 60 * 1000;
+      const currentTime = now.getTime();
+      allRecords = allRecords.filter(rec => {
+        if (!rec.timestamp) return true;
+        return (currentTime - rec.timestamp) <= thirtyTwoDaysMs;
+      });
+
       allRecords.push(record);
       localStorage.setItem('attendanceRecords', JSON.stringify(allRecords));
     }
 
     function closeAdminScreen() {
       document.getElementById('adminScreen').style.display = 'none';
-      resetDeviceScreen();
+      goToHome();
     }
 
     function loadRecords(filter = "") {
@@ -728,19 +1216,45 @@
       let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
       
       if (allRecords.length === 0) {
-        listDiv.innerHTML = "<p style='color: #7f8c8d; text-align:center; font-size:8px;'>No records found.</p>";
+        listDiv.innerHTML = "<p style='color: #7f8c8d; text-align:center; font-size:7px;'>No records found.</p>";
         return;
       }
 
       let html = "";
-      allRecords.reverse().forEach((rec) => {
-        if (filter === "" || rec.name.toLowerCase().includes(filter.toLowerCase())) {
-          html += `<div class="record-box">
-            <b>${rec.name}</b> (${rec.status})<br>${rec.time}
+      allRecords.slice().reverse().forEach((rec) => {
+        let matchesSearch = filter === "" || rec.name.toLowerCase().includes(filter.toLowerCase());
+        let matchesFolder = currentFolderFilter === "" || rec.name === currentFolderFilter;
+
+        if (matchesSearch && matchesFolder) {
+          let borderCol = rec.status === "Check-In" ? "#27ae60" : "#3498db";
+          html += `<div class="record-box" style="border-left-color: ${borderCol};">
+            <b>${rec.name}</b> (${rec.status})<br><span style="color:#555;">${rec.time}</span>
           </div>`;
         }
       });
-      listDiv.innerHTML = html;
+      listDiv.innerHTML = html || "<p style='color: #7f8c8d; text-align:center; font-size:7px;'>No records in this folder.</p>";
+    }
+
+    function filterByFolder(folderName) {
+      if (currentFolderFilter === folderName) {
+        currentFolderFilter = "";
+        document.getElementById('adminTitleText').innerText = "ADMIN PANEL - Samsung PORTAL";
+        document.getElementById('folderMohammadAnsar').classList.remove('active');
+        document.getElementById('folderShahzad').classList.remove('active');
+        speakUrdu("تمام فولڈرز دکھائے جا رہے ہیں۔");
+      } else {
+        currentFolderFilter = folderName;
+        document.getElementById('adminTitleText').innerText = `FOLDER: ${folderName}`;
+        if (folderName === 'Mohammad Ansar') {
+          document.getElementById('folderMohammadAnsar').classList.add('active');
+          document.getElementById('folderShahzad').classList.remove('active');
+        } else {
+          document.getElementById('folderShahzad').classList.add('active');
+          document.getElementById('folderMohammadAnsar').classList.remove('active');
+        }
+        speakUrdu(`${folderName} کا فولڈر منتخب ہو گیا ہے۔`);
+      }
+      loadRecords(document.getElementById("searchEmp").value);
     }
 
     function filterRecords() {
@@ -748,43 +1262,95 @@
       loadRecords(query);
     }
 
-    function downloadCSV() {
+    function openMonthlySummary() {
+      document.getElementById('adminTitleText').innerText = "32-DAY SUMMARY";
+      const listDiv = document.getElementById("recordsList");
       let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+
       if (allRecords.length === 0) {
-        alert("No data available to download!");
+        listDiv.innerHTML = "<p style='color: #7f8c8d; text-align:center; font-size:7px;'>No records for summary.</p>";
+        speakUrdu("کوئی ریکارڈ موجود نہیں ہے۔");
         return;
       }
 
-      let csvContent = "data:text/csv;charset=utf-8,Name,Status,Date_Time\n";
+      let summaryMap = {};
       allRecords.forEach(rec => {
+        if (!summaryMap[rec.name]) {
+          summaryMap[rec.name] = { checkIns: 0, checkOuts: 0, lastDate: rec.time };
+        }
+        if (rec.status === "Check-In") summaryMap[rec.name].checkIns++;
+        else if (rec.status === "Check-Out") summaryMap[rec.name].checkOuts++;
+        summaryMap[rec.name].lastDate = rec.time;
+      });
+
+      let html = "<div style='font-size:7px; font-weight:bold; color:#2c3e50; margin-bottom:2px;'>32-Day Employee Stats:</div>";
+      for (let emp in summaryMap) {
+        let stats = summaryMap[emp];
+        html += `<div class="record-box" style="border-left-color: #27ae60;">
+          <b>${emp}</b><br>
+          ✅ In: ${stats.checkIns} | 🚪 Out: ${stats.checkOuts}<br>
+          <span style="color:#7f8c8d; font-size:6px;">Last: ${stats.lastDate}</span>
+        </div>`;
+      }
+      listDiv.innerHTML = html;
+      speakUrdu("بتیس دن کا خلاصہ دکھا دیا گیا ہے۔");
+    }
+
+    function downloadCSVPrompt() {
+      let choice = prompt("کِس کا فولڈر ڈاؤن لوڈ کرنا چاہتے ہیں؟\n1. Mohammad Ansar\n2. Shahzad\n3. All (32 دن کا تمام ریکارڈ)\n\n(نمبر درج کریں: 1، 2 یا 3)");
+      
+      if (!choice) return;
+
+      let allRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+      if (allRecords.length === 0) {
+        alert("کوئی ریکارڈ موجود نہیں ہے!");
+        speakUrdu("کوئی ریکارڈ موجود نہیں ہے۔");
+        return;
+      }
+
+      let filteredRecords = allRecords;
+      let titleName = "All_Records_32Days";
+
+      if (choice.trim() === "1") {
+        filteredRecords = allRecords.filter(r => r.name === "Mohammad Ansar");
+        titleName = "Mohammad_Ansar_32Days";
+      } else if (choice.trim() === "2") {
+        filteredRecords = allRecords.filter(r => r.name === "Shahzad");
+        titleName = "Shahzad_32Days";
+      }
+
+      if (filteredRecords.length === 0) {
+        alert("اس فولڈر میں کوئی ریکارڈ نہیں ملا!");
+        speakUrdu("اس فولڈر میں کوئی ریکارڈ نہیں ملا۔");
+        return;
+      }
+
+      let csvContent = "\uFEFFName,Status,Date_Time\n";
+      filteredRecords.forEach(rec => {
         csvContent += `"${rec.name}","${rec.status}","${rec.time}"\n`;
       });
 
-      var encodedUri = encodeURI(csvContent);
+      const now = new Date();
+      const fileName = `${titleName}_${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}.csv`;
+
+      var encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
       var link = document.createElement("a");
       link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "Attendance_Report.csv");
+      link.setAttribute("download", fileName);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      speakUrdu("فائل کامیابی سے ڈاؤن لوڈ ہو گئی ہے۔");
     }
 
     function clearAllData() {
-      if (confirm("Clear all attendance records?")) {
+      if (confirm("Clear all 32-day attendance records?")) {
         localStorage.removeItem('attendanceRecords');
         loadRecords();
         alert("All records cleared successfully!");
+        speakUrdu("تمام ریکارڈ صاف کر دیے گئے ہیں۔");
       }
     }
-
-    // Event Listeners for Fingerprint Sensor Hold
-    scannerBtn.addEventListener('mousedown', startHoldScan);
-    scannerBtn.addEventListener('mouseup', stopHoldScan);
-    scannerBtn.addEventListener('mouseleave', stopHoldScan);
-
-    scannerBtn.addEventListener('touchstart', startHoldScan);
-    scannerBtn.addEventListener('touchend', stopHoldScan);
-    scannerBtn.addEventListener('touchcancel', stopHoldScan);
   </script>
 </body>
 </html>
