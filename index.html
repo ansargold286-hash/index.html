@@ -1,4 +1,204 @@
-l<!DOCTYPE html>
+<!-- ========================================== -->
+<!-- PART 1: IP SECURITY MODULE (STRICT MATCH)  -->
+<!-- ========================================== -->
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<style>
+/* Reset & Full Screen Overlay */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0f172a;
+}
+
+.ip-security-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+/* 9:16 Ratio Mobile Security Card */
+.ip-security-card {
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 9 / 16; /* 9:16 Mobile Aspect Ratio */
+    max-height: 90vh;
+    background: #1e293b;
+    border: 2px solid rgba(239, 68, 68, 0.35);
+    border-radius: 28px;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85);
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Spinner Animation */
+.security-spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(56, 189, 248, 0.2);
+    border-top: 4px solid #38bdf8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.warning-icon {
+    font-size: 52px;
+    margin-bottom: 14px;
+    display: block;
+}
+
+.access-denied-title {
+    color: #ef4444;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.access-denied-msg {
+    color: #cbd5e1;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    font-weight: 500;
+    background: rgba(15, 23, 42, 0.6);
+    padding: 14px 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-retry {
+    background: #0284c7;
+    color: #ffffff;
+    border: none;
+    padding: 13px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.btn-retry:active {
+    background: #0369a1;
+}
+</style>
+
+<!-- IP Security Overlay Structure -->
+<div id="ipSecurityOverlay" class="ip-security-overlay">
+    <div class="ip-security-card">
+        
+        <!-- 1. Verifying Network Screen -->
+        <div id="ipLoader" style="width: 100%;">
+            <div class="security-spinner"></div>
+            <div style="color: #38bdf8; font-weight: 600; font-size: 15px;">Verifying Network & IP...</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 6px;">Checking registered mobile devices</div>
+        </div>
+
+        <!-- 2. Warning Popup (Access Denied) -->
+        <div id="ipAccessDenied" style="display: none; width: 100%;">
+            <span class="warning-icon">⚠️</span>
+            <div class="access-denied-title">ACCESS DENIED</div>
+            <div class="access-denied-msg">
+                Your mobile device or network IP address is not registered in the system database. Access to NICH Mobile Portal has been blocked for security reasons. Please contact your administrator to register your mobile device.
+            </div>
+
+            <button class="btn-retry" onclick="checkNetworkSecurity()">Retry Connection</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// صرف اجازت یافتہ سٹرکٹ IP Prefixes (آخری ڈاٹ '.' کے ساتھ)
+// مثال: "154.81.251." کا مطلب ہے صرف 154.81.251.xxx والی IP سے ہی پورٹل کھلے گا
+const REGISTERED_IP_PREFIXES = [
+    "154.81.251." // آپ کی رجسٹرڈ IP کے غیر تبدیل شدہ حصے
+];
+
+async function fetchUserIp() {
+    // 1st Service
+    try {
+        const res = await fetch('https://api.ipify.org?format=json', { cache: "no-store" });
+        const data = await res.json();
+        if (data && data.ip) return data.ip.trim();
+    } catch (e) {}
+
+    // 2nd Service Fallback
+    try {
+        const res = await fetch('https://api.my-ip.io/ip.json', { cache: "no-store" });
+        const data = await res.json();
+        if (data && data.ip) return data.ip.trim();
+    } catch (e) {}
+
+    return null;
+}
+
+async function checkNetworkSecurity() {
+    const loader = document.getElementById('ipLoader');
+    const deniedBox = document.getElementById('ipAccessDenied');
+    const overlay = document.getElementById('ipSecurityOverlay');
+
+    loader.style.display = 'block';
+    deniedBox.style.display = 'none';
+
+    // IP Fetching
+    const userIp = await fetchUserIp();
+
+    setTimeout(() => {
+        let isAuthorizedDevice = false;
+
+        if (userIp) {
+            // سٹرکٹ چیلنج: کیا IP بلکل ہماری رجسٹرڈ پرفیوکس سے سٹارٹ ہوتی ہے؟
+            isAuthorizedDevice = REGISTERED_IP_PREFIXES.some(prefix => userIp.startsWith(prefix));
+        }
+
+        if (isAuthorizedDevice) {
+            overlay.style.display = 'none'; // صرف سمیلر IP پر پورٹل کھلے گا
+        } else {
+            loader.style.display = 'none';
+            deniedBox.style.display = 'block'; // آئی پی میچ نہ ہونے پر بلاک رہے گا
+        }
+    }, 1200);
+}
+
+// Automatic Load Trigger
+window.addEventListener('DOMContentLoaded', checkNetworkSecurity);
+</script>l<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
