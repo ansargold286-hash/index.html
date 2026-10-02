@@ -1,5 +1,6 @@
 <!-- ========================================== -->
-<!-- PART 1: IP SECURITY MODULE (STRICT MATCH)  -->
+<!-- PART 1: DEVICE REGISTRATION SECURITY MODULE -->
+<!-- (Hidden Master Key Display)                -->
 <!-- ========================================== -->
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -15,12 +16,12 @@ html, body {
     background: #0f172a;
 }
 
-.ip-security-overlay {
+.device-security-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: rgba(15, 23, 42, 0.98);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -33,7 +34,7 @@ html, body {
 }
 
 /* 9:16 Ratio Mobile Security Card */
-.ip-security-card {
+.device-security-card {
     width: 100%;
     max-width: 340px;
     aspect-ratio: 9 / 16; /* 9:16 Mobile Aspect Ratio */
@@ -73,7 +74,7 @@ html, body {
 
 .warning-icon {
     font-size: 52px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     display: block;
 }
 
@@ -81,7 +82,7 @@ html, body {
     color: #ef4444;
     font-size: 20px;
     font-weight: 800;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     letter-spacing: 0.8px;
     text-transform: uppercase;
 }
@@ -89,115 +90,133 @@ html, body {
 .access-denied-msg {
     color: #cbd5e1;
     font-size: 13px;
-    line-height: 1.6;
-    margin-bottom: 24px;
+    line-height: 1.5;
+    margin-bottom: 18px;
     font-weight: 500;
     background: rgba(15, 23, 42, 0.6);
-    padding: 14px 10px;
+    padding: 12px 10px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.btn-retry {
+/* Device Registration Box */
+.reg-box {
+    display: none;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.reg-input {
+    width: 100%;
+    padding: 11px;
+    background: #0f172a;
+    border: 1px solid #38bdf8;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    outline: none;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.btn-action {
     background: #0284c7;
     color: #ffffff;
     border: none;
-    padding: 13px 20px;
+    padding: 12px 20px;
     border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
-    font-size: 14px;
-    transition: background 0.2s;
+    font-size: 13px;
     width: 100%;
     box-sizing: border-box;
     box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    transition: 0.2s;
 }
 
-.btn-retry:active {
+.btn-action:active {
     background: #0369a1;
 }
 </style>
 
-<!-- IP Security Overlay Structure -->
-<div id="ipSecurityOverlay" class="ip-security-overlay">
-    <div class="ip-security-card">
+<!-- Device Security Overlay Structure -->
+<div id="deviceSecurityOverlay" class="device-security-overlay">
+    <div class="device-security-card">
         
-        <!-- 1. Verifying Network Screen -->
-        <div id="ipLoader" style="width: 100%;">
+        <!-- 1. Verification Loading Screen -->
+        <div id="secLoader" style="width: 100%;">
             <div class="security-spinner"></div>
-            <div style="color: #38bdf8; font-weight: 600; font-size: 15px;">Verifying Network & IP...</div>
-            <div style="font-size: 11px; color: #64748b; margin-top: 6px;">Checking registered mobile devices</div>
+            <div style="color: #38bdf8; font-weight: 600; font-size: 15px;">Verifying Device Registration...</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 6px;">Checking mobile authorization key</div>
         </div>
 
-        <!-- 2. Warning Popup (Access Denied) -->
-        <div id="ipAccessDenied" style="display: none; width: 100%;">
+        <!-- 2. Warning Screen (Access Denied) -->
+        <div id="secAccessDenied" style="display: none; width: 100%;">
             <span class="warning-icon">⚠️</span>
             <div class="access-denied-title">ACCESS DENIED</div>
             <div class="access-denied-msg">
-                Your mobile device or network IP address is not registered in the system database. Access to NICH Mobile Portal has been blocked for security reasons. Please contact your administrator to register your mobile device.
+                Please register your mobile device first. Unregistered devices are not allowed to access NICH Mobile Portal.
             </div>
 
-            <button class="btn-retry" onclick="checkNetworkSecurity()">Retry Connection</button>
+            <button class="btn-action" onclick="toggleRegBox()">Register This Device</button>
+            
+            <!-- Secret Key Box -->
+            <div id="regBox" class="reg-box">
+                <input type="password" id="masterPinInput" class="reg-input" placeholder="Enter Device Key">
+                <button class="btn-action" style="background: #16a34a;" onclick="registerCurrentDevice()">Authorize Device</button>
+            </div>
         </div>
 
     </div>
 </div>
 
 <script>
-// صرف اجازت یافتہ سٹرکٹ IP Prefixes (آخری ڈاٹ '.' کے ساتھ)
-// مثال: 154." کا مطلب ہے صرف 154والی IP سے ہی پورٹل کھلے گا
-const REGISTERED_IP_PREFIXES = [
-    "154" // آپ کی رجسٹرڈ IP کے غیر تبدیل شدہ حصے
-];
+// बैकएंड में गुप्त मास्टर कोड (यह स्क्रीन पर कहीं नहीं दिखेगा)
+const MASTER_REGISTRATION_PIN = "7860"; 
 
-async function fetchUserIp() {
-    // 1st Service
-    try {
-        const res = await fetch('https://api.ipify.org?format=json', { cache: "no-store" });
-        const data = await res.json();
-        if (data && data.ip) return data.ip.trim();
-    } catch (e) {}
+const DEVICE_TOKEN_KEY = "NICH_REGISTERED_DEVICE_TOKEN_V1";
+const SECRET_AUTH_TOKEN = "AUTHORIZED_NICH_MOBILE_DEVICE_2026";
 
-    // 2nd Service Fallback
-    try {
-        const res = await fetch('https://api.my-ip.io/ip.json', { cache: "no-store" });
-        const data = await res.json();
-        if (data && data.ip) return data.ip.trim();
-    } catch (e) {}
-
-    return null;
-}
-
-async function checkNetworkSecurity() {
-    const loader = document.getElementById('ipLoader');
-    const deniedBox = document.getElementById('ipAccessDenied');
-    const overlay = document.getElementById('ipSecurityOverlay');
+function checkDeviceSecurity() {
+    const loader = document.getElementById('secLoader');
+    const deniedBox = document.getElementById('secAccessDenied');
+    const overlay = document.getElementById('deviceSecurityOverlay');
 
     loader.style.display = 'block';
     deniedBox.style.display = 'none';
 
-    // IP Fetching
-    const userIp = await fetchUserIp();
-
     setTimeout(() => {
-        let isAuthorizedDevice = false;
+        const savedToken = localStorage.getItem(DEVICE_TOKEN_KEY);
 
-        if (userIp) {
-            // سٹرکٹ چیلنج: کیا IP بلکل ہماری رجسٹرڈ پرفیوکس سے سٹارٹ ہوتی ہے؟
-            isAuthorizedDevice = REGISTERED_IP_PREFIXES.some(prefix => userIp.startsWith(prefix));
-        }
-
-        if (isAuthorizedDevice) {
-            overlay.style.display = 'none'; // صرف سمیلر IP پر پورٹل کھلے گا
+        if (savedToken === SECRET_AUTH_TOKEN) {
+            overlay.style.display = 'none';
         } else {
             loader.style.display = 'none';
-            deniedBox.style.display = 'block'; // آئی پی میچ نہ ہونے پر بلاک رہے گا
+            deniedBox.style.display = 'block';
         }
     }, 1200);
 }
 
-// Automatic Load Trigger
-window.addEventListener('DOMContentLoaded', checkNetworkSecurity);
+function toggleRegBox() {
+    const regBox = document.getElementById('regBox');
+    regBox.style.display = regBox.style.display === 'block' ? 'none' : 'block';
+}
+
+function registerCurrentDevice() {
+    const pin = document.getElementById('masterPinInput').value.trim();
+
+    if (pin === MASTER_REGISTRATION_PIN) {
+        localStorage.setItem(DEVICE_TOKEN_KEY, SECRET_AUTH_TOKEN);
+        alert("✅ Device successfully registered! Portal is now unlocked.");
+        document.getElementById('deviceSecurityOverlay').style.display = 'none';
+    } else {
+        alert("❌ Incorrect Key! Registration failed.");
+        document.getElementById('masterPinInput').value = '';
+    }
+}
+
+window.addEventListener('DOMContentLoaded', checkDeviceSecurity);
 </script>l<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1553,4 +1572,4 @@ window.addEventListener('DOMContentLoaded', checkNetworkSecurity);
     }
   </script>
 </body>
-</html>
+    </html>
