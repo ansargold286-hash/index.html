@@ -1,96 +1,1599 @@
 <!DOCTYPE html>
-<html lang="ur" dir="ltr">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Closed - Warning</title>
+    <title>VIP Media Empire</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'vip-black': '#0a0a0c',
+                        'vip-card': '#121217',
+                        'gold-light': '#FDE68A',
+                        'gold-main': '#F59E0B',
+                        'gold-dark': '#B45309',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
         body {
-            background-color: #0f172a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
+            background-color: #050507;
+            font-family: 'Inter', sans-serif;
+            color: #f3f4f6;
+            touch-action: manipulation;
         }
-        .warning-card {
-            background: #ffffff;
-            width: 100%;
-            max-width: 420px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            border: 3px solid #dc2626;
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #FFF176 0%, #FFD54F 50%, #FFB300 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .warning-header {
-            background: #dc2626;
-            color: #ffffff;
-            text-align: center;
-            padding: 18px 10px;
+        .bg-gold-gradient {
+            background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
         }
-        .warning-header h1 {
-            font-size: 26px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+        .border-gold-glow {
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
         }
-        .warning-header p {
-            font-size: 18px;
-            margin-top: 4px;
-            font-weight: bold;
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 4px;
         }
-        .warning-body {
-            padding: 20px;
-            background: #1e293b;
-            color: #f8fafc;
-            text-align: center;
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c;
         }
-        .urdu-text {
-            font-size: 17px;
-            line-height: 1.6;
-            margin-bottom: 15px;
-            color: #f1f5f9;
-            font-weight: 500;
-        }
-        .divider {
-            height: 1px;
-            background: #475569;
-            margin: 15px 0;
-        }
-        .english-text {
-            font-size: 15px;
-            line-height: 1.5;
-            color: #cbd5e1;
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
         }
     </style>
 </head>
-<body>
+<body class="flex justify-center items-center min-h-screen p-0 sm:p-4 bg-black">
 
-    <div class="warning-card">
-        <div class="warning-header">
-            <h1>WARNING!</h1>
-            <p>وارننگ !</p>
-        </div>
-        <div class="warning-body">
-            <!-- Roman Urdu Message -->
-            <div class="urdu-text">
-                Yeh website ab band ho chuki hai. Meherbani kar ke apne qareebi incharge se rabta karein. Security reasons ki wajah se yeh website band karni parri hai. Humne apna kaam Mobile App par shift kar diya hai.
+    <!-- Mobile Screen Frame Container -->
+    <div class="w-full max-w-md h-screen sm:h-[844px] bg-vip-black border-0 sm:border border-amber-500/30 rounded-none sm:rounded-[40px] shadow-2xl flex flex-col relative overflow-hidden">
+        
+        <!-- Top VIP Header -->
+        <header class="bg-vip-card/90 backdrop-blur-md border-b border-gray-800/80 px-4 py-3 flex items-center justify-between z-20 flex-shrink-0">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 shadow-lg">
+                    <div class="w-full h-full bg-black rounded-[10px] flex items-center justify-center font-black text-xs text-amber-400">
+                        VIP
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-xs font-black text-white tracking-wide uppercase">VIP MEDIA EMPIRE</h1>
+                    <span id="header-title" class="text-[10px] text-amber-400 font-bold block">VIP Home</span>
+                </div>
             </div>
             
-            <div class="divider"></div>
+            <div class="flex items-center space-x-2">
+                <button onclick="showToast('VIP Crown Status: Active Gold')" class="bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-full flex items-center space-x-1 hover:bg-amber-500/20 transition-all">
+                    <i class="fa-solid fa-crown text-amber-400 text-xs"></i>
+                    <span class="text-[10px] font-bold text-amber-300">PRO</span>
+                </button>
+            </div>
+        </header>
 
-            <!-- English Message -->
-            <div class="english-text">
-                This website is now closed. Please contact your nearest Incharge. Due to security reasons, we have been forced to close this website. We have shifted all operations to our Mobile App.
+        <!-- Top Navigation Bar -->
+        <nav class="bg-vip-card/95 backdrop-blur-md border-b border-gray-800/80 z-30 flex-shrink-0">
+            <div class="flex space-x-3 overflow-x-auto px-3 py-2.5" style="scrollbar-width:none">
+                <button id="nav-home" onclick="switchTab('home')" class="nav-tab text-amber-400 flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
+                    <i class="fa-solid fa-house text-base"></i>
+                    <span class="text-[10px] font-bold mt-1">Home</span>
+                </button>
+                <button id="nav-tv" onclick="switchTab('tv')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
+                    <i class="fa-solid fa-tv text-base"></i>
+                    <span class="text-[10px] font-bold mt-1">Launch TV</span>
+                </button>
+                <button id="nav-trp" onclick="switchTab('trp')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
+                    <i class="fa-solid fa-chart-line text-base"></i>
+                    <span class="text-[10px] font-bold mt-1">TRP List</span>
+                </button>
+                <button id="nav-shows" onclick="switchTab('shows')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
+                    <i class="fa-solid fa-clapperboard text-base"></i>
+                    <span class="text-[10px] font-bold mt-1">Shows/Movies</span>
+                </button>
+                <button id="nav-tvshows" onclick="switchTab('tvshows')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
+                    <i class="fa-solid fa-rectangle-list text-base"></i>
+                    <span class="text-[10px] font-bold mt-1">Shows List</span>
+                </button>
+                <button id="nav-offch" onclick="switchTab('offch')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
+                    <i class="fa-solid fa-power-off text-base"></i>
+                    <span class="text-[10px] font-bold mt-1">Off-Air Channels</span>
+                </button>
+                <button id="nav-offsh" onclick="switchTab('offsh')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
+                    <i class="fa-solid fa-ban text-base"></i>
+                    <span class="text-[10px] font-bold mt-1">Off-Air Shows</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Notification Toast -->
+        <div id="toast" class="absolute top-14 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-amber-500 to-yellow-500 text-black text-xs font-extrabold px-4 py-2 rounded-full shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center space-x-2 border border-yellow-200">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="toast-text">Action Completed</span>
+        </div>
+
+        <!-- Scrollable Page Contents -->
+        <main class="flex-1 overflow-y-auto p-4 space-y-4 pb-6">
+            
+            <!-- PAGE 1: HOME PAGE -->
+            <section id="page-home" class="page-content space-y-4">
+                <!-- Overview Stats -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-3.5 flex items-center justify-between shadow-lg">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Active Channels</p>
+                            <h3 id="stat-total-channels" class="text-xl font-black text-amber-400 mt-0.5">0</h3>
+                        </div>
+                        <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                            <i class="fa-solid fa-tv text-base"></i>
+                        </div>
+                    </div>
+                    <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-3.5 flex items-center justify-between shadow-lg">
+                        <div>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Top TRP Peak</p>
+                            <h3 id="stat-top-trp" class="text-xl font-black text-amber-400 mt-0.5">0.0</h3>
+                        </div>
+                        <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                            <i class="fa-solid fa-chart-line text-base"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Instant Stream Banner -->
+                <div id="featured-banner" class="relative rounded-2xl p-4 bg-gradient-to-r from-amber-950/80 via-vip-card to-black border border-amber-500/30 overflow-hidden shadow-xl">
+                    <div class="relative z-10 space-y-2">
+                        <span class="text-[9px] font-extrabold bg-amber-500 text-black px-2 py-0.5 rounded uppercase tracking-wider">FEATURED BROADCAST</span>
+                        <h2 id="featured-title" class="text-sm font-extrabold text-white">VIP Cinema Gold Live</h2>
+                        <p id="featured-sub" class="text-[11px] text-gray-300">Click below to test live playback engine</p>
+                        <button onclick="playLiveChannel(1)" class="mt-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold text-xs px-4 py-2 rounded-xl flex items-center space-x-2 shadow-lg hover:brightness-110 active:scale-95 transition-all">
+                            <i class="fa-solid fa-circle-play text-sm"></i>
+                            <span>PLAY STREAM NOW</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TV Channels TRP List Box on Home Page -->
+                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 space-y-3 shadow-lg">
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-2.5">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-ranking-star text-amber-400 text-sm"></i>
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider">TV Channels TRP Rankings</h3>
+                        </div>
+                        <button onclick="switchTab('trp')" class="text-[11px] text-amber-400 hover:underline font-semibold">View All →</button>
+                    </div>
+
+                    <div id="home-trp-container" class="space-y-2.5">
+                        <!-- Injected Dynamically -->
+                    </div>
+                </div>
+
+                <!-- Premiered Content Box -->
+                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 space-y-3 shadow-lg">
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-2.5">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-clapperboard text-amber-400 text-sm"></i>
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider">Premiered Shows & Movies</h3>
+                        </div>
+                        <button onclick="switchTab('shows')" class="text-[11px] text-amber-400 hover:underline font-semibold">Launch New →</button>
+                    </div>
+                    <div id="home-shows-container" class="space-y-2.5">
+                        <!-- Injected Dynamically -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE 2: LAUNCH TV CHANNEL PAGE -->
+            <section id="page-tv" class="page-content hidden space-y-5">
+                <!-- VIP Auto-Preview Card -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center px-1">
+                        <span class="text-xs font-semibold text-amber-400 uppercase tracking-widest">
+                            <i class="fa-solid fa-eye mr-1"></i> Live Channel Preview
+                        </span>
+                        <span id="preview-resolution-tag" class="text-[10px] bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 px-2 py-0.5 rounded-full uppercase">
+                            4K ULTRA HD
+                        </span>
+                    </div>
+
+                    <div class="relative rounded-2xl p-5 border border-amber-500/40 bg-gradient-to-br from-gray-900 via-vip-card to-black shadow-2xl overflow-hidden min-h-[160px] flex flex-col justify-between">
+                        <div class="flex items-start space-x-4 relative z-10">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 shadow-xl flex-shrink-0">
+                                <div class="w-full h-full bg-black/95 rounded-[14px] flex flex-col items-center justify-center text-center p-1">
+                                    <span id="preview-initials" class="text-sm font-extrabold text-gold-gradient tracking-wider">VIP</span>
+                                    <i id="preview-cat-icon" class="fa-solid fa-film text-[10px] text-amber-400 mt-0.5"></i>
+                                </div>
+                            </div>
+
+                            <div class="flex-1 overflow-hidden">
+                                <div class="flex items-center space-x-1.5">
+                                    <h4 id="preview-title" class="text-base font-extrabold text-white truncate">My VIP Channel</h4>
+                                    <i class="fa-solid fa-circle-check text-amber-400 text-xs"></i>
+                                </div>
+                                <p id="preview-tagline" class="text-xs text-gray-400 italic truncate mt-0.5">Premium Entertainment Station</p>
+                                
+                                <div class="flex items-center space-x-2 mt-3">
+                                    <span id="preview-category-tag" class="text-[10px] font-semibold bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-md border border-amber-500/30">Movies</span>
+                                    <span class="text-[10px] font-bold text-gray-400">TRP Base: 2.0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Launch Settings Form -->
+                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-5 space-y-4 shadow-lg">
+                    <h3 class="text-sm font-bold text-white flex items-center">
+                        <i class="fa-solid fa-satellite-dish text-amber-400 mr-2"></i> Launch Setup
+                    </h3>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Channel Name</label>
+                        <input type="text" id="input-tv-name" oninput="updateTvPreview()" placeholder="e.g. VIP Star News" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Tagline / Motto</label>
+                        <input type="text" id="input-tv-tagline" oninput="updateTvPreview()" placeholder="e.g. Always First Always Live" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Broadcast Resolution</label>
+                        <select id="select-tv-quality" onchange="updateTvPreview()" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none">
+                            <option value="4K ULTRA HD">4K ULTRA HD</option>
+                            <option value="1080p FULL HD">1080p FULL HD</option>
+                            <option value="8K IMAX VIP">8K IMAX VIP</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1.5">Category</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" onclick="selectTvCategory('Movies', 'fa-film', this)" class="tv-cat-btn border border-amber-500 bg-amber-500/20 text-amber-300 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
+                                Movies
+                            </button>
+                            <button type="button" onclick="selectTvCategory('Shows', 'fa-tv', this)" class="tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
+                                Shows
+                            </button>
+                            <button type="button" onclick="selectTvCategory('Sports', 'fa-trophy', this)" class="tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
+                                Sports
+                            </button>
+                            <button type="button" onclick="selectTvCategory('News', 'fa-newspaper', this)" class="tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
+                                News
+                            </button>
+                            <button type="button" onclick="selectTvCategory('Music', 'fa-music', this)" class="tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
+                                Music
+                            </button>
+                            <button type="button" onclick="selectTvCategory('Gaming', 'fa-gamepad', this)" class="tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
+                                Gaming
+                            </button>
+                        </div>
+                    </div>
+
+                    <button onclick="launchTvChannel()" class="w-full mt-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-3 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2 text-xs">
+                        <i class="fa-solid fa-rocket text-sm"></i>
+                        <span>LAUNCH TV CHANNEL</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- PAGE 3: TRP LEADERBOARD PAGE -->
+            <section id="page-trp" class="page-content hidden space-y-4">
+                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider">TRP Leaderboard</h3>
+                        <p class="text-[10px] text-gray-400">Channels ranked dynamically by view ratings</p>
+                    </div>
+                    <i class="fa-solid fa-award text-amber-400 text-xl"></i>
+                </div>
+
+                <div id="trp-list-container" class="space-y-3">
+                    <!-- Populated dynamically -->
+                </div>
+            </section>
+
+            <!-- PAGE 4: SHOWS & MOVIES LAUNCH PAGE -->
+            <section id="page-shows" class="page-content hidden space-y-5">
+                <!-- Preview Poster -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center px-1">
+                        <span class="text-xs font-semibold text-amber-400 uppercase tracking-widest">
+                            <i class="fa-solid fa-eye mr-1"></i> Live Poster Preview
+                        </span>
+                        <span id="content-preview-type-badge" class="text-[10px] bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 px-2 py-0.5 rounded-full uppercase">
+                            Movie
+                        </span>
+                    </div>
+
+                    <div id="vip-content-card" class="relative rounded-2xl p-4 border border-amber-500/40 bg-gradient-to-br from-gray-900 via-vip-card to-black shadow-2xl overflow-hidden min-h-[160px] flex flex-col justify-between">
+                        <div class="flex items-start space-x-4 relative z-10">
+                            <div class="w-14 h-18 aspect-[2/3] rounded-xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 shadow-xl flex-shrink-0">
+                                <div class="w-full h-full bg-black/95 rounded-[10px] flex flex-col items-center justify-center text-center p-1 space-y-0.5">
+                                    <span id="content-preview-initials" class="text-xs font-extrabold text-gold-gradient tracking-wider">VIP</span>
+                                    <i id="content-preview-cat-icon" class="fa-solid fa-fire text-[10px] text-amber-400"></i>
+                                </div>
+                            </div>
+
+                            <div class="flex-1 overflow-hidden">
+                                <div class="flex items-center space-x-1.5">
+                                    <h4 id="content-preview-title" class="text-sm font-extrabold text-white truncate">My VIP Premiere</h4>
+                                    <i class="fa-solid fa-circle-check text-amber-400 text-xs"></i>
+                                </div>
+                                <p id="content-preview-subtitle" class="text-[11px] text-gray-400 italic truncate mt-0.5">Exclusive VIP Premiere Edition</p>
+                                
+                                <div class="flex items-center space-x-2 mt-2">
+                                    <span id="content-preview-category-tag" class="text-[9px] font-semibold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">Action</span>
+                                    <span id="content-preview-channel-tag" class="text-[9px] font-bold bg-gray-800 text-amber-400 px-2 py-0.5 rounded truncate">Select Channel</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative z-10 pt-2 mt-2 border-t border-gray-800/80 flex items-center justify-between text-[10px] text-gray-400">
+                            <span><i class="fa-solid fa-clock text-amber-400 mr-1"></i> <span id="content-preview-time-tag">08:00 PM</span></span>
+                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-star text-amber-400 mr-1"></i> TRP +2.5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Launch Form Settings -->
+                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-5 space-y-4 shadow-lg">
+                    <h3 class="text-sm font-bold text-white flex items-center">
+                        <i class="fa-solid fa-clapperboard text-amber-400 mr-2"></i> Launch & Schedule Details
+                    </h3>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1.5">Content Type</label>
+                        <div class="grid grid-cols-2 gap-2 p-1 bg-black/60 border border-gray-800 rounded-xl">
+                            <button type="button" id="btn-type-movie" onclick="selectContentType('Movie')" class="content-type-btn py-2 text-center text-xs font-bold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow transition-all">
+                                <i class="fa-solid fa-film mr-1.5"></i> Movie
+                            </button>
+                            <button type="button" id="btn-type-show" onclick="selectContentType('TV Show')" class="content-type-btn py-2 text-center text-xs font-bold rounded-lg text-gray-400 hover:text-white transition-all">
+                                <i class="fa-solid fa-tv mr-1.5"></i> TV Show
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label id="lbl-content-title" class="block text-xs font-medium text-gray-400 mb-1">Movie Title</label>
+                        <input type="text" id="input-content-title" oninput="updateContentPreview()" placeholder="e.g. VIP Dynasty" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Select Target TV Channel</label>
+                        <select id="select-content-channel" onchange="updateContentPreview()" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-amber-400 font-medium focus:outline-none">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Schedule Start Time</label>
+                        <input type="time" id="select-content-time" value="20:00" onchange="updateContentPreview()" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none">
+                    </div>
+
+                    <div id="movie-duration-box">
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Movie Duration</label>
+                        <div class="flex space-x-2">
+                            <input type="number" id="input-movie-mins" min="1" value="30" class="flex-1 bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none min-w-0">
+                            <select id="unit-movie" class="w-24 bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-[11px] text-amber-400 font-medium focus:outline-none flex-shrink-0"><option value="1">Seconds</option><option value="60" selected>Minutes</option><option value="3600">Hours</option></select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1.5">Genre / Category</label>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button type="button" onclick="selectContentCategory('Action', 'fa-fire', this)" class="content-cat-btn border border-amber-500 bg-amber-500/20 text-amber-300 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
+                                Action
+                            </button>
+                            <button type="button" onclick="selectContentCategory('Drama', 'fa-masks-theater', this)" class="content-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
+                                Drama
+                            </button>
+                            <button type="button" onclick="selectContentCategory('Comedy', 'fa-face-laugh', this)" class="content-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
+                                Comedy
+                            </button>
+                            <button type="button" onclick="selectContentCategory('Thriller', 'fa-ghost', this)" class="content-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
+                                Thriller
+                            </button>
+                        </div>
+                    </div>
+
+                    <button onclick="launchContent()" class="w-full mt-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-3 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2 text-xs">
+                        <i class="fa-solid fa-rocket text-sm"></i>
+                        <span id="btn-launch-content-text">LAUNCH MOVIE</span>
+                    </button>
+                </div>
+            </section>
+
+        <!-- PAGE 5: TV SHOWS LIST PAGE -->
+            <section id="page-tvshows" class="page-content hidden space-y-4">
+                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider">TV Shows & Movies List</h3>
+                        <p class="text-[10px] text-gray-400">All launched TV shows. Tap a show to manage episodes</p>
+                    </div>
+                    <i class="fa-solid fa-rectangle-list text-amber-400 text-xl"></i>
+                </div>
+                <div id="tvshows-list-container" class="space-y-3">
+                    <!-- Populated dynamically -->
+                </div>
+            </section>
+
+        <!-- PAGE 6: OFF-AIR CHANNELS -->
+            <section id="page-offch" class="page-content hidden space-y-4">
+                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Off-Air Channels</h3>
+                        <p class="text-[10px] text-gray-400">Channels that have gone off air</p>
+                    </div>
+                    <i class="fa-solid fa-power-off text-red-400 text-xl"></i>
+                </div>
+                <div id="offch-list-container" class="space-y-3"></div>
+            </section>
+
+            <!-- PAGE 7: OFF-AIR SHOWS & MOVIES -->
+            <section id="page-offsh" class="page-content hidden space-y-4">
+                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Off-Air Shows & Movies</h3>
+                        <p class="text-[10px] text-gray-400">Launch the next season or part from here</p>
+                    </div>
+                    <i class="fa-solid fa-ban text-red-400 text-xl"></i>
+                </div>
+                <div id="offsh-list-container" class="space-y-3"></div>
+            </section>
+        </main>
+
+        <!-- Channel Details Modal Popup -->
+        <div id="channel-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden transition-all duration-300">
+            <div class="bg-vip-card border border-amber-500/40 rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl relative">
+                <button onclick="closeChannelModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/60 border border-gray-700 text-gray-400 hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+
+                <div class="flex items-center space-x-3.5 border-b border-gray-800 pb-3">
+                    <div id="modal-channel-logo" class="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 flex-shrink-0">
+                        <div class="w-full h-full bg-black rounded-[10px] flex items-center justify-center font-bold text-xs text-amber-300">
+                            VIP
+                        </div>
+                    </div>
+                    <div>
+                        <h3 id="modal-channel-name" class="text-base font-extrabold text-white">Channel Name</h3>
+                        <div class="flex items-center space-x-2 mt-0.5">
+                            <span id="modal-channel-cat" class="text-[10px] text-amber-400 font-semibold uppercase">Category</span>
+                            <span id="modal-channel-rank" class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.2 rounded font-bold">Rank #1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-black/40 border border-gray-800 rounded-2xl p-3 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-gray-400 uppercase font-medium">Total Live TRP Rating</p>
+                        <h4 id="modal-channel-trp" class="text-xl font-extrabold text-amber-400">0.0</h4>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-gray-400 uppercase font-medium">Scheduled Content</p>
+                        <h4 id="modal-channel-shows-count" class="text-base font-bold text-white">0</h4>
+                    </div>
+                </div>
+
+                <button id="btn-modal-watch-live" onclick="" class="w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2.5 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2 text-xs">
+                    <i class="fa-solid fa-circle-play text-sm"></i>
+                    <span>WATCH LIVE STREAM</span>
+                </button>
+
+                <button onclick="takeChannelOffAir()" class="w-full border border-red-500/50 bg-red-500/10 text-red-400 font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 text-xs">
+                    <i class="fa-solid fa-power-off text-sm"></i>
+                    <span>TAKE CHANNEL OFF AIR</span>
+                </button>
+
+                <div>
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-2 flex items-center">
+                        <i class="fa-solid fa-list-check text-amber-400 mr-2"></i> Broadcast Schedule
+                    </h4>
+                    <div id="modal-shows-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                        <!-- Dynamic list -->
+                    </div>
+
+                <div id="replay-panel" class="hidden bg-black/50 border border-amber-500/30 rounded-2xl p-3 space-y-2">
+                    <p id="replay-title" class="text-xs font-bold text-amber-400">Air Movie Again</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[10px] text-gray-400 mb-1">Start Time</label>
+                            <input type="time" id="replay-time" class="w-full bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-xs text-white focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-gray-400 mb-1">Duration</label>
+                            <div class="flex space-x-1">
+                                <input type="number" id="replay-mins" min="1" value="30" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-2 py-2 text-xs text-white focus:outline-none min-w-0">
+                                <select id="replay-unit" class="w-[74px] bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-[11px] text-amber-400 font-medium focus:outline-none flex-shrink-0"><option value="1">Seconds</option><option value="60" selected>Minutes</option><option value="3600">Hours</option></select>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="confirmReplay()" class="w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2 rounded-xl text-xs active:scale-95">AIR MOVIE AGAIN</button>
+                </div>
+                </div>
             </div>
         </div>
+
+        <!-- TV Show Details Modal -->
+        <div id="tvshow-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden transition-all duration-300">
+            <div class="bg-vip-card border border-amber-500/40 rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl relative">
+                <button onclick="closeTvShowModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/60 border border-gray-700 text-gray-400 hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+
+                <div class="flex items-center space-x-3.5 border-b border-gray-800 pb-3 pr-8">
+                    <div id="tvm-poster" class="flex-shrink-0"></div>
+                    <div class="min-w-0">
+                        <h3 id="tvm-name" class="text-base font-extrabold text-white truncate">TV Show</h3>
+                        <span id="tvm-status" class="text-[10px] font-bold px-2 py-0.5 rounded border">ON AIR</span>
+                    </div>
+                </div>
+
+                <div class="bg-black/40 border border-gray-800 rounded-2xl p-3 space-y-2.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] text-gray-400 uppercase font-medium">Airing On Channel</span>
+                        <span id="tvm-channel" class="text-xs font-bold text-amber-400 truncate pl-2">-</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] text-gray-400 uppercase font-medium">Episodes Completed</span>
+                        <span id="tvm-episodes" class="text-xs font-bold text-white">1</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] text-gray-400 uppercase font-medium">Live TRP</span>
+                        <span id="tvm-trp" class="text-xs font-extrabold text-amber-400">0.0</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] text-gray-400 uppercase font-medium">Schedule Slot</span>
+                        <span id="tvm-slot" class="text-xs font-medium text-gray-300 truncate pl-2">-</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] text-gray-400 uppercase font-medium">Live Countdown</span>
+                        <span id="tvm-cd" class="text-xs font-bold text-amber-300 pl-2">--</span>
+                    </div>
+                </div>
+
+                <button id="btn-tvm-next" onclick="launchNextEpisode()" class="w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2.5 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2 text-xs">
+                    <i class="fa-solid fa-forward-step text-sm"></i>
+                    <span>LAUNCH NEXT EPISODE</span>
+                </button>
+
+                <button id="btn-tvm-air" onclick="toggleShowAir()" class="w-full border border-red-500/50 bg-red-500/10 text-red-400 font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 text-xs">
+                    <i class="fa-solid fa-power-off text-sm"></i>
+                    <span>TAKE OFF AIR</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Air On Another Channel Modal -->
+        <div id="rerun-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden transition-all duration-300">
+            <div class="bg-vip-card border border-amber-500/40 rounded-3xl w-full max-w-sm p-5 space-y-3 shadow-2xl relative">
+                <button onclick="closeRerunModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/60 border border-gray-700 text-gray-400 hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+                <h3 id="rerun-title" class="text-sm font-extrabold text-white pr-8">Air on another channel</h3>
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Which Channel</label>
+                    <select id="rerun-channel" class="w-full bg-black/60 border border-gray-700 rounded-xl px-3 py-2.5 text-xs text-amber-400 font-medium focus:outline-none"></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Start Time</label>
+                    <input type="time" id="rerun-time" class="w-full bg-black/60 border border-gray-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none">
+                </div>
+                <div>
+                    <label id="rerun-third-label" class="block text-xs font-medium text-gray-400 mb-1">Movie Duration</label>
+                    <div class="flex space-x-2">
+                        <input type="number" id="rerun-third" min="1" value="30" class="flex-1 bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none min-w-0">
+                        <select id="rerun-third-unit" class="w-24 bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-[11px] text-amber-400 font-medium focus:outline-none flex-shrink-0"><option value="1">Seconds</option><option value="60" selected>Minutes</option><option value="3600">Hours</option></select>
+                    </div>
+                </div>
+                <div id="rerun-ep-box">
+                    <label class="block text-xs font-medium text-gray-400 mb-1">New Episode Comes After (each episode length)</label>
+                    <div class="flex space-x-2">
+                        <input type="number" id="rerun-ep" min="1" value="1" class="flex-1 bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none min-w-0">
+                        <select id="rerun-ep-unit" class="w-24 bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-[11px] text-amber-400 font-medium focus:outline-none flex-shrink-0"><option value="1">Seconds</option><option value="60" selected>Minutes</option><option value="3600">Hours</option></select>
+                    </div>
+                </div>
+                <button onclick="confirmRerun()" class="w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2.5 rounded-xl text-xs active:scale-95">AIR ON THIS CHANNEL</button>
+            </div>
+        </div>
+
+        <!-- Interactive Stream Player Modal -->
+        <div id="player-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 hidden transition-all duration-300">
+            <div class="bg-vip-card border border-amber-500/50 rounded-3xl w-full max-w-sm p-4 space-y-3.5 shadow-2xl relative overflow-hidden">
+                <button onclick="closePlayerModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/70 border border-gray-700 text-gray-400 hover:text-white flex items-center justify-center z-20">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+
+                <!-- Simulated Video Screen -->
+                <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-amber-500/30 shadow-2xl flex flex-col justify-between p-3">
+                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-950 via-gray-900 to-black opacity-90"></div>
+                    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/20 via-transparent to-transparent animate-pulse"></div>
+
+                    <div class="relative z-10 flex justify-between items-start">
+                        <div class="flex items-center space-x-2 bg-black/60 backdrop-blur px-2.5 py-1 rounded-lg border border-amber-500/30">
+                            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                            <span class="text-[10px] font-extrabold text-amber-400 tracking-wider uppercase" id="player-channel-badge">VIP STREAM</span>
+                        </div>
+                        <span id="player-quality-badge" class="text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded">4K ULTRA HD</span>
+                    </div>
+
+                    <div class="relative z-10 my-auto text-center space-y-1.5">
+                        <div class="w-12 h-12 mx-auto rounded-full bg-amber-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400 text-xl shadow-lg">
+                            <i id="player-screen-icon" class="fa-solid fa-tv animate-bounce"></i>
+                        </div>
+                        <div>
+                            <h3 id="player-screen-title" class="text-xs font-extrabold text-white">Playing Live Stream</h3>
+                            <p id="player-screen-sub" class="text-[10px] text-amber-400/90 font-medium truncate">Now Broadcasting On Air</p>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 flex items-center justify-between text-[10px] text-gray-300 bg-black/70 backdrop-blur px-2.5 py-1 rounded-lg border border-gray-800">
+                        <span class="truncate flex items-center"><i class="fa-solid fa-circle-play text-amber-400 mr-1.5"></i> <span id="player-now-playing">Main Broadcast Engine</span></span>
+                        <span id="player-live-trp" class="text-amber-400 font-extrabold ml-2 flex-shrink-0">TRP 4.5</span>
+                    </div>
+                </div>
+
+                <!-- Live Stream Controls -->
+                <div class="bg-black/50 border border-gray-800 rounded-2xl p-3 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <button id="btn-player-toggle" onclick="togglePlayPause()" class="w-9 h-9 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-extrabold flex items-center justify-center shadow-md hover:brightness-110 active:scale-95">
+                                <i id="icon-player-toggle" class="fa-solid fa-pause text-xs"></i>
+                            </button>
+                            <div>
+                                <h4 id="player-controls-name" class="text-xs font-bold text-white">VIP Cinema Gold</h4>
+                                <span class="text-[9px] text-gray-400">Live Player System</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-2 text-gray-400 text-xs">
+                            <button onclick="showToast('Volume: Max')" class="hover:text-amber-400 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                            <button onclick="showToast('Quality: 4K Ultra')" class="hover:text-amber-400 p-1"><i class="fa-solid fa-gear"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Equalizer Animation -->
+                    <div class="flex items-end justify-between h-4 px-2 bg-black/80 rounded-lg border border-gray-900 pt-1">
+                        <div class="w-1 bg-amber-400 h-2/3 animate-pulse rounded-full"></div>
+                        <div class="w-1 bg-amber-400 h-full animate-pulse rounded-full"></div>
+                        <div class="w-1 bg-amber-400 h-1/2 animate-pulse rounded-full"></div>
+                        <div class="w-1 bg-amber-400 h-4/5 animate-pulse rounded-full"></div>
+                        <div class="w-1 bg-amber-400 h-1/3 animate-pulse rounded-full"></div>
+                        <div class="w-1 bg-amber-400 h-3/4 animate-pulse rounded-full"></div>
+                        <div class="w-1 bg-amber-400 h-full animate-pulse rounded-full"></div>
+                        <div class="w-1 bg-amber-400 h-1/2 animate-pulse rounded-full"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
     </div>
 
+    <!-- JavaScript Logic -->
+    <script>
+        // State Store
+        let launchedChannels = [
+            { id: 1, name: 'VIP Cinema Gold', category: 'Movies', icon: 'fa-film', resolution: '4K ULTRA HD', tagline: '24/7 Blockbuster Hits', baseTrp: 3.0, totalTrp: 3.0 },
+            { id: 2, name: 'VIP Sports Max', category: 'Sports', icon: 'fa-trophy', resolution: '8K IMAX VIP', tagline: 'Live World Championship Coverage', baseTrp: 2.5, totalTrp: 2.5 }
+        ];
+
+        let launchedShows = [
+            { id: 1, name: 'The Golden Kingdom', type: 'Movie', category: 'Action', channelId: 1, timeSlot: '08:00 PM (Prime Time)', trpBoost: 3.5 }
+        ];
+
+        let selectedTvCategory = 'Movies';
+        let selectedTvIcon = 'fa-film';
+
+        let selectedContentType = 'Movie';
+        let selectedContentCategory = 'Action';
+        let selectedContentIcon = 'fa-fire';
+
+        let isPlaying = true;
+
+        // Toast Helper
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').innerText = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+
+        // Initials generator
+        function getInitials(name) {
+            if (!name) return 'VIP';
+            const words = name.trim().split(' ').filter(w => w.length > 0);
+            if (words.length === 1) return words[0].substring(0, 3).toUpperCase();
+            return (words[0][0] + words[1][0]).toUpperCase();
+        }
+
+        // Recalculate TRPs
+        function recalculateChannelTRPs() {
+            launchedChannels.forEach(ch => {
+                const assigned = launchedShows.filter(s => parseInt(s.channelId) === parseInt(ch.id));
+                const showsTrpSum = assigned.filter(isLive).reduce((sum, s) => sum + (s.trpBoost || 2.0), 0);
+                ch.totalTrp = parseFloat((ch.baseTrp + showsTrpSum).toFixed(1));
+            });
+        }
+
+        // Switch Tabs Smoothly
+        function switchTab(pageId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+
+            const activePage = document.getElementById(`page-${pageId}`);
+            if (activePage) activePage.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-tab').forEach(t => {
+                t.classList.remove('text-amber-400');
+                t.classList.add('text-gray-400');
+            });
+
+            const activeNavBtn = document.getElementById(`nav-${pageId}`);
+            if (activeNavBtn) {
+                activeNavBtn.classList.remove('text-gray-400');
+                activeNavBtn.classList.add('text-amber-400');
+            }
+
+            const headerTitle = document.getElementById('header-title');
+            if (pageId === 'home') headerTitle.innerText = 'VIP Home';
+            else if (pageId === 'tv') headerTitle.innerText = 'Launch TV Channel';
+            else if (pageId === 'trp') headerTitle.innerText = 'TRP Leaderboard';
+            else if (pageId === 'tvshows') { headerTitle.innerText = 'TV Shows & Movies'; renderTvShows(); }
+            else if (pageId === 'offch') { headerTitle.innerText = 'Off-Air Channels'; renderOffAir(); }
+            else if (pageId === 'offsh') { headerTitle.innerText = 'Off-Air Shows & Movies'; renderOffAir(); }
+            else if (pageId === 'shows') {
+                headerTitle.innerText = 'Launch Shows & Movies';
+                populateChannelDropdown();
+            }
+        }
+
+        // Dropdown populate
+        function populateChannelDropdown() {
+            const dropdown = document.getElementById('select-content-channel');
+            const tEl = document.getElementById('select-content-time');
+            if (tEl && !tEl.dataset.set) { tEl.value = nowHHMM(); tEl.dataset.set = '1'; }
+            if (launchedChannels.filter(c => c.status !== 'Off Air').length === 0) {
+                dropdown.innerHTML = `<option value="">No Channels Available (Launch TV Channel First)</option>`;
+            } else {
+                dropdown.innerHTML = launchedChannels.filter(c => c.status !== 'Off Air').map(ch => `
+                    <option value="${ch.id}">${ch.name} (${ch.category})</option>
+                `).join('');
+            }
+            updateContentPreview();
+        }
+
+        // Form Category Selectors
+        function selectTvCategory(catName, iconClass, btn) {
+            selectedTvCategory = catName;
+            selectedTvIcon = iconClass;
+
+            document.querySelectorAll('.tv-cat-btn').forEach(b => {
+                b.className = 'tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all';
+            });
+            btn.className = 'tv-cat-btn border border-amber-500 bg-amber-500/20 text-amber-300 rounded-xl p-2 text-center text-[11px] font-medium transition-all';
+
+            updateTvPreview();
+        }
+
+        function updateTvPreview() {
+            const nameVal = document.getElementById('input-tv-name').value.trim();
+            const taglineVal = document.getElementById('input-tv-tagline').value.trim();
+            const qualityVal = document.getElementById('select-tv-quality').value;
+
+            document.getElementById('preview-title').innerText = nameVal || 'My VIP Channel';
+            document.getElementById('preview-tagline').innerText = taglineVal || 'Premium Entertainment Station';
+            document.getElementById('preview-initials').innerText = getInitials(nameVal);
+            document.getElementById('preview-category-tag').innerText = selectedTvCategory;
+            document.getElementById('preview-resolution-tag').innerText = qualityVal;
+            document.getElementById('preview-cat-icon').className = `fa-solid ${selectedTvIcon} text-[10px] text-amber-400 mt-0.5`;
+        }
+
+        function launchTvChannel() {
+            const nameVal = document.getElementById('input-tv-name').value.trim();
+            const taglineVal = document.getElementById('input-tv-tagline').value.trim();
+            const qualityVal = document.getElementById('select-tv-quality').value;
+
+            if (!nameVal) {
+                showToast('Please enter a Channel Name!');
+                return;
+            }
+
+            const newChannel = {
+                id: Date.now(),
+                name: nameVal,
+                category: selectedTvCategory,
+                icon: selectedTvIcon,
+                resolution: qualityVal,
+                tagline: taglineVal || 'VIP Premier Network',
+                baseTrp: 2.0,
+                totalTrp: 2.0
+            };
+
+            launchedChannels.unshift(newChannel);
+            renderChannels();
+
+            document.getElementById('input-tv-name').value = '';
+            document.getElementById('input-tv-tagline').value = '';
+            updateTvPreview();
+
+            showToast(`Channel "${nameVal}" Launched!`);
+            switchTab('trp');
+        }
+
+        function selectContentType(type) {
+            selectedContentType = type;
+
+            const btnMovie = document.getElementById('btn-type-movie');
+            const btnShow = document.getElementById('btn-type-show');
+            const lblTitle = document.getElementById('lbl-content-title');
+            const btnLaunchText = document.getElementById('btn-launch-content-text');
+            const typeBadge = document.getElementById('content-preview-type-badge');
+
+            if (type === 'Movie') {
+                btnMovie.className = 'content-type-btn py-2 text-center text-xs font-bold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow transition-all';
+                btnShow.className = 'content-type-btn py-2 text-center text-xs font-bold rounded-lg text-gray-400 hover:text-white transition-all';
+                lblTitle.innerText = 'Movie Title';
+                document.getElementById('movie-duration-box').style.display = '';
+                btnLaunchText.innerText = 'LAUNCH MOVIE';
+                typeBadge.innerText = 'Movie';
+            } else {
+                btnShow.className = 'content-type-btn py-2 text-center text-xs font-bold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow transition-all';
+                btnMovie.className = 'content-type-btn py-2 text-center text-xs font-bold rounded-lg text-gray-400 hover:text-white transition-all';
+                lblTitle.innerText = 'TV Show Title';
+                document.getElementById('movie-duration-box').style.display = 'none';
+                btnLaunchText.innerText = 'LAUNCH TV SHOW';
+                typeBadge.innerText = 'TV Show';
+            }
+
+            updateContentPreview();
+        }
+
+        function selectContentCategory(catName, iconClass, btn) {
+            selectedContentCategory = catName;
+            selectedContentIcon = iconClass;
+
+            document.querySelectorAll('.content-cat-btn').forEach(b => {
+                b.className = 'content-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all';
+            });
+
+            btn.className = 'content-cat-btn border border-amber-500 bg-amber-500/20 text-amber-300 rounded-xl p-2 text-center text-[11px] font-medium transition-all';
+
+            document.getElementById('content-preview-category-tag').innerText = catName;
+            document.getElementById('content-preview-cat-icon').className = `fa-solid ${iconClass} text-[10px] text-amber-400`;
+        }
+
+        function updateContentPreview() {
+            const titleInput = document.getElementById('input-content-title').value.trim();
+            const channelSelect = document.getElementById('select-content-channel');
+            const timeSelect = document.getElementById('select-content-time');
+
+            document.getElementById('content-preview-title').innerText = titleInput || (selectedContentType === 'Movie' ? 'My VIP Movie' : 'My VIP TV Show');
+            document.getElementById('content-preview-initials').innerText = getInitials(titleInput);
+            document.getElementById('content-preview-initials').parentElement.style.background = posterBg(titleInput);
+
+            if (channelSelect && channelSelect.options[channelSelect.selectedIndex]) {
+                document.getElementById('content-preview-channel-tag').innerText = channelSelect.options[channelSelect.selectedIndex].text;
+            } else {
+                document.getElementById('content-preview-channel-tag').innerText = 'Select Channel';
+            }
+
+            if (timeSelect) {
+                document.getElementById('content-preview-time-tag').innerText = fmtTime(timeSelect.value);
+            }
+        }
+
+        function launchContent() {
+            const titleInput = document.getElementById('input-content-title').value.trim();
+            const channelSelect = document.getElementById('select-content-channel');
+            const timeSelect = document.getElementById('select-content-time');
+
+            if (!titleInput) {
+                showToast(`Please enter a ${selectedContentType} Title!`);
+                return;
+            }
+
+            if (!channelSelect || !channelSelect.value) {
+                showToast('Please select a Target Channel!');
+                return;
+            }
+
+            const channelId = parseInt(channelSelect.value);
+            const trpBoost = parseFloat((Math.random() * 2 + 2.0).toFixed(1));
+
+            const hhmm = timeSelect.value || nowHHMM();
+            const startAt = hhmmToTs(hhmm);
+            const isMovie = selectedContentType === 'Movie';
+            const secs = isMovie ? Math.max(1, readDur('input-movie-mins', 'unit-movie') || 1800) : 0;
+            launchedShows.unshift({
+                id: Date.now(),
+                name: titleInput,
+                type: selectedContentType,
+                category: selectedContentCategory,
+                channelId: channelId,
+                timeSlot: fmtTime(hhmm),
+                startAt: startAt,
+                durationSec: secs,
+                endAt: isMovie ? startAt + secs * 1000 : 0,
+                episodes: 1,
+                status: 'On Air',
+                trend: 0,
+                trpBoost: trpBoost
+            });
+
+            recalculateChannelTRPs();
+            renderChannels();
+            renderShows();
+
+            renderTvShows();
+            showToast(`${selectedContentType} "${titleInput}" Scheduled!`);
+            document.getElementById('input-content-title').value = '';
+            updateContentPreview();
+            switchTab('home');
+        }
+
+        // Open Channel Modal
+        function openChannelModal(channelId) {
+            recalculateChannelTRPs();
+            const sorted = [...launchedChannels].filter(c => c.status !== 'Off Air').sort((a, b) => b.totalTrp - a.totalTrp);
+            window.currentChannelModalId = channelId;
+            const channel = sorted.find(c => parseInt(c.id) === parseInt(channelId));
+            if (!channel) return;
+
+            const rank = sorted.findIndex(c => parseInt(c.id) === parseInt(channelId)) + 1;
+            const assignedShows = launchedShows.filter(s => s.status !== 'Off Air' && parseInt(s.channelId) === parseInt(channelId));
+
+            document.getElementById('modal-channel-name').innerText = channel.name;
+            document.getElementById('modal-channel-cat').innerText = channel.category;
+            document.getElementById('modal-channel-rank').innerText = `Rank #${rank}`;
+            document.getElementById('modal-channel-trp').innerText = channel.totalTrp.toFixed(1);
+            document.getElementById('modal-channel-shows-count').innerText = assignedShows.length;
+
+            document.getElementById('modal-channel-logo').innerHTML = `
+                <div class="w-full h-full bg-black rounded-[10px] flex items-center justify-center font-bold text-xs text-amber-300">
+                    ${getInitials(channel.name)}
+                </div>
+            `;
+
+            document.getElementById('btn-modal-watch-live').setAttribute('onclick', `closeChannelModal(); playLiveChannel(${channel.id});`);
+
+            const listContainer = document.getElementById('modal-shows-list');
+            if (assignedShows.length === 0) {
+                listContainer.innerHTML = `<div class="text-center py-4 text-xs text-gray-500">No scheduled content on this channel yet.</div>`;
+            } else {
+                listContainer.innerHTML = assignedShows.map(s => `
+                    <div onclick="closeChannelModal(); playContentStream('${s.name}', '${s.type}', '${channel.name}', ${s.trpBoost});" class="bg-black/60 border border-gray-800/80 p-2 rounded-xl flex items-center justify-between cursor-pointer hover:border-amber-500/40 transition-all">
+                        <div class="truncate pr-2">
+                            <h5 class="text-xs font-bold text-white truncate flex items-center"><i class="fa-solid fa-circle-play text-amber-400 mr-1.5 text-[10px]"></i>${s.name}</h5>
+                            <span class="text-[10px] text-amber-400"><i class="fa-solid fa-clock mr-1"></i>${s.timeSlot}</span>
+                        </div>
+                        <span class="text-[11px] font-extrabold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                            TRP +${s.trpBoost.toFixed(1)}
+                        </span>
+                    </div>
+                `).join('');
+            }
+
+            const ended = launchedShows.filter(s => s.type === 'Movie' && s.status === 'Off Air' && parseInt(s.channelId) === parseInt(channelId));
+            if (ended.length) {
+                if (assignedShows.length === 0) listContainer.innerHTML = '';
+                listContainer.insertAdjacentHTML('beforeend', ended.map(s => `
+                    <div onclick="openReplayPanel(${s.id})" class="bg-black/40 border border-red-500/20 p-2 rounded-xl flex items-center justify-between cursor-pointer hover:border-amber-500/40 transition-all opacity-80">
+                        <h5 class="text-xs font-bold text-white truncate pr-2">${showLabel(s)}</h5>
+                        <span class="text-[10px] font-bold text-red-400 flex-shrink-0">OFF AIR • TAP TO REPLAY</span>
+                    </div>`).join(''));
+            }
+            document.getElementById('channel-modal').classList.remove('hidden');
+        }
+
+        function closeChannelModal() {
+            document.getElementById('replay-panel').classList.add('hidden');
+            document.getElementById('channel-modal').classList.add('hidden');
+        }
+
+        // Live Player Engine
+        function playLiveChannel(channelId) {
+            const activeCh = launchedChannels.filter(c => c.status !== 'Off Air').sort((a, b) => b.totalTrp - a.totalTrp);
+            const channel = activeCh.find(c => parseInt(c.id) === parseInt(channelId)) || activeCh[0];
+            if (!channel) return;
+
+            const assignedShows = launchedShows.filter(s => parseInt(s.channelId) === parseInt(channel.id));
+            const activeShowName = assignedShows.length > 0 ? assignedShows[0].name : 'VIP Live Broadcast Stream';
+
+            document.getElementById('player-channel-badge').innerText = channel.name;
+            document.getElementById('player-quality-badge').innerText = channel.resolution || '4K ULTRA HD';
+            document.getElementById('player-screen-title').innerText = channel.name;
+            document.getElementById('player-screen-sub').innerText = `Live Broadcast • ${channel.category}`;
+            document.getElementById('player-screen-icon').className = `fa-solid ${channel.icon || 'fa-tv'} animate-bounce`;
+            document.getElementById('player-now-playing').innerText = activeShowName;
+            document.getElementById('player-live-trp').innerText = `TRP ${channel.totalTrp.toFixed(1)}`;
+            document.getElementById('player-controls-name').innerText = channel.name;
+
+            isPlaying = true;
+            updatePlayPauseButton();
+
+            document.getElementById('player-modal').classList.remove('hidden');
+            showToast(`Streaming Live: ${channel.name}`);
+        }
+
+        function playContentStream(title, type, channelName, trpBoost) {
+            document.getElementById('player-channel-badge').innerText = type.toUpperCase();
+            document.getElementById('player-quality-badge').innerText = '1080p FULL HD';
+            document.getElementById('player-screen-title').innerText = title;
+            document.getElementById('player-screen-sub').innerText = `Broadcasting on ${channelName}`;
+            document.getElementById('player-screen-icon').className = `fa-solid ${type === 'Movie' ? 'fa-film' : 'fa-tv'} animate-bounce`;
+            document.getElementById('player-now-playing').innerText = title;
+            document.getElementById('player-live-trp').innerText = `TRP +${trpBoost.toFixed(1)}`;
+            document.getElementById('player-controls-name').innerText = title;
+
+            isPlaying = true;
+            updatePlayPauseButton();
+
+            document.getElementById('player-modal').classList.remove('hidden');
+            showToast(`Now Playing: ${title}`);
+        }
+
+        function togglePlayPause() {
+            isPlaying = !isPlaying;
+            updatePlayPauseButton();
+            showToast(isPlaying ? 'Stream Resumed' : 'Stream Paused');
+        }
+
+        function updatePlayPauseButton() {
+            const btnIcon = document.getElementById('icon-player-toggle');
+            if (isPlaying) {
+                btnIcon.className = 'fa-solid fa-pause text-xs';
+            } else {
+                btnIcon.className = 'fa-solid fa-play text-xs ml-0.5';
+            }
+        }
+
+        function closePlayerModal() {
+            document.getElementById('player-modal').classList.add('hidden');
+        }
+
+        // Render UI
+        function renderChannels() {
+            saveState();
+            recalculateChannelTRPs();
+            const sortedChannels = [...launchedChannels].filter(c => c.status !== 'Off Air').sort((a, b) => b.totalTrp - a.totalTrp);
+
+            document.getElementById('stat-total-channels').innerText = sortedChannels.length;
+            const topTrp = sortedChannels.length > 0 ? sortedChannels[0].totalTrp.toFixed(1) : '0.0';
+            document.getElementById('stat-top-trp').innerText = topTrp;
+
+            if (sortedChannels.length > 0) {
+                document.getElementById('featured-title').innerText = `${sortedChannels[0].name} Live`;
+                document.getElementById('featured-sub').innerText = `Currently #1 Ranked Station with TRP ${sortedChannels[0].totalTrp.toFixed(1)}`;
+                document.querySelector('#featured-banner button').setAttribute('onclick', `playLiveChannel(${sortedChannels[0].id})`);
+            }
+
+            // Home Page Render
+            const homeContainer = document.getElementById('home-trp-container');
+            if (sortedChannels.length === 0) {
+                homeContainer.innerHTML = `<div class="text-center py-4 text-xs text-gray-500">No channels launched yet.</div>`;
+            } else {
+                homeContainer.innerHTML = sortedChannels.map((ch, idx) => `
+                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-black/40 border border-gray-800/80 hover:border-amber-500/50 transition-all">
+                        <div onclick="openChannelModal(${ch.id})" class="flex items-center space-x-3 overflow-hidden cursor-pointer flex-1">
+                            <span class="w-5 text-center font-extrabold text-xs ${idx === 0 ? 'text-amber-400' : 'text-gray-400'}">#${idx + 1}</span>
+                            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 flex-shrink-0">
+                                <div class="w-full h-full bg-black rounded-[6px] flex items-center justify-center font-bold text-[9px] text-amber-300">
+                                    ${getInitials(ch.name)}
+                                </div>
+                            </div>
+                            <div class="truncate">
+                                <h4 class="text-xs font-bold text-white truncate">${ch.name}</h4>
+                                <span class="text-[10px] text-amber-400/80 font-medium">${ch.category}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 flex-shrink-0 pl-2">
+                            <button onclick="playLiveChannel(${ch.id})" class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-400 hover:bg-amber-500 hover:text-black flex items-center justify-center transition-all">
+                                <i class="fa-solid fa-play text-xs"></i>
+                            </button>
+                            <div onclick="openChannelModal(${ch.id})" class="text-right cursor-pointer min-w-[32px]">
+                                <span class="text-xs font-extrabold text-amber-400">${ch.totalTrp.toFixed(1)}</span>
+                                <span class="text-[9px] block text-gray-400 font-medium">TRP</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // TRP Leaderboard Render
+            const trpContainer = document.getElementById('trp-list-container');
+            if (sortedChannels.length === 0) {
+                trpContainer.innerHTML = `<div class="text-center py-8 text-xs text-gray-500">No channels found.</div>`;
+            } else {
+                trpContainer.innerHTML = sortedChannels.map((ch, idx) => `
+                    <div class="bg-vip-card border border-gray-800 rounded-2xl p-3 flex items-center justify-between shadow-lg hover:border-amber-500/50 transition-all">
+                        <div onclick="openChannelModal(${ch.id})" class="flex items-center space-x-3 flex-1 min-w-0 cursor-pointer">
+                            <div class="flex flex-col items-center justify-center w-5">
+                                ${idx === 0 ? '<i class="fa-solid fa-crown text-amber-400 text-xs mb-0.5"></i>' : ''}
+                                <span class="text-xs font-extrabold ${idx === 0 ? 'text-amber-400' : 'text-gray-400'}">#${idx + 1}</span>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 flex-shrink-0">
+                                <div class="w-full h-full bg-black/90 rounded-[9px] flex flex-col items-center justify-center text-center p-0.5">
+                                    <span class="text-[10px] font-extrabold text-gold-gradient">${getInitials(ch.name)}</span>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0 pr-2">
+                                <div class="flex items-center space-x-1.5">
+                                    <h4 class="text-xs font-bold text-white truncate">${ch.name}</h4>
+                                    <i class="fa-solid fa-circle-check text-amber-400 text-[10px]"></i>
+                                </div>
+                                <p class="text-[10px] text-gray-400 truncate mt-0.5">${ch.tagline}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 flex-shrink-0 pl-2 border-l border-gray-800">
+                            <button onclick="playLiveChannel(${ch.id})" class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-400 hover:bg-amber-500 hover:text-black flex items-center justify-center transition-all">
+                                <i class="fa-solid fa-play text-xs"></i>
+                            </button>
+                            <div onclick="openChannelModal(${ch.id})" class="text-right cursor-pointer min-w-[32px]">
+                                <span class="text-xs font-extrabold text-amber-400">${ch.totalTrp.toFixed(1)}</span>
+                                <span class="text-[8px] block text-gray-400 font-medium uppercase">TRP</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderShows() {
+            const homeShowsContainer = document.getElementById('home-shows-container');
+            if (launchedShows.filter(s => s.status !== 'Off Air').length === 0) {
+                homeShowsContainer.innerHTML = `<div class="text-center py-4 text-xs text-gray-500">No movies/shows launched yet.</div>`;
+            } else {
+                homeShowsContainer.innerHTML = launchedShows.filter(s => s.status !== 'Off Air').map(item => {
+                    const ch = launchedChannels.find(c => parseInt(c.id) === parseInt(item.channelId));
+                    const chName = ch ? ch.name : 'Unassigned';
+                    return `
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-black/40 border border-gray-800/80">
+                            <div onclick="playContentStream('${item.name}', '${item.type}', '${chName}', ${item.trpBoost})" class="flex items-center space-x-3 overflow-hidden cursor-pointer flex-1">
+                                ${poster(item.name, "w-7 h-9")}
+                                <div class="truncate">
+                                    <h4 class="text-xs font-bold text-white truncate flex items-center"><i class="fa-solid fa-circle-play text-amber-400 mr-1 text-[9px]"></i>${item.name}</h4>
+                                    <span class="text-[10px] text-amber-400/80 font-medium">${item.type} • ${chName}</span>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0 pl-2">
+                                <span class="text-xs font-extrabold text-amber-400">+${item.trpBoost.toFixed(1)}</span>
+                                <span class="text-[9px] block text-gray-400 font-medium">${item.timeSlot.split(' ')[0]}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        // ===== TV Shows: list, episodes, live TRP =====
+        let currentTvShowId = null;
+
+        function getTvShows() { return launchedShows.filter(s => s.type === 'TV Show'); }
+        function getShowChannel(s) { return launchedChannels.find(c => parseInt(c.id) === parseInt(s.channelId)); }
+        function clampTrp(v) { return Math.max(0.5, Math.min(8, parseFloat(v.toFixed(1)))); }
+
+        function renderTvShows() {
+            const box = document.getElementById('tvshows-list-container');
+            if (!box) return;
+            const list = launchedShows.filter(s => s.status !== 'Off Air');
+            if (list.length === 0) {
+                box.innerHTML = `<div class="text-center py-8 text-xs text-gray-500">No TV shows launched yet. Launch one from the Shows/Movies tab.</div>`;
+                return;
+            }
+            box.innerHTML = list.map(s => {
+                const ch = getShowChannel(s);
+                const on = s.status !== 'Off Air';
+                const arrow = s.trend > 0 ? '<span class="text-green-400 text-[10px]">▲</span>' : s.trend < 0 ? '<span class="text-red-400 text-[10px]">▼</span>' : '';
+                return `
+                    <div onclick="openTvShowModal(${s.id})" class="bg-vip-card border border-gray-800 rounded-2xl p-3 flex items-center justify-between shadow-lg hover:border-amber-500/50 transition-all cursor-pointer">
+                        <div class="flex items-center space-x-3 flex-1 min-w-0">
+                            ${poster(s.name, "w-10 h-12")}
+                            <div class="min-w-0">
+                                <h4 class="text-xs font-bold text-white truncate">${showLabel(s)}</h4>
+                                <p class="text-[10px] text-amber-400/80 truncate"><i class="fa-solid fa-tv mr-1"></i>${ch ? ch.name : 'Unassigned'}</p>
+                                <div class="mt-0.5">
+                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border ${on ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'}">${on ? (isLive(s) ? 'ON AIR' : 'SCHEDULED') : 'OFF AIR'}</span>
+                                    <span class="text-[9px] text-gray-400 ml-1">${s.type === 'Movie' ? ('MOVIE' + (s.endAt ? ' • ' + leftTxt(s) : '')) : ((s.episodes || 1) + ' EP' + ((s.rerunTotal > 0 || (s.startAt && Date.now() < s.startAt)) ? ' • ' + leftTxt(s) : ''))}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right flex-shrink-0 pl-2">
+                            <span class="text-xs font-extrabold ${on ? 'text-amber-400' : 'text-gray-500'}">${on && isLive(s) ? '+' + s.trpBoost.toFixed(1) : '--'}</span> ${on ? arrow : ''}
+                            <span class="text-[8px] block text-gray-400 font-medium uppercase">TRP</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openTvShowModal(id) {
+            currentTvShowId = id;
+            refreshTvShowModal();
+            document.getElementById('tvshow-modal').classList.remove('hidden');
+        }
+
+        function closeTvShowModal() {
+            document.getElementById('tvshow-modal').classList.add('hidden');
+        }
+
+        function refreshTvShowModal() {
+            const s = launchedShows.find(x => x.id === currentTvShowId);
+            if (!s) return;
+            const ch = getShowChannel(s);
+            const on = s.status !== 'Off Air';
+
+            document.getElementById('tvm-poster').innerHTML = poster(s.name, 'w-12 h-14');
+            document.getElementById('tvm-name').innerText = showLabel(s);
+            const st = document.getElementById('tvm-status');
+            st.innerText = on ? 'ON AIR' : 'OFF AIR';
+            st.className = 'text-[10px] font-bold px-2 py-0.5 rounded border ' + (on ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30');
+            document.getElementById('tvm-channel').innerText = ch ? `${ch.name} (${ch.category})` : 'Unassigned';
+            document.getElementById('tvm-episodes').innerText = s.type === 'Movie' ? 'Movie' : (s.episodes || 1);
+            document.getElementById('btn-tvm-next').style.display = s.type === 'Movie' ? 'none' : '';
+            document.getElementById('tvm-trp').innerText = on ? '+' + s.trpBoost.toFixed(1) : 'Off Air (0.0)';
+            document.getElementById('tvm-slot').innerText = s.timeSlot;
+            document.getElementById('tvm-cd').innerText = cdText(s) || '--';
+
+            const nextBtn = document.getElementById('btn-tvm-next');
+            nextBtn.className = 'w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2.5 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2 text-xs' + (on ? '' : ' opacity-40');
+
+            const airBtn = document.getElementById('btn-tvm-air');
+            if (on) {
+                airBtn.className = 'w-full border border-red-500/50 bg-red-500/10 text-red-400 font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 text-xs';
+                airBtn.innerHTML = '<i class="fa-solid fa-power-off text-sm"></i><span>TAKE OFF AIR</span>';
+            } else {
+                airBtn.className = 'w-full border border-green-500/50 bg-green-500/10 text-green-400 font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 text-xs';
+                airBtn.innerHTML = '<i class="fa-solid fa-tower-broadcast text-sm"></i><span>BRING BACK ON AIR</span>';
+            }
+        }
+
+        function refreshAllViews() {
+            renderOffAir();
+            renderChannels();
+            renderShows();
+            renderTvShows();
+            if (!document.getElementById('tvshow-modal').classList.contains('hidden')) refreshTvShowModal();
+            if (!document.getElementById('channel-modal').classList.contains('hidden') && window.currentChannelModalId) openChannelModal(window.currentChannelModalId);
+        }
+
+        function launchNextEpisode() {
+            const s = launchedShows.find(x => x.id === currentTvShowId);
+            if (!s) return;
+            if (s.status === 'Off Air') {
+                showToast('Show is Off Air! Bring it back on air first');
+                return;
+            }
+            if (s.rerunTotal > 0) { showToast('Rerun is playing automatically'); return; }
+            const ch0 = getShowChannel(s);
+            if (ch0 && ch0.status === 'Off Air') { showToast('This channel is Off Air'); return; }
+            s.episodes = (s.episodes || 1) + 1;
+            const nv = clampTrp(s.trpBoost + (Math.random() * 3 - 1.5));
+            s.trend = nv > s.trpBoost ? 1 : nv < s.trpBoost ? -1 : 0;
+            s.trpBoost = nv;
+
+            const ch = getShowChannel(s);
+            refreshAllViews();
+            closeTvShowModal();
+            playContentStream(`${showLabel(s)} • Episode ${s.episodes}`, 'TV Show', ch ? ch.name : 'Unassigned', s.trpBoost);
+        }
+
+        function toggleShowAir() {
+            const q = launchedShows.find(x => x.id === currentTvShowId);
+            if (q && q.rerunTotal > 0) { q.episodes = q.rerunTotal; q.rerunTotal = 0; }
+            const s = launchedShows.find(x => x.id === currentTvShowId);
+            if (!s) return;
+            s.status = 'Off Air';
+            s.trend = 0;
+            closeTvShowModal();
+            refreshAllViews();
+            showToast(`${showLabel(s)} is now Off Air`);
+        }
+
+        function takeChannelOffAir() {
+            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window.currentChannelModalId));
+            if (!c) return;
+            c.status = 'Off Air';
+            closeChannelModal();
+            window.currentChannelModalId = null;
+            refreshAllViews();
+            showToast(`${c.name} is now Off Air`);
+        }
+
+        function relaunchShow(id) {
+            const s = launchedShows.find(x => x.id === id);
+            if (!s) return;
+            const ch = getShowChannel(s);
+            if (!ch || ch.status === 'Off Air') { showToast('Its channel is Off Air!'); return; }
+            s.season = (s.season || 1) + 1;
+            s.episodes = 1;
+            s.status = 'On Air';
+            s.trend = 0;
+            s.trpBoost = parseFloat((Math.random() * 2 + 2.0).toFixed(1));
+            refreshAllViews();
+            showToast(`${showLabel(s)} Launched!`);
+            switchTab('tvshows');
+        }
+
+        function showLabel(s) {
+            const n = s.season || 1;
+            return n > 1 ? `${s.name} • ${s.type === 'Movie' ? 'Part' : 'Season'} ${n}` : s.name;
+        }
+
+        function renderOffAir() {
+            const a = document.getElementById('offch-list-container');
+            const b = document.getElementById('offsh-list-container');
+            if (!a || !b) return;
+            const chs = launchedChannels.filter(c => c.status === 'Off Air');
+            a.innerHTML = chs.length === 0 ? `<div class="text-center py-8 text-xs text-gray-500">No off-air channels.</div>` : chs.map(c => `
+                <div class="bg-vip-card border border-gray-800 rounded-2xl p-3 flex items-center justify-between opacity-80">
+                    <div class="flex items-center space-x-3 min-w-0">
+                        ${poster(c.name, 'w-10 h-10')}
+                        <div class="min-w-0">
+                            <h4 class="text-xs font-bold text-white truncate">${c.name}</h4>
+                            <p class="text-[10px] text-gray-400 truncate">${c.category} • ${c.tagline}</p>
+                        </div>
+                    </div>
+                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border bg-red-500/20 text-red-400 border-red-500/30">OFF AIR</span>
+                </div>`).join('');
+            const shs = launchedShows.filter(x => x.status === 'Off Air');
+            b.innerHTML = shs.length === 0 ? `<div class="text-center py-8 text-xs text-gray-500">No off-air shows or movies.</div>` : shs.map(x => {
+                const ch = getShowChannel(x);
+                const nxt = (x.season || 1) + 1;
+                return `
+                <div class="bg-vip-card border border-gray-800 rounded-2xl p-3 space-y-2.5">
+                    <div class="flex items-center space-x-3 min-w-0">
+                        ${poster(x.name, 'w-10 h-12')}
+                        <div class="min-w-0 flex-1">
+                            <h4 class="text-xs font-bold text-white truncate">${showLabel(x)}</h4>
+                            <p class="text-[10px] text-amber-400/80 truncate">${x.type} • ${ch ? ch.name : 'Unassigned'}${x.type === 'Movie' ? '' : ' • ' + (x.episodes || 1) + ' episodes completed'}</p>
+                        </div>
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border bg-red-500/20 text-red-400 border-red-500/30">OFF AIR</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="relaunchShow(${x.id})" class="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2 rounded-xl active:scale-95 transition-all flex items-center justify-center space-x-1.5 text-[10px]">
+                            <i class="fa-solid fa-rocket"></i><span>LAUNCH ${x.type === 'Movie' ? 'PART' : 'SEASON'} ${nxt}</span>
+                        </button>
+                        <button onclick="openRerunModal(${x.id})" class="border border-amber-500/60 bg-amber-500/10 text-amber-300 font-extrabold py-2 rounded-xl active:scale-95 transition-all flex items-center justify-center space-x-1.5 text-[10px]">
+                            <i class="fa-solid fa-shuffle"></i><span>AIR ON ANOTHER CHANNEL</span>
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Auto-generated VIP poster from title
+        function hashHue(n) { let h = 0; for (const c of (n || 'VIP')) h = (h * 31 + c.charCodeAt(0)) % 360; return h; }
+        function posterBg(n) { const h = hashHue(n); return `linear-gradient(160deg, hsl(${h},70%,32%), hsl(${(h + 50) % 360},75%,10%))`; }
+        function poster(n, size) {
+            return `<div class="${size} rounded-lg flex-shrink-0 flex flex-col items-center justify-center border border-amber-400/60 shadow" style="background:${posterBg(n)}"><i class="fa-solid fa-crown text-[7px] text-amber-300"></i><span class="font-extrabold text-[10px] text-amber-200">${getInitials(n)}</span></div>`;
+        }
+
+        // Local storage (data survives refresh / app restart)
+        const STORE_KEY = 'vipMediaEmpireV1';
+        function saveState() {
+            try { localStorage.setItem(STORE_KEY, JSON.stringify({ c: launchedChannels, s: launchedShows })); } catch (e) {}
+        }
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(STORE_KEY);
+                if (!raw) return;
+                const d = JSON.parse(raw);
+                if (Array.isArray(d.c)) launchedChannels = d.c;
+                if (Array.isArray(d.s)) launchedShows = d.s;
+            } catch (e) {}
+        }
+
+        // Live TRP: on-air TV shows move up and down; each channel TRP = base + sum of its on-air shows TRP, ranking follows
+        function startLiveTrp() {
+            setInterval(secondTick, 1000);
+            setInterval(() => {
+                endFinishedMovies();
+                getTvShows().filter(isLive).forEach(s => {
+                    const nv = clampTrp(s.trpBoost + (Math.random() * 1.2 - 0.6));
+                    s.trend = nv > s.trpBoost ? 1 : nv < s.trpBoost ? -1 : 0;
+                    s.trpBoost = nv;
+                });
+                refreshAllViews();
+            }, 4000);
+        }
+
+        // Scheduling helpers
+        function isLive(s) { return s.status !== 'Off Air' && (!s.startAt || Date.now() >= s.startAt); }
+        function nowHHMM() { const d = new Date(); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+        function hhmmToTs(v) {
+            const [h, m] = (v || '').split(':').map(Number);
+            if (isNaN(h) || isNaN(m)) return Date.now();
+            const d = new Date(); d.setHours(h, m, 0, 0);
+            return d.getTime() <= Date.now() ? Date.now() : d.getTime();
+        }
+        function fmtTime(v) {
+            const [h, m] = (v || '').split(':').map(Number);
+            if (isNaN(h) || isNaN(m)) return v || '';
+            return `${String(h % 12 || 12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+        }
+        function leftTxt(s) { return `<b data-cd="${s.id}" class="text-amber-300">${cdText(s)}</b>`; }
+        function fmtDur(sec) {
+            sec = Math.max(0, Math.ceil(sec));
+            const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), x = sec % 60;
+            const mm = String(m).padStart(2, '0'), ss = String(x).padStart(2, '0');
+            return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+        }
+        function cdText(s) {
+            const now = Date.now();
+            if (s.startAt && now < s.startAt) return 'Starts in ' + fmtDur((s.startAt - now) / 1000);
+            if (s.type === 'Movie') return s.endAt ? 'Ends in ' + fmtDur((s.endAt - now) / 1000) : '';
+            if (s.rerunTotal > 0) {
+                const L = (s.epSec || 60) * 1000, el = now - s.startAt;
+                const ep = Math.min(s.rerunTotal, Math.floor(el / L) + 1);
+                return `EP ${ep}/${s.rerunTotal} • ${ep < s.rerunTotal ? 'Next in ' : 'Ends in '}${fmtDur((ep * L - el) / 1000)}`;
+            }
+            return '';
+        }
+        function readDur(valId, unitId) {
+            const v = parseFloat(document.getElementById(valId).value);
+            const m = parseFloat(document.getElementById(unitId).value) || 60;
+            return isNaN(v) ? 0 : Math.round(v * m);
+        }
+        function setDur(valId, unitId, sec) {
+            let u = 1;
+            if (sec >= 3600 && sec % 3600 === 0) u = 3600; else if (sec >= 60 && sec % 60 === 0) u = 60;
+            document.getElementById(valId).value = sec / u;
+            document.getElementById(unitId).value = String(u);
+        }
+        function updateCountdowns() {
+            document.querySelectorAll('[data-cd]').forEach(el => {
+                const sh = launchedShows.find(x => x.id === Number(el.dataset.cd));
+                if (sh) el.textContent = cdText(sh);
+            });
+            const tm = document.getElementById('tvshow-modal');
+            if (tm && !tm.classList.contains('hidden')) {
+                const sh = launchedShows.find(x => x.id === currentTvShowId);
+                if (sh) document.getElementById('tvm-cd').textContent = cdText(sh) || '--';
+            }
+        }
+        function secondTick() {
+            const sig = () => JSON.stringify(launchedShows.map(x => [x.status, x.episodes]));
+            const before = sig();
+            endFinishedMovies();
+            if (before !== sig()) refreshAllViews();
+            updateCountdowns();
+        }
+        function endFinishedMovies() {
+            advanceReruns();
+            launchedShows.forEach(s => {
+                if (s.type === 'Movie' && s.status !== 'Off Air' && s.endAt && Date.now() >= s.endAt) {
+                    s.status = 'Off Air';
+                    showToast(`${showLabel(s)} finished - Off Air`);
+                }
+            });
+        }
+
+        // Air off-air movie / TV show rerun on another channel
+        let rerunShowId = null;
+        function openRerunModal(id) {
+            const sh = launchedShows.find(x => x.id === id);
+            if (!sh) return;
+            const act = launchedChannels.filter(c => c.status !== 'Off Air');
+            if (act.length === 0) { showToast('No channel is On Air!'); return; }
+            rerunShowId = id;
+            const isMovie = sh.type === 'Movie';
+            document.getElementById('rerun-title').innerText = 'Air "' + showLabel(sh) + '" on a channel';
+            document.getElementById('rerun-channel').innerHTML = act.map(c => `<option value="${c.id}" ${parseInt(c.id) === parseInt(sh.channelId) ? 'selected' : ''}>${c.name} (${c.category})</option>`).join('');
+            document.getElementById('rerun-time').value = nowHHMM();
+            document.getElementById('rerun-third-label').innerText = isMovie ? 'Movie Duration' : 'Number of Episodes to air';
+            document.getElementById('rerun-third-unit').style.display = isMovie ? '' : 'none';
+            document.getElementById('rerun-ep-box').style.display = isMovie ? 'none' : '';
+            if (isMovie) setDur('rerun-third', 'rerun-third-unit', sh.durationSec || (sh.durationMin || 30) * 60);
+            else setDur('rerun-ep', 'rerun-ep-unit', sh.epSec || 60);
+            if (!isMovie) document.getElementById('rerun-third').value = sh.episodes || 1;
+            document.getElementById('rerun-modal').classList.remove('hidden');
+        }
+        function closeRerunModal() { document.getElementById('rerun-modal').classList.add('hidden'); }
+        function confirmRerun() {
+            const sh = launchedShows.find(x => x.id === rerunShowId);
+            if (!sh) return;
+            const chId = parseInt(document.getElementById('rerun-channel').value);
+            if (!chId) { showToast('Please select a channel!'); return; }
+            const hhmm = document.getElementById('rerun-time').value || nowHHMM();
+            const n = Math.max(1, parseInt(document.getElementById('rerun-third').value) || 1);
+            const secs = Math.max(1, readDur('rerun-third', 'rerun-third-unit') || 60);
+            const epSec = Math.max(1, readDur('rerun-ep', 'rerun-ep-unit') || 60);
+            sh.channelId = chId;
+            sh.startAt = hhmmToTs(hhmm);
+            sh.timeSlot = fmtTime(hhmm);
+            sh.status = 'On Air';
+            sh.trend = 0;
+            sh.trpBoost = parseFloat((Math.random() * 2 + 2.0).toFixed(1));
+            if (sh.type === 'Movie') {
+                sh.durationSec = secs;
+                sh.endAt = sh.startAt + secs * 1000;
+            } else {
+                sh.rerunTotal = n;
+                sh.epSec = epSec;
+                sh.episodes = 1;
+            }
+            closeRerunModal();
+            refreshAllViews();
+            showToast(`${showLabel(sh)} airing on ${getShowChannel(sh).name}`);
+            switchTab('tvshows');
+        }
+        function advanceReruns() {
+            launchedShows.forEach(sh => {
+                if (!(sh.rerunTotal > 0) || sh.status === 'Off Air' || Date.now() < sh.startAt) return;
+                const ep = Math.floor((Date.now() - sh.startAt) / ((sh.epSec || 60) * 1000)) + 1;
+                if (ep > sh.rerunTotal) {
+                    sh.status = 'Off Air';
+                    sh.episodes = sh.rerunTotal;
+                    sh.rerunTotal = 0;
+                    showToast(`${showLabel(sh)} rerun finished - Off Air`);
+                } else {
+                    sh.episodes = ep;
+                }
+            });
+        }
+
+        // Movie replay from channel popup
+        let replayShowId = null;
+        function openReplayPanel(id) {
+            const s = launchedShows.find(x => x.id === id);
+            if (!s) return;
+            replayShowId = id;
+            document.getElementById('replay-title').innerText = 'Air again: ' + showLabel(s);
+            document.getElementById('replay-time').value = nowHHMM();
+            setDur('replay-mins', 'replay-unit', s.durationSec || (s.durationMin || 30) * 60);
+            document.getElementById('replay-panel').classList.remove('hidden');
+        }
+        function confirmReplay() {
+            const s = launchedShows.find(x => x.id === replayShowId);
+            if (!s) return;
+            const ch = getShowChannel(s);
+            if (!ch || ch.status === 'Off Air') { showToast('Its channel is Off Air!'); return; }
+            const hhmm = document.getElementById('replay-time').value || nowHHMM();
+            const secs = Math.max(1, readDur('replay-mins', 'replay-unit') || 1800);
+            s.startAt = hhmmToTs(hhmm);
+            s.durationSec = secs;
+            s.endAt = s.startAt + secs * 1000;
+            s.timeSlot = fmtTime(hhmm);
+            s.status = 'On Air';
+            s.trpBoost = parseFloat((Math.random() * 2 + 2.0).toFixed(1));
+            document.getElementById('replay-panel').classList.add('hidden');
+            replayShowId = null;
+            refreshAllViews();
+            showToast(`${showLabel(s)} airing again`);
+        }
+
+        // On Load Init
+        window.onload = function() {
+            loadState();
+            endFinishedMovies();
+            renderOffAir();
+            renderTvShows();
+            startLiveTrp();
+            recalculateChannelTRPs();
+            renderChannels();
+            renderShows();
+            switchTab('home');
+        };
+    </script>
 </body>
-</html>
+    </html>
