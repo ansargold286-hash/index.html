@@ -118,6 +118,10 @@
                     <i class="fa-solid fa-ban text-base"></i>
                     <span class="text-[10px] font-bold mt-1">Off-Air Shows</span>
                 </button>
+                <button id="btn-copy-code" onclick="copyAppCode()" class="flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/50 text-amber-300 transition-all active:scale-95">
+                    <i class="fa-solid fa-copy text-base"></i>
+                    <span class="text-[10px] font-bold mt-1">Copy Code</span>
+                </button>
             </div>
         </nav>
 
@@ -389,6 +393,14 @@
                         <div class="flex space-x-2">
                             <input type="number" id="input-movie-mins" min="1" value="30" class="flex-1 bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none min-w-0">
                             <select id="unit-movie" class="w-24 bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-[11px] text-amber-400 font-medium focus:outline-none flex-shrink-0"><option value="1">Seconds</option><option value="60" selected>Minutes</option><option value="3600">Hours</option></select>
+                        </div>
+                    </div>
+
+                    <div id="tv-episode-box" style="display:none">
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Episode Length (new episode every)</label>
+                        <div class="flex space-x-2">
+                            <input type="number" id="input-tv-ep" min="1" value="1" class="flex-1 bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none min-w-0">
+                            <select id="unit-tv-ep" class="w-24 bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-[11px] text-amber-400 font-medium focus:outline-none flex-shrink-0"><option value="1">Seconds</option><option value="60" selected>Minutes</option><option value="3600">Hours</option></select>
                         </div>
                     </div>
 
@@ -854,6 +866,7 @@
                 btnShow.className = 'content-type-btn py-2 text-center text-xs font-bold rounded-lg text-gray-400 hover:text-white transition-all';
                 lblTitle.innerText = 'Movie Title';
                 document.getElementById('movie-duration-box').style.display = '';
+                document.getElementById('tv-episode-box').style.display = 'none';
                 btnLaunchText.innerText = 'LAUNCH MOVIE';
                 typeBadge.innerText = 'Movie';
             } else {
@@ -861,6 +874,7 @@
                 btnMovie.className = 'content-type-btn py-2 text-center text-xs font-bold rounded-lg text-gray-400 hover:text-white transition-all';
                 lblTitle.innerText = 'TV Show Title';
                 document.getElementById('movie-duration-box').style.display = 'none';
+                document.getElementById('tv-episode-box').style.display = '';
                 btnLaunchText.innerText = 'LAUNCH TV SHOW';
                 typeBadge.innerText = 'TV Show';
             }
@@ -924,6 +938,7 @@
             const startAt = hhmmToTs(hhmm);
             const isMovie = selectedContentType === 'Movie';
             const secs = isMovie ? Math.max(1, readDur('input-movie-mins', 'unit-movie') || 1800) : 0;
+            const epSec = !isMovie ? Math.max(1, readDur('input-tv-ep', 'unit-tv-ep') || 60) : 0;
             launchedShows.unshift({
                 id: Date.now(),
                 name: titleInput,
@@ -933,6 +948,8 @@
                 timeSlot: fmtTime(hhmm),
                 startAt: startAt,
                 durationSec: secs,
+                epSec: epSec,
+                autoEp: !isMovie,
                 endAt: isMovie ? startAt + secs * 1000 : 0,
                 episodes: 1,
                 status: 'On Air',
@@ -1213,7 +1230,7 @@
                                 <p class="text-[10px] text-amber-400/80 truncate"><i class="fa-solid fa-tv mr-1"></i>${ch ? ch.name : 'Unassigned'}</p>
                                 <div class="mt-0.5">
                                     <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border ${on ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'}">${on ? (isLive(s) ? 'ON AIR' : 'SCHEDULED') : 'OFF AIR'}</span>
-                                    <span class="text-[9px] text-gray-400 ml-1">${s.type === 'Movie' ? ('MOVIE' + (s.endAt ? ' • ' + leftTxt(s) : '')) : ((s.episodes || 1) + ' EP' + ((s.rerunTotal > 0 || (s.startAt && Date.now() < s.startAt)) ? ' • ' + leftTxt(s) : ''))}</span>
+                                    <span class="text-[9px] text-gray-400 ml-1">${s.type === 'Movie' ? ('MOVIE' + (s.endAt ? ' • ' + leftTxt(s) : '')) : ((s.episodes || 1) + ' EP' + ((s.autoEp || s.rerunTotal > 0 || (s.startAt && Date.now() < s.startAt)) ? ' • ' + leftTxt(s) : ''))}</span>
                                 </div>
                             </div>
                         </div>
@@ -1286,6 +1303,10 @@
             if (s.rerunTotal > 0) { showToast('Rerun is playing automatically'); return; }
             const ch0 = getShowChannel(s);
             if (ch0 && ch0.status === 'Off Air') { showToast('This channel is Off Air'); return; }
+            if (s.autoEp) {
+                if (!isLive(s)) { showToast('Show has not started yet'); return; }
+                s.startAt -= (s.epSec || 60) * 1000;
+            }
             s.episodes = (s.episodes || 1) + 1;
             const nv = clampTrp(s.trpBoost + (Math.random() * 3 - 1.5));
             s.trend = nv > s.trpBoost ? 1 : nv < s.trpBoost ? -1 : 0;
@@ -1325,6 +1346,8 @@
             const ch = getShowChannel(s);
             if (!ch || ch.status === 'Off Air') { showToast('Its channel is Off Air!'); return; }
             s.season = (s.season || 1) + 1;
+            s.startAt = Date.now();
+            if (s.type === 'Movie') s.endAt = s.startAt + (s.durationSec || (s.durationMin || 30) * 60) * 1000;
             s.episodes = 1;
             s.status = 'On Air';
             s.trend = 0;
@@ -1442,6 +1465,11 @@
             const now = Date.now();
             if (s.startAt && now < s.startAt) return 'Starts in ' + fmtDur((s.startAt - now) / 1000);
             if (s.type === 'Movie') return s.endAt ? 'Ends in ' + fmtDur((s.endAt - now) / 1000) : '';
+            if (s.autoEp && !(s.rerunTotal > 0)) {
+                const L = (s.epSec || 60) * 1000, el = now - s.startAt;
+                const ep = Math.floor(el / L) + 1;
+                return `EP ${ep} • Next in ${fmtDur((ep * L - el) / 1000)}`;
+            }
             if (s.rerunTotal > 0) {
                 const L = (s.epSec || 60) * 1000, el = now - s.startAt;
                 const ep = Math.min(s.rerunTotal, Math.floor(el / L) + 1);
@@ -1539,6 +1567,10 @@
         }
         function advanceReruns() {
             launchedShows.forEach(sh => {
+                if (sh.autoEp && !(sh.rerunTotal > 0) && sh.status !== 'Off Air' && Date.now() >= sh.startAt) {
+                    sh.episodes = Math.floor((Date.now() - sh.startAt) / ((sh.epSec || 60) * 1000)) + 1;
+                    return;
+                }
                 if (!(sh.rerunTotal > 0) || sh.status === 'Off Air' || Date.now() < sh.startAt) return;
                 const ep = Math.floor((Date.now() - sh.startAt) / ((sh.epSec || 60) * 1000)) + 1;
                 if (ep > sh.rerunTotal) {
@@ -1580,6 +1612,32 @@
             replayShowId = null;
             refreshAllViews();
             showToast(`${showLabel(s)} airing again`);
+        }
+
+        // Copy full app code button
+        window.__vipSrc = document.documentElement.outerHTML;
+        async function copyAppCode() {
+            let src = '';
+            try {
+                const r = await fetch(location.href.split('#')[0]);
+                if (r.ok) src = await r.text();
+            } catch (e) {}
+            if (!src || src.indexOf('copyAppCode') < 0) src = '<!DOCTYPE html>\n' + window.__vipSrc;
+            let ok = false;
+            try { await navigator.clipboard.writeText(src); ok = true; } catch (e) {}
+            if (!ok) {
+                try {
+                    const ta = document.createElement('textarea');
+                    ta.value = src;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    ok = document.execCommand('copy');
+                    ta.remove();
+                } catch (e) {}
+            }
+            showToast(ok ? 'Full code copied!' : 'Copy blocked on this device');
         }
 
         // On Load Init
