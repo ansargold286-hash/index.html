@@ -673,7 +673,7 @@
                         </div>
 
                         <div class="flex items-center space-x-2 text-gray-400 text-xs">
-                            <button onclick="showToast('Volume: Max')" class="hover:text-amber-400 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                            <button onclick="speakChannelReport()" class="text-amber-400 hover:text-amber-300 p-1"><i class="fa-solid fa-volume-high"></i></button>
                             <button onclick="showToast('Quality: 4K Ultra')" class="hover:text-amber-400 p-1"><i class="fa-solid fa-gear"></i></button>
                         </div>
                     </div>
@@ -842,6 +842,7 @@
             };
 
             launchedChannels.unshift(newChannel);
+            generateArt('channel', newChannel);
             renderChannels();
 
             document.getElementById('input-tv-name').value = '';
@@ -956,6 +957,7 @@
                 trend: 0,
                 trpBoost: trpBoost
             });
+            generateArt('show', launchedShows[0]);
 
             recalculateChannelTRPs();
             renderChannels();
@@ -985,11 +987,9 @@
             document.getElementById('modal-channel-trp').innerText = channel.totalTrp.toFixed(1);
             document.getElementById('modal-channel-shows-count').innerText = assignedShows.length;
 
-            document.getElementById('modal-channel-logo').innerHTML = `
-                <div class="w-full h-full bg-black rounded-[10px] flex items-center justify-center font-bold text-xs text-amber-300">
-                    ${getInitials(channel.name)}
-                </div>
-            `;
+            document.getElementById('modal-channel-logo').innerHTML = channel.art
+                ? `<img src="${artSrc(channel.art)}" class="w-full h-full rounded-[10px] object-cover">`
+                : `<div class="w-full h-full bg-black rounded-[10px] flex items-center justify-center font-bold text-xs text-amber-300">${getInitials(channel.name)}</div>`;
 
             document.getElementById('btn-modal-watch-live').setAttribute('onclick', `closeChannelModal(); playLiveChannel(${channel.id});`);
 
@@ -1034,6 +1034,7 @@
             if (!channel) return;
 
             const assignedShows = launchedShows.filter(s => parseInt(s.channelId) === parseInt(channel.id));
+            window.currentPlayerChannelId = channel.id;
             const activeShowName = assignedShows.length > 0 ? assignedShows[0].name : 'VIP Live Broadcast Stream';
 
             document.getElementById('player-channel-badge').innerText = channel.name;
@@ -1041,6 +1042,7 @@
             document.getElementById('player-screen-title').innerText = channel.name;
             document.getElementById('player-screen-sub').innerText = `Live Broadcast • ${channel.category}`;
             document.getElementById('player-screen-icon').className = `fa-solid ${channel.icon || 'fa-tv'} animate-bounce`;
+            setPlayerArt(channel.art);
             document.getElementById('player-now-playing').innerText = activeShowName;
             document.getElementById('player-live-trp').innerText = `TRP ${channel.totalTrp.toFixed(1)}`;
             document.getElementById('player-controls-name').innerText = channel.name;
@@ -1053,11 +1055,15 @@
         }
 
         function playContentStream(title, type, channelName, trpBoost) {
+            const pc = launchedChannels.find(c => c.name === channelName);
+            window.currentPlayerChannelId = pc ? pc.id : null;
             document.getElementById('player-channel-badge').innerText = type.toUpperCase();
             document.getElementById('player-quality-badge').innerText = '1080p FULL HD';
             document.getElementById('player-screen-title').innerText = title;
             document.getElementById('player-screen-sub').innerText = `Broadcasting on ${channelName}`;
             document.getElementById('player-screen-icon').className = `fa-solid ${type === 'Movie' ? 'fa-film' : 'fa-tv'} animate-bounce`;
+            const ps = launchedShows.find(x => x.art && title.indexOf(x.name) === 0);
+            setPlayerArt(ps ? ps.art : null);
             document.getElementById('player-now-playing').innerText = title;
             document.getElementById('player-live-trp').innerText = `TRP +${trpBoost.toFixed(1)}`;
             document.getElementById('player-controls-name').innerText = title;
@@ -1085,6 +1091,7 @@
         }
 
         function closePlayerModal() {
+            if ('speechSynthesis' in window) speechSynthesis.cancel();
             document.getElementById('player-modal').classList.add('hidden');
         }
 
@@ -1113,11 +1120,7 @@
                     <div class="flex items-center justify-between p-2.5 rounded-xl bg-black/40 border border-gray-800/80 hover:border-amber-500/50 transition-all">
                         <div onclick="openChannelModal(${ch.id})" class="flex items-center space-x-3 overflow-hidden cursor-pointer flex-1">
                             <span class="w-5 text-center font-extrabold text-xs ${idx === 0 ? 'text-amber-400' : 'text-gray-400'}">#${idx + 1}</span>
-                            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 flex-shrink-0">
-                                <div class="w-full h-full bg-black rounded-[6px] flex items-center justify-center font-bold text-[9px] text-amber-300">
-                                    ${getInitials(ch.name)}
-                                </div>
-                            </div>
+                            ${logo(ch, "w-8 h-8")}
                             <div class="truncate">
                                 <h4 class="text-xs font-bold text-white truncate">${ch.name}</h4>
                                 <span class="text-[10px] text-amber-400/80 font-medium">${ch.category}</span>
@@ -1148,11 +1151,7 @@
                                 ${idx === 0 ? '<i class="fa-solid fa-crown text-amber-400 text-xs mb-0.5"></i>' : ''}
                                 <span class="text-xs font-extrabold ${idx === 0 ? 'text-amber-400' : 'text-gray-400'}">#${idx + 1}</span>
                             </div>
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 flex-shrink-0">
-                                <div class="w-full h-full bg-black/90 rounded-[9px] flex flex-col items-center justify-center text-center p-0.5">
-                                    <span class="text-[10px] font-extrabold text-gold-gradient">${getInitials(ch.name)}</span>
-                                </div>
-                            </div>
+                            ${logo(ch, "w-10 h-10")}
                             <div class="flex-1 min-w-0 pr-2">
                                 <div class="flex items-center space-x-1.5">
                                     <h4 class="text-xs font-bold text-white truncate">${ch.name}</h4>
@@ -1345,6 +1344,26 @@
             if (!s) return;
             const ch = getShowChannel(s);
             if (!ch || ch.status === 'Off Air') { showToast('Its channel is Off Air!'); return; }
+            if (s.type !== 'Movie') {
+                if (s.sequelLaunched) { showToast('Next season is already launched'); return; }
+                const ns = Object.assign({}, s, {
+                    id: Date.now(),
+                    season: (s.season || 1) + 1,
+                    episodes: 1,
+                    status: 'On Air',
+                    trend: 0,
+                    rerunTotal: 0,
+                    sequelLaunched: false,
+                    startAt: Date.now(),
+                    trpBoost: parseFloat((Math.random() * 2 + 2.0).toFixed(1))
+                });
+                s.sequelLaunched = true;
+                launchedShows.unshift(ns);
+                refreshAllViews();
+                showToast(`${showLabel(ns)} Launched!`);
+                switchTab('tvshows');
+                return;
+            }
             s.season = (s.season || 1) + 1;
             s.startAt = Date.now();
             if (s.type === 'Movie') s.endAt = s.startAt + (s.durationSec || (s.durationMin || 30) * 60) * 1000;
@@ -1359,7 +1378,7 @@
 
         function showLabel(s) {
             const n = s.season || 1;
-            return n > 1 ? `${s.name} • ${s.type === 'Movie' ? 'Part' : 'Season'} ${n}` : s.name;
+            return (n > 1 || (s.sequelLaunched && s.type !== 'Movie')) ? `${s.name} • ${s.type === 'Movie' ? 'Part' : 'Season'} ${n}` : s.name;
         }
 
         function renderOffAir() {
@@ -1394,7 +1413,7 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <button onclick="relaunchShow(${x.id})" class="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2 rounded-xl active:scale-95 transition-all flex items-center justify-center space-x-1.5 text-[10px]">
-                            <i class="fa-solid fa-rocket"></i><span>LAUNCH ${x.type === 'Movie' ? 'PART' : 'SEASON'} ${nxt}</span>
+                            <i class="fa-solid fa-rocket"></i><span>${x.sequelLaunched ? 'SEASON ' + nxt + ' LAUNCHED' : 'LAUNCH ' + (x.type === 'Movie' ? 'PART' : 'SEASON') + ' ' + nxt}</span>
                         </button>
                         <button onclick="openRerunModal(${x.id})" class="border border-amber-500/60 bg-amber-500/10 text-amber-300 font-extrabold py-2 rounded-xl active:scale-95 transition-all flex items-center justify-center space-x-1.5 text-[10px]">
                             <i class="fa-solid fa-shuffle"></i><span>AIR ON ANOTHER CHANNEL</span>
@@ -1408,6 +1427,8 @@
         function hashHue(n) { let h = 0; for (const c of (n || 'VIP')) h = (h * 31 + c.charCodeAt(0)) % 360; return h; }
         function posterBg(n) { const h = hashHue(n); return `linear-gradient(160deg, hsl(${h},70%,32%), hsl(${(h + 50) % 360},75%,10%))`; }
         function poster(n, size) {
+            const a = artFor(n);
+            if (a) return `<img src="${artSrc(a)}" class="${size} rounded-lg flex-shrink-0 object-cover border border-amber-400/60 shadow">`;
             return `<div class="${size} rounded-lg flex-shrink-0 flex flex-col items-center justify-center border border-amber-400/60 shadow" style="background:${posterBg(n)}"><i class="fa-solid fa-crown text-[7px] text-amber-300"></i><span class="font-extrabold text-[10px] text-amber-200">${getInitials(n)}</span></div>`;
         }
 
@@ -1614,6 +1635,108 @@
             showToast(`${showLabel(s)} airing again`);
         }
 
+        // Voice report: rank, TRP, performance, shows and channel news
+        function buildChannelReport(c) {
+            const act = launchedChannels.filter(x => x.status !== 'Off Air').sort((a, b) => b.totalTrp - a.totalTrp);
+            const N = act.length;
+            const rank = act.findIndex(x => parseInt(x.id) === parseInt(c.id)) + 1;
+            const mine = launchedShows.filter(x => parseInt(x.channelId) === parseInt(c.id));
+            const live = mine.filter(isLive).sort((a, b) => b.trpBoost - a.trpBoost);
+            const up = live.filter(x => x.trend > 0).length, down = live.filter(x => x.trend < 0).length;
+            const r = [];
+            r.push(`${c.name} चैनल की रिपोर्ट।`);
+            r.push(`यह चैनल ${N} चैनलों में ${rank} नंबर पर चल रहा है, और TRP लिस्ट में इसकी TRP ${c.totalTrp.toFixed(1)} है।`);
+            if (rank > 1) r.push(`नंबर ${rank - 1} वाले चैनल से यह ${(act[rank - 2].totalTrp - c.totalTrp).toFixed(1)} TRP पीछे है।`);
+            else if (N > 1) r.push(`यह दूसरे नंबर वाले चैनल से ${(c.totalTrp - act[1].totalTrp).toFixed(1)} TRP आगे है।`);
+            r.push(rank === 1 ? 'चैनल का प्रदर्शन बेहतरीन है।' : rank <= Math.ceil(N / 2) ? 'चैनल अच्छा प्रदर्शन कर रहा है।' : 'चैनल का प्रदर्शन कमज़ोर है, सुधार की ज़रूरत है।');
+            if (up > down) r.push('अभी चैनल की TRP बढ़ रही है।'); else if (down > up) r.push('अभी चैनल की TRP गिर रही है।');
+            if (live.length === 0) r.push('अभी इस चैनल पर कोई शो नहीं चल रहा।');
+            else {
+                r.push(`चैनल पर ${live.length} शो चल रहे हैं।`);
+                live.slice(0, 8).forEach((x, i) => r.push(`${i + 1} नंबर पर ${showLabel(x)}, TRP ${x.trpBoost.toFixed(1)}${x.trend > 0 ? ', बढ़ रही है' : x.trend < 0 ? ', गिर रही है' : ''}।`));
+                if (live.length > 8) r.push('और बाकी शो भी चल रहे हैं।');
+                r.push(`सबसे बढ़िया परफॉर्म करने वाला शो ${showLabel(live[0])} है।`);
+                if (live.length > 1) r.push(`सबसे कमज़ोर शो ${showLabel(live[live.length - 1])} है।`);
+            }
+            r.push('अब चैनल की ख़बरें।');
+            const news = [];
+            if (rank === 1) news.push(`ब्रेकिंग न्यूज़: ${c.name} इस समय नंबर वन चैनल है।`);
+            if (live.length) news.push(`${live[0].name} दर्शकों की पहली पसंद बना हुआ है।`);
+            live.filter(x => x.type !== 'Movie').slice(0, 2).forEach(x => news.push(`${showLabel(x)} का एपिसोड ${x.episodes || 1} इस समय चल रहा है।`));
+            live.filter(x => x.type === 'Movie' && x.endAt).slice(0, 1).forEach(x => {
+                const sec = Math.max(0, Math.ceil((x.endAt - Date.now()) / 1000));
+                news.push(`फ़िल्म ${x.name} अभी प्रसारित हो रही है, ${sec < 60 ? sec + ' सेकंड' : Math.ceil(sec / 60) + ' मिनट'} बाक़ी।`);
+            });
+            mine.filter(x => x.status === 'Off Air').slice(0, 2).forEach(x => news.push(x.type === 'Movie' ? `फ़िल्म ${x.name} ऑफ एयर हो चुकी है।` : `${showLabel(x)} ऑफ एयर हो चुका है, ${x.episodes || 1} एपिसोड पूरे हुए।`));
+            if (N > 1 && rank === N) news.push('TRP में सबसे नीचे होने से चैनल पर दबाव बना हुआ है।');
+            if (news.length === 0) news.push('फ़िलहाल कोई नई ख़बर नहीं है।');
+            return r.concat(news);
+        }
+        function speakChannelReport() {
+            if (!('speechSynthesis' in window)) { showToast('Voice is not supported on this device'); return; }
+            if (speechSynthesis.speaking) { speechSynthesis.cancel(); showToast('Voice stopped'); return; }
+            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window.currentPlayerChannelId));
+            if (!c || c.status === 'Off Air') { showToast('No channel selected for report'); return; }
+            const voice = speechSynthesis.getVoices().find(v => /^hi/i.test(v.lang));
+            buildChannelReport(c).forEach(line => {
+                const u = new SpeechSynthesisUtterance(line);
+                u.lang = 'hi-IN';
+                u.rate = 0.95;
+                if (voice) u.voice = voice;
+                speechSynthesis.speak(u);
+            });
+            showToast('Channel report playing...');
+        }
+
+        // AI logo / poster maker (Claude draws SVG art from the name)
+        function artSrc(svg) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); }
+        function artFor(n) {
+            const it = launchedShows.find(x => x.name === n && x.art) || launchedChannels.find(x => x.name === n && x.art);
+            return it ? it.art : null;
+        }
+        function logo(ch, size) {
+            if (ch.art) return `<img src="${artSrc(ch.art)}" class="${size} rounded-lg flex-shrink-0 object-cover border border-amber-400/60">`;
+            return `<div class="${size} rounded-lg bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 flex-shrink-0"><div class="w-full h-full bg-black rounded-[6px] flex items-center justify-center font-bold text-[9px] text-amber-300">${getInitials(ch.name)}</div></div>`;
+        }
+        function setPlayerArt(art) {
+            const ic = document.getElementById('player-screen-icon');
+            const w = ic.parentElement;
+            w.querySelectorAll('img').forEach(i => i.remove());
+            ic.style.display = art ? 'none' : '';
+            if (art) w.insertAdjacentHTML('beforeend', `<img src="${artSrc(art)}" class="w-full h-full rounded-full object-cover">`);
+        }
+        function cleanSvg(text) {
+            const m = (text || '').match(/<svg[\s\S]*<\/svg>/i);
+            if (!m) return null;
+            let svg = m[0];
+            if (svg.length > 30000) return null;
+            if (/<script|<foreignObject|<image|javascript:|\son\w+\s*=|href\s*=\s*["']?\s*https?:/i.test(svg)) return null;
+            if (!/xmlns\s*=/.test(svg)) svg = svg.replace(/<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
+            return svg;
+        }
+        let artQueue = Promise.resolve();
+        function generateArt(kind, item) {
+            if (typeof claude === 'undefined' || !claude.use) return;
+            artQueue = artQueue.then(async () => {
+                try {
+                    const sample = await claude.use('sample');
+                    if (!sample) return;
+                    const isCh = kind === 'channel';
+                    const prompt = isCh
+                        ? `Design a premium TV channel logo for a channel named "${item.name}" (category: ${item.category}, tagline: "${item.tagline}"). Luxury VIP style on a dark background with gold or a colour that suits the name. Use bold simple shapes plus the channel name or its initials. Output ONLY one self-contained SVG, no markdown, with viewBox="0 0 200 200", under 3KB, no scripts, no images, no external fonts (use font-family sans-serif).`
+                        : `Design a cinematic ${item.type === 'Movie' ? 'movie' : 'TV show'} poster for the title "${item.name}" (genre: ${item.category}). Dramatic gradient background, a bold symbolic illustration made from simple SVG shapes that fits the title, the title text near the bottom (max 2 lines, centered, font-size 20 or smaller), and a small gold crown or "VIP" mark at the top. Output ONLY one self-contained SVG, no markdown, with viewBox="0 0 200 300", under 4KB, no scripts, no images, no external fonts (use font-family sans-serif).`;
+                    const r = await sample(prompt, { modelTier: 'default', cache: false });
+                    const svg = cleanSvg(r && r.text);
+                    if (!svg) return;
+                    item.art = svg;
+                    refreshAllViews();
+                    showToast(isCh ? 'AI logo ready!' : 'AI poster ready!');
+                } catch (e) {
+                    showToast('AI art could not be made');
+                }
+            });
+        }
+
         // Copy full app code button
         window.__vipSrc = document.documentElement.outerHTML;
         async function copyAppCode() {
@@ -1654,4 +1777,4 @@
         };
     </script>
 </body>
-    </html>
+</html>
