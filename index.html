@@ -536,6 +536,28 @@
                     </div>
                     <button onclick="confirmReplay()" class="w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2 rounded-xl text-xs active:scale-95">AIR MOVIE AGAIN</button>
                 </div>
+
+                <div id="automovie-panel" class="hidden bg-black/50 border border-amber-500/30 rounded-2xl p-3 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-bold text-amber-400"><i class="fa-solid fa-repeat mr-1"></i>AUTO MOVIES</p>
+                        <span id="automovie-status" class="text-[10px] font-bold text-gray-400">Auto is OFF</span>
+                    </div>
+                    <p class="text-[10px] text-gray-400">When a movie finishes, it airs again at once with the same time and duration. New movies are never launched automatically.</p>
+                    <button id="btn-automovie" onclick="toggleAutoMovie()" class="w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2 rounded-xl text-[10px] active:scale-95">TURN AUTO ON</button>
+                </div>
+
+                <div id="auto-panel" class="hidden bg-black/50 border border-amber-500/30 rounded-2xl p-3 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <p class="text-xs font-bold text-amber-400"><i class="fa-solid fa-robot mr-1"></i>AUTO SHOWS</p>
+                        <span id="auto-status" class="text-[10px] font-bold text-gray-400">Auto is OFF</span>
+                    </div>
+                    <label class="block text-[10px] text-gray-400">How many TV shows should always run on this channel?</label>
+                    <div class="flex space-x-2">
+                        <input type="number" id="auto-min" min="1" max="20" value="5" class="flex-1 min-w-0 bg-black/60 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                        <button onclick="startAuto()" class="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold px-3 py-2 rounded-xl text-[10px] active:scale-95">START AUTO</button>
+                        <button id="btn-auto-stop" onclick="stopAuto()" class="border border-red-500/50 bg-red-500/10 text-red-400 font-bold px-3 py-2 rounded-xl text-[10px]" style="display:none">STOP</button>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -1019,10 +1041,13 @@
                         <span class="text-[10px] font-bold text-red-400 flex-shrink-0">OFF AIR • TAP TO REPLAY</span>
                     </div>`).join(''));
             }
+            refreshAutoPanel(channel);
+            refreshAutoMoviePanel(channel);
             document.getElementById('channel-modal').classList.remove('hidden');
         }
 
         function closeChannelModal() {
+            window._autoPanelFor = null;
             document.getElementById('replay-panel').classList.add('hidden');
             document.getElementById('channel-modal').classList.add('hidden');
         }
@@ -1529,10 +1554,19 @@
         }
         function endFinishedMovies() {
             advanceReruns();
+            autoManageChannels();
             launchedShows.forEach(s => {
                 if (s.type === 'Movie' && s.status !== 'Off Air' && s.endAt && Date.now() >= s.endAt) {
-                    s.status = 'Off Air';
-                    showToast(`${showLabel(s)} finished - Off Air`);
+                    const mch = getShowChannel(s);
+                    const dSec = s.durationSec || (s.durationMin || 0) * 60;
+                    if (mch && mch.status !== 'Off Air' && mch.autoMovie && dSec > 0) {
+                        s.startAt = Date.now();
+                        s.endAt = s.startAt + dSec * 1000;
+                        showToast(`${showLabel(s)} airing again (Auto)`);
+                    } else {
+                        s.status = 'Off Air';
+                        showToast(`${showLabel(s)} finished - Off Air`);
+                    }
                 }
             });
         }
@@ -1715,7 +1749,7 @@
             return svg;
         }
         let artQueue = Promise.resolve();
-        function generateArt(kind, item) {
+        function generateArt(kind, item, silent) {
             if (typeof claude === 'undefined' || !claude.use) return;
             artQueue = artQueue.then(async () => {
                 try {
@@ -1732,9 +1766,144 @@
                     refreshAllViews();
                     showToast(isCh ? 'AI logo ready!' : 'AI poster ready!');
                 } catch (e) {
-                    showToast('AI art could not be made');
+                    if (!silent) showToast('AI art could not be made');
                 }
             });
+        }
+
+        // Auto shows: keep exactly N TV shows running on a channel
+        const AUTO_NAMES = {
+            Drama: ['The Last Verdict', 'Midnight Letters', 'Broken Crown', 'Silent Waters', 'House of Whispers', 'The Hidden Heir', 'Rivers of Ash', 'A Promise Kept', 'Golden Cage', 'Unspoken Vows', 'The Quiet Storm', 'Faded Horizons', 'Bridge of Memories', 'The Family Throne', 'Beyond the Window'],
+            Comedy: ['Home Sweet Chaos', 'Neighbours Gone Wild', 'Laugh Factory Lane', 'Dinner for Eleven', 'Wrong Number Wedding', 'The Lazy Landlord', 'Oops Brothers', 'Crazy Cousins Club', 'Chai Time Chaos', 'My Boss Is a Goat', 'Three Roommates', 'Mad House Mondays', 'The Prank Squad', 'Funny Business Inc', 'Wedding Week Madness'],
+            Thriller: ['Dark Alibi', 'The Vanishing Hour', 'Shadow Protocol', 'Cold Case 9', 'The Silent Witness', 'Zero Hour Chase', 'Night Watchers', 'The Locked Room', 'Echoes in the Dark', 'Blind Spot', 'The Final Signal', 'Red Thread', 'Mind Games Unit', 'Safe House 13', 'The Last Witness'],
+            Action: ['Iron Brigade', 'Operation Thunderstrike', 'Desert Storm Squad', 'Steel Hunters', 'Rapid Response', 'Code Red Force', 'Border Strike', 'The Last Mission', 'Falcon Unit', 'Rogue Agents', 'Blaze Commandos', 'Storm Chasers Elite', 'Combat Zone 7', 'Phoenix Squad', 'Night Raid Team']
+        };
+        const AUTO_GENRE = Object.keys(AUTO_NAMES);
+        // Pick the genre this channel is running least, so the line-up stays varied
+        function pickAutoGenre(c) {
+            const mine = launchedShows.filter(x => x.type === 'TV Show' && x.status !== 'Off Air' && parseInt(x.channelId) === parseInt(c.id));
+            const cnt = {};
+            AUTO_GENRE.forEach(g => cnt[g] = 0);
+            mine.forEach(x => { if (cnt[x.category] !== undefined) cnt[x.category]++; });
+            const min = Math.min(...AUTO_GENRE.map(g => cnt[g]));
+            const best = AUTO_GENRE.filter(g => cnt[g] === min);
+            return best[Math.floor(Math.random() * best.length)];
+        }
+        function isShowsChannel(c) {
+            return c.category === 'Shows' || launchedShows.some(x => x.type === 'TV Show' && parseInt(x.channelId) === parseInt(c.id));
+        }
+        function autoShowName(genre) {
+            const used = n => launchedShows.some(x => x.name === n);
+            let pool = AUTO_NAMES[genre].filter(n => !used(n));
+            if (pool.length === 0) pool = [].concat(...AUTO_GENRE.map(g => AUTO_NAMES[g])).filter(n => !used(n));
+            if (pool.length > 0) return pool[Math.floor(Math.random() * pool.length)];
+            const base = AUTO_NAMES[genre][Math.floor(Math.random() * AUTO_NAMES[genre].length)];
+            for (let i = 2; i < 500; i++) { if (!used(base + ' ' + i)) return base + ' ' + i; }
+            return base + ' ' + Date.now();
+        }
+        function launchAutoShow(c) {
+            const genre = pickAutoGenre(c);
+            const now = Date.now();
+            const item = {
+                id: now + Math.floor(Math.random() * 1000),
+                name: autoShowName(genre),
+                type: 'TV Show',
+                category: genre,
+                channelId: c.id,
+                timeSlot: fmtTime(nowHHMM()),
+                startAt: now,
+                durationSec: 0,
+                epSec: 60,
+                autoEp: true,
+                endAt: 0,
+                episodes: 1,
+                status: 'On Air',
+                trend: 0,
+                autoCreated: true,
+                trpBoost: parseFloat((Math.random() * 2 + 2.0).toFixed(1))
+            };
+            launchedShows.unshift(item);
+            generateArt('show', item, true);
+            showToast(`Auto launched: ${item.name}`);
+        }
+        function autoManageChannels() {
+            let changed = false;
+            launchedChannels.forEach(c => {
+                if (c.status === 'Off Air' || !(c.autoMin > 0)) return;
+                const mine = launchedShows.filter(x => x.type === 'TV Show' && x.status !== 'Off Air' && parseInt(x.channelId) === parseInt(c.id));
+                if (mine.length > c.autoMin) {
+                    const t = Date.now();
+                    mine.sort((a, b) => ((t - (a.startAt || 0) < 30000) - (t - (b.startAt || 0) < 30000)) || (a.trpBoost - b.trpBoost));
+                    mine.slice(0, mine.length - c.autoMin).forEach(x => {
+                        x.status = 'Off Air';
+                        x.trend = 0;
+                        if (x.rerunTotal > 0) { x.episodes = x.rerunTotal; x.rerunTotal = 0; }
+                        changed = true;
+                    });
+                } else if (mine.length < c.autoMin) {
+                    for (let i = mine.length; i < c.autoMin; i++) launchAutoShow(c);
+                    changed = true;
+                }
+            });
+            if (changed) refreshAllViews();
+        }
+        function refreshAutoPanel(c) {
+            const panel = document.getElementById('auto-panel');
+            const ok = isShowsChannel(c);
+            panel.classList.toggle('hidden', !ok);
+            if (!ok) return;
+            if (window._autoPanelFor !== c.id) {
+                document.getElementById('auto-min').value = c.autoMin || 5;
+                window._autoPanelFor = c.id;
+            }
+            const on = c.autoMin > 0;
+            const st = document.getElementById('auto-status');
+            st.innerText = on ? `Auto ON • keeping ${c.autoMin} shows` : 'Auto is OFF';
+            st.className = 'text-[10px] font-bold ' + (on ? 'text-green-400' : 'text-gray-400');
+            document.getElementById('btn-auto-stop').style.display = on ? '' : 'none';
+        }
+        function startAuto() {
+            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window.currentChannelModalId));
+            if (!c) return;
+            const n = Math.max(1, Math.min(20, parseInt(document.getElementById('auto-min').value) || 5));
+            document.getElementById('auto-min').value = n;
+            c.autoMin = n;
+            autoManageChannels();
+            refreshAllViews();
+            showToast(`Auto ON: ${n} shows on ${c.name}`);
+        }
+        function stopAuto() {
+            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window.currentChannelModalId));
+            if (!c) return;
+            c.autoMin = 0;
+            refreshAllViews();
+            showToast(`Auto OFF for ${c.name}`);
+        }
+
+        // Auto movies: replay a finished movie at once on its channel
+        function isMovieChannel(c) {
+            return c.category === 'Movies' || launchedShows.some(x => x.type === 'Movie' && parseInt(x.channelId) === parseInt(c.id));
+        }
+        function refreshAutoMoviePanel(c) {
+            const panel = document.getElementById('automovie-panel');
+            const ok = isMovieChannel(c);
+            panel.classList.toggle('hidden', !ok);
+            if (!ok) return;
+            const st = document.getElementById('automovie-status');
+            st.innerText = c.autoMovie ? 'Auto is ON' : 'Auto is OFF';
+            st.className = 'text-[10px] font-bold ' + (c.autoMovie ? 'text-green-400' : 'text-gray-400');
+            const b = document.getElementById('btn-automovie');
+            b.innerText = c.autoMovie ? 'TURN AUTO OFF' : 'TURN AUTO ON';
+            b.className = c.autoMovie
+                ? 'w-full border border-red-500/50 bg-red-500/10 text-red-400 font-bold py-2 rounded-xl text-[10px]'
+                : 'w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2 rounded-xl text-[10px] active:scale-95';
+        }
+        function toggleAutoMovie() {
+            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window.currentChannelModalId));
+            if (!c) return;
+            c.autoMovie = !c.autoMovie;
+            refreshAllViews();
+            showToast(`Auto Movies ${c.autoMovie ? 'ON' : 'OFF'} for ${c.name}`);
         }
 
         // Copy full app code button
@@ -1777,4 +1946,4 @@
         };
     </script>
 </body>
-</html>
+    </html>
