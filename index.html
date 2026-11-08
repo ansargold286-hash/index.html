@@ -23,8 +23,8 @@ header{padding:10px 12px 8px;background:var(--card);border-bottom:1px solid var(
 .sp button{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;padding:3px 8px;font-size:12px}
 .sp button.on{background:var(--acc);color:var(--on);border-color:var(--acc)}
 main{flex:1;overflow-y:auto;padding:12px}
-nav{display:grid;grid-template-columns:repeat(6,1fr);background:var(--card);border-top:1px solid var(--line)}
-nav button{border:0;background:none;color:var(--muted);padding:8px 2px 7px;font-size:10px;font-weight:700}
+nav{display:grid;grid-template-columns:repeat(7,1fr);background:var(--card);border-top:1px solid var(--line)}
+nav button{border:0;background:none;color:var(--muted);padding:8px 1px 7px;font-size:9px;font-weight:700}
 nav button i{display:block;font-style:normal;font-size:19px;line-height:1.2}
 nav button.on{color:var(--acc)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
@@ -94,7 +94,28 @@ const PLANS=[
  {id:'game',n:'5G Gamer Ultra',d:'Rs 999, low ping',arpu:800,ap:.07,cost:150000,gen:4}];
 const ADS=[{n:'Off',c:0,b:0},{n:'Local news',c:1000,b:.06},{n:'TV news',c:4000,b:.12},{n:'National campaign',c:12000,b:.2}];
 const STAFF={eng:{n:'Engineers',sal:1000,fee:5000,fx:'Slower tower wear and auto-repair'},sup:{n:'Support team',sal:700,fee:4000,fx:'Fewer users leave, better reputation'},sales:{n:'Sales agents',sal:900,fee:4000,fx:'More new SIMs sold each day'}};
-const MILES=[1000,5000,10000,25000,50000,100000];
+const MILES=[1000,5000,10000,25000,50000,100000,250000,500000,1000000];
+const ZONES=[['Saddar',67.01,24.86,25],['Clifton',67.03,24.81,20],['Gulshan-e-Iqbal',67.09,24.92,35],['North Nazimabad',67.04,24.94,30],['Korangi',67.13,24.83,30],['Malir',67.2,24.89,28],['Landhi',67.21,24.85,22],['Orangi Town',66.99,24.95,35],['Gadap',67.1,25.03,12],
+['Hyderabad',68.37,25.4,60],['Lahore',74.35,31.55,160],['Faisalabad',73.08,31.42,70],['Rawalpindi',73.04,33.6,55],['Islamabad',73.05,33.69,40],['Multan',71.47,30.2,55],['Peshawar',71.58,34.01,60],['Gujranwala',74.19,32.16,45],['Quetta',67.0,30.18,35],['Sukkur',68.86,27.7,25],['Larkana',68.21,27.56,22],['Mirpur Khas',69.01,25.53,18],['Nawabshah',68.41,26.25,14],['Sialkot',74.52,32.49,25],['Bahawalpur',71.67,29.4,22],['Sargodha',72.67,32.08,20],['Mardan',72.04,34.2,22],['Abbottabad',73.22,34.15,15],['Swat',72.43,34.77,18],['Muzaffarabad',73.47,34.37,10],['Gilgit',74.31,35.92,10],['Gwadar',62.32,25.12,8],['Turbat',63.05,26.0,8]];
+const PK=[[61.6,25.1],[66.7,24.8],[67.4,24.0],[68.2,23.7],[69.5,24.3],[70.2,25.2],[70.5,26.7],[71.0,27.8],[72.2,28.6],[73.0,29.9],[74.4,31.0],[74.8,31.9],[75.3,32.4],[74.5,33.2],[74.0,34.6],[75.0,35.5],[76.7,35.7],[77.0,36.3],[75.5,37.0],[74.5,37.0],[72.5,36.9],[71.5,36.5],[71.2,35.5],[70.9,34.5],[71.1,34.0],[70.2,33.9],[69.9,33.0],[69.3,31.9],[68.0,31.6],[66.4,29.9],[64.5,29.5],[62.5,29.4],[60.9,29.8],[61.6,28.0],[62.5,27.0],[63.2,26.5],[61.8,25.3]];
+function zoneCount(z){return S.towers.filter(t=>(t.z||0)===z).length}
+function zoneCost(k){return Math.round(40000*Math.pow(1.22,k)/1000)*1000}
+function zoneReq(k){const l=[[S.users>=400*k,fm(400*k)+' customers (you have '+fm(S.users)+')'],[zoneCount(k-1)>0,'a tower in '+ZONES[k-1][0]]];return{ok:l.every(x=>x[0]),l}}
+function unlockZone(){const k=S.zn;if(k>=ZONES.length)return;const c=zoneCost(k);if(!zoneReq(k).ok||S.money<c)return;S.money-=c;S.zn++;S.nt.z=k;toast(ZONES[k][0]+' is yours! Build a tower there');save();render(true)}
+function ntZone(v){S.nt.z=parseInt(v)||0;render(true)}
+function rankTitle(){const n=S.zn;return n>=ZONES.length?'👑 King of Pakistan':n>=18?'National Giant':n>=10?'Regional Player':n===9?'Karachi Boss':'Karachi Local'}
+function vZone(){
+  const X=(lo)=>(lo-60.5)/17*320+10,Y=(la)=>(37.8-la)/14.2*300+10,pop=ZONES.slice(0,S.zn).reduce((a,z)=>a+z[3],0);
+  let sv='<svg viewBox="0 0 340 320"><polygon points="'+PK.map(q=>X(q[0]).toFixed(1)+','+Y(q[1]).toFixed(1)).join(' ')+'" fill="var(--card)" stroke="var(--acc)" stroke-width="1.5"/>';
+  ZONES.forEach((z,i)=>{if(i<9)return;const un=i<S.zn,x=X(z[1]),y=Y(z[2]);sv+='<circle cx="'+x+'" cy="'+y+'" r="'+(un?5.5:4)+'" fill="'+(un?'var(--good)':'var(--plot)')+'"/><text x="'+x+'" y="'+(y-7)+'" font-size="7.5" text-anchor="middle" fill="currentColor" opacity="'+(un?1:.55)+'">'+z[0]+'</text>'});
+  const kn=Math.min(S.zn,9),kx=X(67.0),ky=Y(24.86);sv+='<circle cx="'+kx+'" cy="'+ky+'" r="8" fill="var(--good)"/><text x="'+(kx+10)+'" y="'+(ky+3)+'" font-size="8" fill="currentColor" font-weight="700">Karachi '+kn+'/9</text></svg>';
+  const k=S.zn,nx=ZONES[k],rq=nx?zoneReq(k):null;
+  const next=nx?'<div class="card"><h3>Next: '+nx[0]+'</h3><div class="muted" style="margin-bottom:8px">'+fm(nx[3]*1000)+' people live here · '+rs(zoneCost(k))+'<br>'+rq.l.map(x=>(x[0]?'✅ ':'❌ ')+x[1]).join('<br>')+'</div><button class="btn" '+(rq.ok&&S.money>=zoneCost(k)?'':'disabled')+' onclick="unlockZone()">Open '+nx[0]+' · '+rs(zoneCost(k))+'</button></div>':'<div class="card"><h3>👑 You rule all of Pakistan!</h3></div>';
+  return '<div class="card"><div class="row"><h3 style="margin:0">'+rankTitle()+'</h3><span class="tag ok">'+S.zn+'/'+ZONES.length+' zones</span></div><div class="bar" style="margin:8px 0"><i style="width:'+S.zn/ZONES.length*100+'%"></i></div><div class="muted">People you can reach: '+fm(pop*1000)+'. Start in Karachi, cover every town, then conquer the big cities.</div></div>'
+   +'<div class="card"><h3>Pakistan map</h3>'+sv+'</div>'+next
+   +'<div class="card"><h3>Your zones</h3>'+ZONES.slice(0,S.zn).map((z,i)=>'<div class="row" style="padding:4px 0;border-bottom:1px solid var(--line)"><span>'+(i<9?'🏙️':'📍')+' '+z[0]+'</span><span class="muted">'+z[3]+'k people · '+zoneCount(i)+'/8 towers</span></div>').join('')+'</div>';
+}
+
 const SP=[0.001,0.002,0.005,0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000,2000,5000,10000];
 const UREQ=[0,500,2000,6000,15000,40000];
 function nearSp(v){let b=0;SP.forEach((x,i)=>{if(Math.abs(Math.log(x/v))<Math.abs(Math.log(SP[b]/v)))b=i});return b}
@@ -102,7 +123,7 @@ let lastTick=Date.now(),S=null,tab='net',hold=0,timer=null,toastT=null,rstAsk=0;
 const $=id=>document.getElementById(id);
 const fm=n=>Math.round(n).toLocaleString('en-IN');
 const rs=n=>(n<0?'-':'')+'Rs '+fm(Math.abs(n));
-function fs(m){return m<1?Math.round(m*1000)+' Kbps':m<1000?m.toFixed(1)+' Mbps':(m/1000).toFixed(1)+' Gbps'}
+function fs(m){return m<1?(m*1000<10?(m*1000).toFixed(1):Math.round(m*1000))+' Kbps':m<1000?m.toFixed(1)+' Mbps':(m/1000).toFixed(1)+' Gbps'}
 function toast(t){const e=$('toast');e.textContent=t;e.className='s';clearTimeout(toastT);toastT=setTimeout(()=>e.className='',2200)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);fixS();return true}}catch(e){}return false}
@@ -117,40 +138,40 @@ function calc(){
   const cov=T.reduce((a,t)=>a+3000*(1+.5*(t.lvl-1))*t.hp/100,0);
   const cap=T.reduce((a,t)=>a+1200*t.lvl*(t.bw/2)*(1+.4*(t.g||0))*(t.hp>20?1:.3),0);
   const hp=T.reduce((a,t)=>a+t.hp,0)/T.length;
-  const mkt=40000+20000*(S.gen+1);
+  const gm=.5+.1*S.gen,zp=ZONES.slice(0,S.zn).map(z=>z[3]*1000*gm),mkt=zp.reduce((a,b)=>a+b,0);
   const cong=S.users>cap?cap/S.users:1;
-  const tcov=T.map(t=>3000*(1+.5*(t.lvl-1))*t.hp/100),sc0=tcov.reduce((a,b)=>a+b,0)||1;
-  const ts=T.map((t,i)=>{const u=S.users*tcov[i]/sc0,cp=1200*t.lvl*(t.bw/2)*(1+.4*(t.g||0))*(t.hp>20?1:.3),cg=u>cp?cp/u:1;return{u,cap:cp,cong:cg,spd:SP[t.si]*cg*pf*t.hp/100}});
+  const tcov=T.map(t=>3000*(1+.5*(t.lvl-1))*t.hp/100),sc0=tcov.reduce((a,b)=>a+b,0)||1,zc=zp.map((_,z)=>T.reduce((a,t,i)=>a+((t.z||0)===z?tcov[i]:0),0)),zt=zp.map((p,z)=>Math.min(p,zc[z])),zs=zt.reduce((a,b)=>a+b,0)||1;
+  const ts=T.map((t,i)=>{const u=S.users*(zt[t.z||0]/zs)*tcov[i]/(zc[t.z||0]||1),cp=1200*t.lvl*(t.bw/2)*(1+.4*(t.g||0))*(t.hp>20?1:.3),cg=u>cp?cp/u:1;return{u,cap:cp,cong:cg,spd:SP[t.si]*Math.min(1,cg*pf)*(.35+.65*t.hp/100)*(t.w||1)}});
   const uu=ts.reduce((a,x)=>a+x.u,0),spd=uu>0?ts.reduce((a,x)=>a+x.u*x.spd,0)/uu:ts.reduce((a,x)=>a+x.spd,0)/ts.length;
   const sc=Math.min(1,Math.log10(1+spd)/3.3);
   const pb=Math.min(.35,S.plans.reduce((a,p,i)=>a+Math.min(.1,.03*pw[i]),0));
   const ap=Math.max(.05,Math.min(.95,.15+pb+.3*sc+.15*hp/100+ADS[S.ads].b+.2*S.rep-(S.pen>0?.12:0)-(S.price-1)*.35+(S.offer>0?.15:0)-(1-pf)*.2-Math.min(.15,S.towers.reduce((a,t)=>a+t.cmp,0)*.004)));
   const arpu=S.plans.reduce((a,p,i)=>a+pw[i]*p.price*30/p.days,0)/sw,cost=S.plans.reduce((a,p,i)=>a+pw[i]*pCost(p)*30/p.days,0)/sw;
-  return{cov,cap,hp,mkt,cong,spd,ap,arpu,ts,cost,pf,dem,pw,sw};
+  return{tgt:zt.reduce((a,b)=>a+b,0),cov,cap,hp,mkt,cong,spd,ap,arpu,ts,cost,pf,dem,pw,sw};
 }
 function tick(){
   if(!S||S.over)return;lastTick=Date.now();
   S.day++;
   const st=S.staff,nd=need(),engR=Math.min(.5,st.eng*.05)-(st.eng<nd.eng?.3:0);
   S.towers.forEach((t,i)=>{
-    t.hp=Math.max(0,t.hp-(.3+Math.random()*.9)/Math.sqrt(t.lvl)*(1-engR));
-    if(Math.random()<.012*(1-engR)){t.hp=Math.max(0,t.hp-40);toast('Tower #'+(i+1)+' is down! Repair it');}
+    t.hp=Math.max(10,t.hp-(.15+Math.random()*.45)/Math.sqrt(t.lvl)*(1-engR));t.w=Math.max(.6,Math.min(1,(t.w||1)+(Math.random()-.55)*.12));
+    if(Math.random()<.006*(1-engR)){t.hp=Math.max(10,t.hp-30);toast('Tower #'+(i+1)+' is down! Repair it');}
   });
   if(st.eng){const w=S.towers.reduce((a,b)=>a.hp<b.hp?a:b);w.hp=Math.min(100,w.hp+2*st.eng)}
   if(S.pen>0)S.pen--;if(S.offer>0)S.offer--;
   if(Math.random()<.03){
     const r=Math.random();
-    if(r<.4){const t=S.towers[Math.floor(Math.random()*S.towers.length)];t.hp=Math.max(0,t.hp-35);toast('Storm hit your network!')}
+    if(r<.4){const t=S.towers[Math.floor(Math.random()*S.towers.length)];t.hp=Math.max(10,t.hp-25);toast('Storm hit your network!')}
     else if(r<.7){S.users*=1.05;S.rep=Math.min(1,S.rep+.05);toast('Good news about your SIM went viral!')}
     else{S.pen=10;toast('Rival price war: users hesitate for 10 days')}
   }
   const c=calc();
-  S.towers.forEach((t,i)=>{const x=c.ts[i],a=(t.hp<70?(70-t.hp)/25:0)+(x.cong<1?1.5+(1-x.cong)*3:0);if(Math.random()<a/3)t.cmp=Math.min(99,t.cmp+Math.ceil(a))});
-  if(st.sup){const w=S.towers.reduce((a,b)=>a.cmp>b.cmp?a:b);w.cmp=Math.max(0,w.cmp-st.sup)}
+  S.towers.forEach((t,i)=>{const x=c.ts[i],a=(t.hp<50?(50-t.hp)/40:0)+(x.cong<1?(1-x.cong)*2:0);if(t.cmp>0&&Math.random()<.2)t.cmp--;if(Math.random()<a/6)t.cmp=Math.min(30,t.cmp+1)});
+  if(st.sup){const w=S.towers.reduce((a,b)=>a.cmp>b.cmp?a:b);w.cmp=Math.max(0,w.cmp-2*st.sup)}
   S.rep=Math.max(0,S.rep-Math.min(.01,S.towers.reduce((a,t)=>a+t.cmp,0)*.0002));
   S.riv.forEach(r=>{r.ap=Math.max(.35,Math.min(.8,r.ap+(.45+.05*S.gen-r.ap)*.02+(Math.random()-.5)*.03))});
   const shr=c.ap/(c.ap+.35*S.riv.reduce((a,r)=>a+r.ap,0));S.share=shr;
-  const target=Math.min(c.mkt,c.cov)*c.ap*Math.min(1.2,shr*1.7);
+  const target=c.tgt*c.ap*Math.min(1.2,shr*1.7);
   const d=target-S.users;
   if(d>0){const g=d*.025*(1+Math.min(1,st.sales*.1))*(st.sales<nd.sales?.7:1);S.users+=g;S.sims+=g}
   else S.users+=d*.08*(st.sup<nd.sup?1.4:1)/(1+st.sup*.1);
@@ -186,13 +207,13 @@ function render(force){
   const m=$('hm');m.textContent=rs(S.money);m.className='money'+(S.money<0?' neg':'');
   $('sU').textContent=fm(S.users);{const u=Math.round(S.users);if(u>(window._lu||0)){const e=$('chU');e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop')}window._lu=u}$('sS').textContent=fm(S.sims);$('sG').textContent=Math.round(c.hp)+'%';$('sP').textContent=fs(c.spd);
   $('sp').innerHTML=[[0,'⏸'],[1,'▶'],[3,'⏩'],[10,'🚀']].map(a=>'<button class="'+(S.speed===a[0]?'on':'')+'" onclick="setSpeed('+a[0]+')">'+a[1]+'</button>').join(' ');
-  $('nav').innerHTML=[['net','🗼','Network'],['plan','📦','Plans'],['ads','📣','Ads'],['team','👥','Team'],['bill','🧾','Bills'],['fin','💰','Finance']].map(a=>'<button class="'+(tab===a[0]?'on':'')+'" onclick="go(\''+a[0]+'\')"><i>'+a[1]+'</i>'+a[2]+(a[0]==='bill'&&S.invs.length?' 🔴':'')+(a[0]==='team'?' '+staffState().light:'')+'</button>').join('');
-  if(!(!force&&document.activeElement&&document.activeElement.tagName==='INPUT'&&$('main').contains(document.activeElement)))$('main').innerHTML=({net:vNet,plan:vPlan,ads:vAds,team:vTeam,bill:vBills,fin:vFin})[tab](c);
+  $('nav').innerHTML=[['net','🗼','Network'],['zone','🗺️','Pakistan'],['plan','📦','Plans'],['ads','📣','Ads'],['team','👥','Team'],['bill','🧾','Bills'],['fin','💰','Finance']].map(a=>'<button class="'+(tab===a[0]?'on':'')+'" onclick="go(\''+a[0]+'\')"><i>'+a[1]+'</i>'+a[2]+(a[0]==='bill'&&S.invs.length?' 🔴':'')+(a[0]==='team'?' '+staffState().light:'')+'</button>').join('');
+  if(!(!force&&document.activeElement&&/^(INPUT|SELECT)$/.test(document.activeElement.tagName)&&$('main').contains(document.activeElement)))$('main').innerHTML=({net:vNet,zone:vZone,plan:vPlan,ads:vAds,team:vTeam,bill:vBills,fin:vFin})[tab](c);
 }
 function askReset(){if(Date.now()-rstAsk<4000){reset();return}rstAsk=Date.now();render(true)}
 function go(t){tab=t;render(true);$('main').scrollTop=0}
 function hpc(h){return h>=70?'var(--good)':h>=40?'var(--warn)':'var(--bad)'}
-function towerCost(){return Math.round(30000*Math.pow(1.17,S.towers.length-1)/100)*100}
+function towerCost(z){z=z||0;return Math.round(30000*(1+.1*z)*Math.pow(1.12,zoneCount(z))/100)*100}
 function vNetCards(c){
   
   const nx=GENS[S.gen+1];let up='<div class="muted">You run the best network: 6G. 🎉</div>';
@@ -202,57 +223,63 @@ function vNetCards(c){
    +'<div class="card"><h3>Network health</h3><div class="g2"><div>Coverage<br><b>'+fm(c.cov)+' people</b></div><div>Capacity<br><b>'+fm(c.cap)+' users</b></div><div>Market size<br><b>'+fm(c.mkt)+'</b></div><div>Reputation<br><b>'+Math.round(S.rep*100)+'%</b></div></div>'+(S.users>c.cap?'<div class="muted" style="color:var(--bad);margin-top:6px">Network is congested. Build or upgrade towers!</div>':'')+'</div>';
 }
 function upkeep(t){return Math.max(150,300*(1+.3*(t.lvl-1))+100*(t.bw-2)+60*(t.g||0)+8*Math.pow(t.si||0,1.7))}
-function genReq(k){const c=calc(),nx=GENS[k],l=[[S.towers.length>=nx.need,nx.need+' towers (you have '+S.towers.length+')'],[S.users>=UREQ[k],fm(UREQ[k])+' customers (you have '+fm(S.users)+')'],[c.spd>=GENS[k-1].spd*.3,'net speed '+fs(GENS[k-1].spd*.3)+' (now '+fs(c.spd)+')'],[c.hp>=60,'average signal 60% (now '+Math.round(c.hp)+'%)']];return{ok:l.every(x=>x[0]),l}}
+function genReq(k){const c=calc(),av=S.towers.reduce((x,t)=>x+SP[t.si],0)/S.towers.length,nx=GENS[k],l=[[S.towers.length>=nx.need,nx.need+' towers (you have '+S.towers.length+')'],[S.users>=UREQ[k],fm(UREQ[k])+' customers (you have '+fm(S.users)+')'],[av>=GENS[k-1].spd*.3,'tower speed set to '+fs(GENS[k-1].spd*.3)+' (you set '+fs(av)+')'],[c.hp>=60,'average signal 60% (now '+Math.round(c.hp)+'%)']];return{ok:l.every(x=>x[0]),l}}
 function convertTowers(k){const T=S.towers.filter(t=>(t.g||0)<k),c=T.reduce((a,t)=>a+costOf(k)-costOf(t.g||0),0);if(!T.length||k>S.gen||S.money<c)return;S.money-=c;T.forEach(t=>t.g=k);toast(T.length+' towers moved to '+GENS[k].g);save();simInfo()}
 function simInfo(){hold=0;const rows=[1,2,3,4,5].map(k=>{const g=GENS[k],un=S.gen>=k,nx=S.gen+1===k,rq=genReq(k),T=S.towers.filter(t=>(t.g||0)<k),cc=T.reduce((a,t)=>a+costOf(k)-costOf(t.g||0),0);
   return '<div class="card" style="margin:6px 0"><div class="row"><b>'+g.g+' network</b><span class="tag '+(un?'ok':'')+'">'+(un?'UNLOCKED':'Rs '+fm(g.cost))+'</span></div>'+(un?(T.length?'<button class="btn s o" style="margin-top:8px" '+(S.money>=cc?'':'disabled')+' onclick="convertTowers('+k+')">Convert '+T.length+' towers to '+g.g+' · '+rs(cc)+'</button>':'<div class="muted" style="margin-top:6px">All towers are on '+g.g+' or better</div>'):'<div class="muted" style="margin:6px 0">'+rq.l.map(x=>(x[0]?'✅ ':'❌ ')+x[1]).join('<br>')+'</div>'+(nx?'<button class="btn s" '+(rq.ok&&S.money>=g.cost?'':'disabled')+' onclick="upGen();simInfo()">Unlock '+g.g+' · '+rs(g.cost)+'</button>':'<div class="muted">Unlock the earlier one first</div>'))+'</div>'}).join('');
   $('mb').innerHTML='<h3 style="margin:0">'+S.name+'</h3><div class="muted" style="margin-bottom:8px">'+fm(S.users)+' users · '+fm(S.sims)+' SIMs sold · '+S.towers.length+' towers · now '+GENS[S.gen].g+'</div><div style="max-height:55vh;overflow-y:auto">'+rows+'</div><div style="height:8px"></div><button class="btn o" onclick="closeM()">Close</button>';$('modal').className='ov'}
 function costOf(g){return 6000*g*g}
 function techCost(t){return costOf(S.gen)-costOf(t.g||0)}
-function buildCost(bw,sp,g){return Math.max(10000,towerCost()+5000*(bw-2)+1500*(sp-1))+costOf(g||0)}
+function buildCost(bw,sp,g,z){return Math.max(10000,towerCost(z)+5000*(bw-2)+1500*(sp-1))+costOf(g||0)}
 function closeM(){$('modal').className='ov h';render(true)}
 function stp(l,h,fn,v){return '<div class="row" style="margin:7px 0"><div><b>'+l+'</b><div class="muted">'+h+'</div></div><div style="white-space:nowrap"><button class="btn s o" onclick="'+fn+',-1)">−</button> <b style="display:inline-block;min-width:18px;text-align:center">'+v+'</b> <button class="btn s o" onclick="'+fn+',1)">+</button></div></div>'}
 function vNet(c){
-  const rows=S.towers.map((t,i)=>{const x=c.ts[i],col=hpc(x.cong<1?Math.min(t.hp,35):t.hp);return '<div class="unit" onclick="tower('+i+')"><span class="led" style="background:'+col+';color:'+col+'"></span><b>Tower #'+(i+1)+' <span style="font-weight:600;color:#7dd3fc">'+GENS[t.g||0].g+'</span></b><span>👥 '+fm(x.u)+'</span><span>⚡ '+fs(x.spd)+'</span>'+(t.cmp?'<span class="cm">📞 '+t.cmp+'</span>':'')+'</div>'}).join('');
-  const n=S.nt;if(n.si===undefined)n.si=nearSp(GENS[S.gen].spd);n.g=Math.min(S.gen,n.g===undefined?S.gen:n.g);const G=GENS[n.g],bc=buildCost(n.bw,n.si,n.g),full=S.towers.length>=25;
-  return '<div class="card"><h3>Tower rack · '+S.towers.length+'/25 slots</h3><div class="rack">'+rows+'</div><div class="muted" style="margin-top:6px">Tap a tower to see its users, speed and complaints, and to fix problems.</div></div>'
-   +netCard(c)+'<div class="card"><h3>Add a new tower</h3>'+stp('Net allocation','Holds '+fm(1200*n.bw/2)+' users','ntOpt(\'bw\'',n.bw)+stp('Net speed','Your choice. Faster costs more upkeep','ntOpt(\'si\'',fs(SP[n.si]))+stp('Technology','Tower generation · unlocked up to '+GENS[S.gen].g,'ntOpt(\'g\'',GENS[n.g].g)+'<div class="row muted"><span>Internet used / left</span><b>'+n.bw+' TB / '+left()+' TB</b></div><div class="row muted"><span>Build cost</span><b>'+rs(bc)+'</b></div><div class="row muted" style="margin-bottom:8px"><span>Upkeep a day</span><b>'+rs(upkeep({lvl:1,bw:n.bw,si:n.si,g:n.g}))+'</b></div><button class="btn" '+(S.money>=bc&&!full&&left()>=n.bw?'':'disabled')+' onclick="addTower()">'+(full?'Rack is full':'Build tower')+'</button></div>'
+  const rows=S.towers.map((t,i)=>{const x=c.ts[i],col=hpc(x.cong<1?Math.min(t.hp,35):t.hp);return '<div class="unit" onclick="tower('+i+')"><span class="led" style="background:'+col+';color:'+col+'"></span><b>Tower #'+(i+1)+' <span style="font-weight:600;color:#7dd3fc">'+GENS[t.g||0].g+'</span> <span style="font-weight:500;font-size:10px;opacity:.7">'+ZONES[t.z||0][0]+'</span></b><span>👥 '+fm(x.u)+'</span><span>⚡ '+fs(x.spd)+'</span>'+(t.cmp?'<span class="cm">📞 '+t.cmp+'</span>':'')+'</div>'}).join('');
+  const n=S.nt;if(n.si===undefined)n.si=nearSp(GENS[S.gen].spd);n.g=Math.min(S.gen,n.g===undefined?S.gen:n.g);const G=GENS[n.g];n.z=Math.min(n.z||0,S.zn-1);const bc=buildCost(n.bw,n.si,n.g,n.z),full=zoneCount(n.z)>=8;
+  return '<div class="card"><h3>Tower rack · '+S.towers.length+' towers</h3><div class="rack">'+rows+'</div><div class="muted" style="margin-top:6px">Tap a tower to see its users, speed and complaints, and to fix problems.</div></div>'
+   +netCard(c)+'<div class="card"><h3>Add a new tower</h3><div class="row" style="margin:7px 0"><div><b>Zone</b><div class="muted">Where to build (8 towers max each)</div></div><select onchange="ntZone(this.value)" style="padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text)">'+ZONES.slice(0,S.zn).map((z,i)=>'<option value="'+i+'"'+(i===n.z?' selected':'')+'>'+z[0]+' ('+zoneCount(i)+'/8)</option>').join('')+'</select></div>'+stp('Net allocation','Holds '+fm(1200*n.bw/2)+' users','ntOpt(\'bw\'',n.bw)+stp('Net speed','Your choice. Faster costs more upkeep','ntOpt(\'si\'',fs(SP[n.si]))+stp('Technology','Tower generation · unlocked up to '+GENS[S.gen].g,'ntOpt(\'g\'',GENS[n.g].g)+'<div class="row muted"><span>Build cost</span><b>'+rs(bc)+'</b></div><div class="row muted" style="margin-bottom:8px"><span>Upkeep a day</span><b>'+rs(upkeep({lvl:1,bw:n.bw,si:n.si,g:n.g}))+'</b></div><button class="btn" '+(S.money>=bc&&!full?'':'disabled')+' onclick="addTower()">'+(full?'Zone is full (8 towers)':'Build tower')+'</button></div>'
    +vNetCards(c);
 }
 function ntOpt(k,d){if(k==='g')S.nt.g=Math.max(0,Math.min(S.gen,(S.nt.g===undefined?S.gen:S.nt.g)+d));else if(k==='si')S.nt.si=Math.max(0,Math.min(SP.length-1,S.nt.si+d));else S.nt[k]=Math.max(1,Math.min(5,S.nt[k]+d));render(true)}
-function addTower(){const n=S.nt,g=Math.min(S.gen,n.g===undefined?S.gen:n.g),c=buildCost(n.bw,n.si,g);if(S.money<c||S.towers.length>=25)return;if(left()<n.bw){toast('Not enough internet left. Buy more');return}S.money-=c;S.towers.push({p:S.towers.length,lvl:1,hp:100,bw:n.bw,si:n.si,cmp:0,g:g});toast('New '+GENS[g].g+' tower built');save();render(true)}
+function addTower(){const n=S.nt,z=Math.min(n.z||0,S.zn-1),g=Math.min(S.gen,n.g===undefined?S.gen:n.g),c=buildCost(n.bw,n.si,g,z);if(S.money<c||zoneCount(z)>=8)return;S.money-=c;S.towers.push({p:S.towers.length,lvl:1,hp:100,bw:n.bw,si:n.si,cmp:0,g:g,z:z,w:1});toast('New '+GENS[g].g+' tower in '+ZONES[z][0]);save();render(true)}
 function upTech(i){const t=S.towers[i],c=techCost(t);if(!(t.g<S.gen)||S.money<c)return;S.money-=c;t.g=S.gen;t.hp=Math.min(100,t.hp+10);toast('Tower upgraded to '+GENS[S.gen].g);save();tower(i)}
 function tower(i){
   hold=0;const t=S.towers[i],c=calc(),x=c.ts[i],rc=Math.round((100-t.hp)*60),uc=40000*t.lvl*t.lvl,fc=t.cmp*200,tc=techCost(t);
   const o=(l,k,h)=>stp(l,h,'opt('+i+',\''+k+'\'',t[k]);
-  $('mb').innerHTML='<h3 style="margin:0 0 6px">Tower #'+(i+1)+' · Level '+t.lvl+'</h3><div class="bar"><i style="width:'+t.hp+'%;background:'+hpc(t.hp)+'"></i></div>'
+  $('mb').innerHTML='<h3 style="margin:0 0 6px">Tower #'+(i+1)+' · '+ZONES[t.z||0][0]+' · Level '+t.lvl+'</h3><div class="bar"><i style="width:'+t.hp+'%;background:'+hpc(t.hp)+'"></i></div>'
    +'<div class="g2" style="margin:8px 0"><div class="muted">Users<br><b style="color:var(--text)">'+fm(x.u)+' / '+fm(x.cap)+'</b></div><div class="muted">Speed each user<br><b style="color:var(--text)">'+fs(x.spd)+'</b></div><div class="muted">Condition<br><b style="color:var(--text)">'+Math.round(t.hp)+'%'+(x.cong<1?' · congested':'')+'</b></div><div class="muted">Complaints<br><b style="color:'+(t.cmp?'var(--bad)':'var(--good)')+'">'+t.cmp+'</b></div></div>'
    +'<button class="btn" '+(t.cmp&&S.money>=fc?'':'disabled')+' onclick="solve('+i+')">Resolve complaints · '+rs(fc)+'</button><div style="height:6px"></div>'
    +o('Net allocation','bw','more users fit · +Rs 3,000 per step')+stp('Net speed','your choice · +Rs 3,000 per step up','opt('+i+',\'si\'',fs(SP[t.si]))
-   +'<div class="row" style="margin:7px 0"><div><b>Technology · '+GENS[t.g||0].g+'</b><div class="muted">'+(t.g<S.gen?'Upgrade to '+GENS[S.gen].g+' for faster speed':'Latest generation')+'</div></div><button class="btn s" '+(t.g<S.gen&&S.money>=tc?'':'disabled')+' onclick="upTech('+i+')">'+(t.g<S.gen?'Upgrade · '+rs(tc):'Latest')+'</button></div>'+'<div class="muted" style="margin-bottom:8px">Upkeep '+rs(upkeep(t))+' a day</div><div class="g2"><button class="btn o" '+(t.hp<100&&S.money>=rc?'':'disabled')+' onclick="repair('+i+')">Repair · '+rs(rc)+'</button><button class="btn" '+(t.lvl<3&&S.money>=uc?'':'disabled')+' onclick="upT('+i+')">'+(t.lvl<3?'Upgrade · '+rs(uc):'Max level')+'</button></div><div style="height:8px"></div><button class="btn o" onclick="closeM()">Close</button>';
+   +'<div class="row" style="margin:7px 0"><div><b>Technology · '+GENS[t.g||0].g+'</b><div class="muted">'+(t.g<S.gen?'Upgrade to '+GENS[S.gen].g+' for faster speed':'Latest generation')+'</div></div><button class="btn s" '+(t.g<S.gen&&S.money>=tc?'':'disabled')+' onclick="upTech('+i+')">'+(t.g<S.gen?'Upgrade · '+rs(tc):'Latest')+'</button></div>'+'<div class="muted" style="margin-bottom:8px">Upkeep '+rs(upkeep(t))+' a day</div><div class="g2"><button class="btn o" '+(t.hp<100&&S.money>=rc?'':'disabled')+' onclick="repair('+i+')">Repair · '+rs(rc)+'</button><button class="btn" '+(t.lvl<3&&S.money>=uc?'':'disabled')+' onclick="upT('+i+')">'+(t.lvl<3?'Upgrade · '+rs(uc):'Max level')+'</button></div><div style="height:8px"></div><button class="btn d" onclick="removeTower('+i+')">'+(rmAsk===i?'Tap again to remove this tower':'Remove tower')+'</button><div style="height:8px"></div><button class="btn o" onclick="closeM()">Close</button>';
   $('modal').className='ov';
 }
-function opt(i,k,d){const t=S.towers[i],hi=k==='si'?SP.length-1:5,lo=k==='si'?0:1,v=Math.max(lo,Math.min(hi,t[k]+d));if(v===t[k])return;if(d>0){if(k==='bw'&&left()<1){toast('No internet left. Buy more in the Network tab');return}if(S.money<3000)return;S.money-=3000}t[k]=v;save();tower(i)}
+function opt(i,k,d){const t=S.towers[i],hi=k==='si'?SP.length-1:5,lo=k==='si'?0:1,v=Math.max(lo,Math.min(hi,t[k]+d));if(v===t[k])return;if(d>0){if(S.money<3000)return;S.money-=3000}t[k]=v;save();tower(i)}
 function solve(i){const t=S.towers[i],c=t.cmp*200;if(!t.cmp||S.money<c)return;S.money-=c;S.users+=t.cmp*4;t.hp=Math.min(100,t.hp+15);S.rep=Math.min(1,S.rep+.01*Math.min(5,t.cmp));t.cmp=0;toast('Complaints solved. Users are happier');save();tower(i)}
 function repair(i){const t=S.towers[i],c=Math.round((100-t.hp)*60);if(S.money<c)return;S.money-=c;t.hp=100;toast('Tower repaired');save();tower(i)}
 function upT(i){const t=S.towers[i],c=40000*t.lvl*t.lvl;if(S.money<c||t.lvl>=3)return;S.money-=c;t.lvl++;t.hp=100;toast('Tower upgraded');save();tower(i)}
 function upGen(){const nx=GENS[S.gen+1];if(!nx||S.money<nx.cost||!genReq(S.gen+1).ok)return;S.money-=nx.cost;S.gen++;S.rep=Math.min(1,S.rep+.1);toast('Welcome to '+nx.g+'! Upgrade your towers in the rack');save();render(true)}
 const TPL=[{n:'Daily Saver',price:25,days:1,gb:1,sms:20,min:30},{n:'Weekly Booster',price:99,days:7,gb:6,sms:100,min:150},{n:'Monthly Unlimited',price:299,days:30,gb:30,sms:300,min:500},{n:'Student Pack',price:149,days:30,gb:40,sms:200,min:200}];
 function mk(){const d=S.dr;return{id:'p'+Date.now(),n:(d.n||'').trim()||(Math.max(0,d.gb)+' GB · '+Math.max(1,Math.round(d.days))+' day pack'),price:Math.max(1,d.price),days:Math.max(1,Math.round(d.days)),gb:Math.max(0,d.gb),sms:Math.max(0,Math.round(d.sms)),min:Math.max(0,Math.round(d.min))}}
-function pv(){const p=mk(),c=pCost(p),r=p.price-c,k=calc(),w=planV(p),u=(S.users||1000)*w/(k.sw+w),ex=u*r/p.days;return 'Cost to us per user: <b>Rs '+c.toFixed(1)+'</b> · Profit per user: <b style="color:'+(r>=0?'var(--good)':'var(--bad)')+'">Rs '+r.toFixed(1)+'</b> every '+p.days+' day(s)<br>Launch cost now: <b>Rs 5,000</b> · Expected profit: <b style="color:'+(ex>=0?'var(--good)':'var(--bad)')+'">'+rs(ex)+' a day</b> (about '+fm(u)+' users)'}
+function pv(){const p=mk(),c=pCost(p),r=p.price-c,k=calc(),w=planV(p),u=(S.users||1000)*w/(k.sw+w),ex=u*r/p.days,nd=reserve(p),sh=nd>left();return 'Cost to us per user: <b>Rs '+c.toFixed(1)+'</b> · Profit per user: <b style="color:'+(r>=0?'var(--good)':'var(--bad)')+'">Rs '+r.toFixed(1)+'</b> every '+p.days+' day(s)<br>Launch cost now: <b>Rs 5,000</b> · Expected profit: <b style="color:'+(ex>=0?'var(--good)':'var(--bad)')+'">'+rs(ex)+' a day</b> (about '+fm(u)+' users)<br>Internet this package takes: <b>'+nd.toFixed(1)+' TB</b> · left '+left().toFixed(1)+' TB'+(sh?'<div style="color:var(--bad);margin-top:6px"><b>Internet is short.</b> Buy internet, or launch with fewer GB (up to '+Math.max(0,Math.floor(left()*10*p.days/30))+' GB).<br><button class="btn s" style="margin-top:6px" onclick="poolSet(1)">Buy +5 TB</button></div>':'')}
 function dr(k,v){S.dr[k]=k==='n'?v:(parseFloat(v)||0);$('pv').innerHTML=pv()}
 function tpl(i){Object.assign(S.dr,TPL[i]);render(true)}
-function launchPlan(){if(S.plans.length>=10){toast('Maximum 10 packages');return}if(S.money<5000)return;const p=mk();S.money-=5000;S.plans.push(p);S.dr.n='';toast(p.n+' launched!');save();render(true)}
+function launchPlan(){if(S.plans.length>=10){toast('Maximum 10 packages');return}const p=mk();if(reserve(p)>left()){toast('Not enough internet for this package');return}if(S.money<5000)return;S.money-=5000;S.plans.push(p);S.dr.n='';toast(p.n+' launched!');save();render(true)}
+function editPlan(i){hold=0;const p=S.plans[i],f=(l,k)=>'<div><label class="muted">'+l+'</label><input id="ep-'+k+'" type="number" min="0" value="'+p[k]+'" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:14px"></div>';
+  $('mb').innerHTML='<h3 style="margin:0 0 8px">Edit · '+p.n+'</h3><div class="g2">'+f('Price (Rs)','price')+f('Internet (GB)','gb')+f('SMS','sms')+f('Call minutes','min')+f('Valid for (days)','days')+'</div><div class="muted" style="margin:8px 0">Internet left for changes: '+(left()+reserve(p)).toFixed(1)+' TB</div><button class="btn" onclick="savePlan('+i+')">Save changes</button><div style="height:8px"></div><button class="btn o" onclick="closeM()">Close</button>';$('modal').className='ov'}
+function savePlan(i){const p=S.plans[i],g=k=>parseFloat($('ep-'+k).value)||0,q={price:Math.max(1,g('price')),gb:Math.max(0,g('gb')),sms:Math.max(0,Math.round(g('sms'))),min:Math.max(0,Math.round(g('min'))),days:Math.max(1,Math.round(g('days')))};if(alloc()-reserve(p)+reserve(q)>S.pool+1e-9){toast('Not enough internet. Buy more or use fewer GB');return}Object.assign(p,q);toast('Package updated');save();closeM()}
+let rmAsk=-1;
+function removeTower(i){if(S.towers.length<2){toast('Keep at least one tower');return}if(rmAsk!==i){rmAsk=i;tower(i);setTimeout(()=>{if(rmAsk===i)rmAsk=-1},4000);return}S.towers.splice(i,1);rmAsk=-1;S.money+=5000;toast('Tower removed. Rs 5,000 salvage');save();closeM()}
 function retire(i){if(S.plans.length<2){toast('Keep at least one package');return}S.plans.splice(i,1);save();render(true)}
-function alloc(){return S.towers.reduce((a,t)=>a+t.bw,0)}
+function reserve(p){return p.gb*30/p.days/10}
+function alloc(){return S.plans.reduce((a,p)=>a+reserve(p),0)}
 function left(){return S.pool-alloc()}
 function poolSet(d){if(d<0&&S.pool-5<alloc()){toast('That internet is already given to towers');return}S.pool=Math.max(1,S.pool+d*5);save();render(true)}
-function netCard(c){const a=alloc(),l=S.pool-a;return '<div class="card"><h3>Internet</h3><div class="row"><span>Bought a month</span><b>'+S.pool+' TB</b></div><div class="row"><span>Given to towers</span><b>'+a+' TB</b></div><div class="row"><span>Left to give</span><b style="color:'+(l>0?'var(--good)':'var(--warn)')+'">'+l+' TB</b></div><div class="bar" style="margin:6px 0"><i style="width:'+Math.min(100,a/S.pool*100)+'%"></i></div><div class="row"><span>Your users need</span><b>'+c.dem.toFixed(1)+' TB</b></div><div class="muted" style="margin:6px 0 8px">'+(c.pf<1?'Not enough internet! Speed falls to '+Math.round(c.pf*100)+'%. Buy more. ':'')+'Each tower takes its net allocation from here. Costs Rs 1,000 per TB a month.</div><div class="g2"><button class="btn o" '+(S.pool-5>=a?'':'disabled')+' onclick="poolSet(-1)">−5 TB</button><button class="btn" onclick="poolSet(1)">Buy +5 TB · Rs 5,000/mo</button></div></div>'}
+function netCard(c){const a=alloc(),l=S.pool-a;return '<div class="card"><h3>Internet</h3><div class="row"><span>Bought a month</span><b>'+S.pool+' TB</b></div><div class="row"><span>Used by packages</span><b>'+a+' TB</b></div><div class="row"><span>Left for new packages</span><b style="color:'+(l>0?'var(--good)':'var(--warn)')+'">'+l+' TB</b></div><div class="bar" style="margin:6px 0"><i style="width:'+Math.min(100,a/S.pool*100)+'%"></i></div><div class="row"><span>Your users need</span><b>'+c.dem.toFixed(1)+' TB</b></div><div class="muted" style="margin:6px 0 8px">'+(c.pf<1?'Not enough internet! Speed falls to '+Math.round(c.pf*100)+'%. Buy more. ':'')+'Only your packages use this internet. Costs Rs 1,000 per TB a month.</div><div class="g2"><button class="btn o" '+(S.pool-5>=a?'':'disabled')+' onclick="poolSet(-1)">−5 TB</button><button class="btn" onclick="poolSet(1)">Buy +5 TB · Rs 5,000/mo</button></div></div>'}
 function vPlan(c){
   const d=S.dr,inp=(l,k,t)=>'<div><label class="muted">'+l+'</label><input type="'+(t||'number')+'" value="'+d[k]+'" min="0" oninput="dr(\''+k+'\',this.value)" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:14px"></div>';
   const pct=Math.min(100,c.dem/S.pool*100);
   const drawers=S.plans.map((p,i)=>{const u=S.users*c.pw[i]/c.sw,inc=u*p.price/p.days,cs=u*pCost(p)/p.days,pr=inc-cs;
-    return '<div class="drw"><div class="row"><b>'+p.n+'</b><span class="tag">Rs '+p.price+' / '+p.days+'d</span></div><div class="muted">📶 '+p.gb+' GB · ✉️ '+p.sms+' SMS · 📞 '+p.min+' min</div><div class="g2" style="margin:8px 0"><div class="muted">👤 Users<br><b style="color:#e5edf8">'+fm(u)+'</b></div><div class="muted">Income a day<br><b style="color:#e5edf8">'+rs(inc)+'</b></div><div class="muted">Cost a day<br><b style="color:#e5edf8">'+rs(cs)+'</b></div><div class="muted">Profit a day<br><b style="color:'+(pr>=0?'#4ade80':'#f87171')+'">'+rs(pr)+'</b></div></div><button class="btn s o" onclick="retire('+i+')">Retire package</button><div class="hdl"></div></div>'}).join('<div style="height:6px"></div>');
+    return '<div class="drw"><div class="row"><b>'+p.n+'</b><span class="tag">Rs '+p.price+' / '+p.days+'d</span></div><div class="muted">📶 '+p.gb+' GB · ✉️ '+p.sms+' SMS · 📞 '+p.min+' min</div><div class="g2" style="margin:8px 0"><div class="muted">👤 Users<br><b style="color:#e5edf8">'+fm(u)+'</b></div><div class="muted">Income a day<br><b style="color:#e5edf8">'+rs(inc)+'</b></div><div class="muted">Cost a day<br><b style="color:#e5edf8">'+rs(cs)+'</b></div><div class="muted">Profit a day<br><b style="color:'+(pr>=0?'#4ade80':'#f87171')+'">'+rs(pr)+'</b></div></div><div style="display:flex;gap:8px"><button class="btn s o" onclick="editPlan('+i+')">Edit package</button><button class="btn s o" onclick="retire('+i+')">Retire</button></div><div class="hdl"></div></div>'}).join('<div style="height:6px"></div>');
   return pricing()
    +netCard(c)
    +'<div class="card"><h3>Design a new package</h3><div class="muted" style="margin-bottom:6px">Start from a template or type your own numbers.</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">'+TPL.map((t,i)=>'<button class="btn s o" onclick="tpl('+i+')">'+t.n+'</button>').join('')+'</div>'
@@ -272,13 +299,13 @@ function vFin(){
   const f=S.fin,row=(a,b)=>'<tr><td>'+a+'</td><td>'+b+'</td></tr>';
   return charts()+'<div class="card"><h3>Today’s money</h3><table>'+row('Income from users',rs(f.rev))+row('Tax (15%)','-'+rs(f.tax))+row('Salaries','-'+rs(f.sal))+row('Tower upkeep','-'+rs(f.twr))+row('News and ads','-'+rs(f.ads))+row('Network licence','-'+rs(f.lic))+row('Package costs','-'+rs(f.pk||0))+row('Internet purchase','-'+rs(f.nt||0))+row('<b>Profit today</b>','<span style="color:'+(f.net>=0?'var(--good)':'var(--bad)')+'">'+rs(f.net)+'</span>')+'</table></div>'
    +'<div class="card"><h3>Since launch</h3><table>'+row('Total income',rs(S.tot.rev))+row('Tax paid',rs(S.tot.tax))+row('Other expenses',rs(S.tot.exp))+'</table></div>'
-   +'<div class="card"><h3>Goal: 1,00,000 users</h3><div class="bar"><i style="width:'+Math.min(100,S.users/1000)+'%"></i></div><div class="muted" style="margin-top:6px">'+fm(S.users)+' users joined · '+fm(S.sims)+' SIMs sold</div></div>'
+   +'<div class="card"><h3>Goal: King of Pakistan · '+S.zn+'/'+ZONES.length+' zones</h3><div class="bar"><i style="width:'+S.zn/ZONES.length*100+'%"></i></div><div class="muted" style="margin-top:6px">'+fm(S.users)+' users joined · '+fm(S.sims)+' SIMs sold</div></div>'
    +'<button class="btn d" onclick="askReset()">'+(Date.now()-rstAsk<4000?'Tap again to delete everything':'Reset game')+'</button>';
 }
 const CATS=[['sal','Employee salaries'],['tax','Tax'],['twr','Tower upkeep'],['ads','News and ads'],['lic','Network licence'],['loan','Loan interest'],['fine','Government fine'],['pack','Package costs'],['net','Internet purchase']];
-function fixS(){S.acc=S.acc||{sal:0,tax:0,twr:0,ads:0,lic:0,loan:0,fine:0,pack:0,net:0};S.invs=S.invs||[];S.price=S.price||1;S.riv=S.riv||[{n:'AirNova',ap:.55},{n:'Zephyr Mobile',ap:.5}];S.loan=S.loan||0;S.offer=S.offer||0;S.h=S.h||{u:[],r:[],g:[]};S.towers.forEach(t=>{t.bw=t.bw||2;t.sp=t.sp||3;t.cmp=t.cmp||0;t.g=t.g===undefined?S.gen:t.g;t.si=t.si===undefined?nearSp(GENS[t.g].spd*(t.sp||3)/3):t.si});S.monthMin=S.monthMin||15;S.nt=S.nt||{bw:2,sp:3};S.over=false;S.nt.si=S.nt.si===undefined?nearSp(GENS[S.gen].spd):S.nt.si;
+function fixS(){S.acc=S.acc||{sal:0,tax:0,twr:0,ads:0,lic:0,loan:0,fine:0,pack:0,net:0};S.invs=S.invs||[];S.price=S.price||1;S.riv=S.riv||[{n:'AirNova',ap:.55},{n:'Zephyr Mobile',ap:.5}];S.loan=S.loan||0;S.offer=S.offer||0;S.h=S.h||{u:[],r:[],g:[]};S.towers.forEach(t=>{t.bw=t.bw||2;t.sp=t.sp||3;t.cmp=t.cmp||0;t.w=t.w||1;t.g=t.g===undefined?S.gen:t.g;t.si=t.si===undefined?nearSp(GENS[t.g].spd*(t.sp||3)/3):t.si});S.monthMin=S.monthMin||15;S.nt=S.nt||{bw:2,sp:3};S.over=false;S.nt.si=S.nt.si===undefined?nearSp(GENS[S.gen].spd):S.nt.si;S.zn=S.zn||1;S.towers.forEach(t=>{t.z=Math.min(t.z||0,S.zn-1)});S.nt.z=Math.min(S.nt.z||0,S.zn-1);
   S.plans=S.plans.map(x=>{if(typeof x!=='string')return x;const p=PLANS.find(q=>q.id===x);return{id:x,n:p.n,price:p.arpu,days:30,gb:5,sms:100,min:100}});
-  S.pool=Math.max(S.pool||5,S.towers.reduce((a,t)=>a+t.bw,0));S.dr=S.dr||{n:'',price:299,days:30,gb:10,sms:100,min:200};S.acc.pack=S.acc.pack||0;S.acc.net=S.acc.net||0}
+  S.pool=Math.max(S.pool||5,Math.ceil(S.plans.reduce((a,p)=>a+p.gb*30/p.days/10,0)));S.dr=S.dr||{n:'',price:299,days:30,gb:10,sms:100,min:200};S.acc.pack=S.acc.pack||0;S.acc.net=S.acc.net||0}
 function planV(p){return Math.min(5,Math.max(.05,(p.gb/10+p.sms/500+p.min/500+.2)/Math.max(.1,p.price*30/p.days/200)))}
 function pCost(p){return p.gb*1+p.sms*.02+p.min*.1}
 function staffState(){const n=need(),k=Object.keys(STAFF),mn=Math.min(...k.map(x=>S.staff[x]/Math.max(1,n[x])));return{n,have:k.reduce((a,x)=>a+S.staff[x],0),light:k.every(x=>S.staff[x]>=n[x])?'🟢':mn>=.5?'🟡':'🔴'}}
