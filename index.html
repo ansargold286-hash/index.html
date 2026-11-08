@@ -1,2249 +1,318 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP Media Empire</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        'vip-black': '#0a0a0c',
-                        'vip-card': '#121217',
-                        'gold-light': '#FDE68A',
-                        'gold-main': '#F59E0B',
-                        'gold-dark': '#B45309',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background-color: #050507;
-            font-family: 'Inter', sans-serif;
-            color: #f3f4f6;
-            touch-action: manipulation;
-        }
-        .text-gold-gradient {
-            background: linear-gradient(135deg, #FFF176 0%, #FFD54F 50%, #FFB300 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .bg-gold-gradient {
-            background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
-        }
-        .border-gold-glow {
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
-        }
-        /* Custom scrollbars */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a0a0c;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VIP SIM Tycoon</title>
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--acc:#0284c7;--on:#fff;--good:#16a34a;--warn:#d97706;--bad:#dc2626;--map:#e6edf7;--plot:#b6c3d6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1220;--card:#131c2e;--text:#e5edf8;--muted:#8fa3bf;--line:#223050;--acc:#38bdf8;--on:#06121f;--good:#4ade80;--warn:#fbbf24;--bad:#f87171;--map:#0f1a2e;--plot:#2d3f63}}
+:root[data-theme="dark"]{--bg:#0b1220;--card:#131c2e;--text:#e5edf8;--muted:#8fa3bf;--line:#223050;--acc:#38bdf8;--on:#06121f;--good:#4ade80;--warn:#fbbf24;--bad:#f87171;--map:#0f1a2e;--plot:#2d3f63}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#app{display:flex;flex-direction:column;height:100%;max-width:520px;margin:0 auto}
+header{padding:10px 12px 8px;background:var(--card);border-bottom:1px solid var(--line)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.brand{font-weight:800;font-size:15px}.sub{color:var(--muted);font-size:11px}
+.gen{background:var(--acc);color:var(--on);font-weight:800;font-size:11px;padding:2px 8px;border-radius:99px;margin-left:6px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.st{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:5px 4px;text-align:center;min-width:0}
+.st b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.st span{font-size:9px;color:var(--muted);text-transform:uppercase}
+.money{font-weight:800;font-size:16px;color:var(--good)}.money.neg{color:var(--bad)}
+.sp button{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;padding:3px 8px;font-size:12px}
+.sp button.on{background:var(--acc);color:var(--on);border-color:var(--acc)}
+main{flex:1;overflow-y:auto;padding:12px}
+nav{display:grid;grid-template-columns:repeat(6,1fr);background:var(--card);border-top:1px solid var(--line)}
+nav button{border:0;background:none;color:var(--muted);padding:8px 2px 7px;font-size:10px;font-weight:700}
+nav button i{display:block;font-style:normal;font-size:19px;line-height:1.2}
+nav button.on{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.card h3{margin:0 0 6px;font-size:13px}.muted{color:var(--muted);font-size:12px}
+.btn{border:0;border-radius:10px;background:var(--acc);color:var(--on);font-weight:800;padding:9px 12px;font-size:13px;width:100%}
+.btn.s{width:auto;padding:6px 12px;font-size:12px}.btn.o{background:none;border:1px solid var(--acc);color:var(--acc)}.btn.d{background:var(--bad);color:#fff}
+.btn:disabled{opacity:.4}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tag{font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+.tag.ok{color:var(--good);border-color:var(--good)}
+.bar{height:8px;border-radius:99px;background:var(--bg);border:1px solid var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--acc)}
+table{width:100%;border-collapse:collapse;font-size:13px}td{padding:5px 0;border-bottom:1px solid var(--line)}td:last-child{text-align:right;font-weight:700}
+svg{width:100%;height:auto;display:block;border-radius:14px;background:var(--map);border:1px solid var(--line)}
+.pe{fill:none;stroke:var(--plot);stroke-width:1.5;stroke-dasharray:4 4}.pt{fill:var(--plot);font-size:16px;text-anchor:middle}
+.bl{animation:bl 1s infinite}@keyframes bl{50%{opacity:.25}}
+.rack{background:#1b2536;border:3px solid #3a4a66;border-radius:12px;padding:6px;display:flex;flex-direction:column;gap:4px}.unit{display:flex;align-items:center;gap:8px;background:#0e1626;color:#e5edf8;border:1px solid #2d3f63;border-radius:6px;padding:9px 8px;font-size:12px}.unit b{flex:1}.led{width:10px;height:10px;border-radius:50%;box-shadow:0 0 6px currentColor}.cm{color:#f87171;font-weight:800}
+.pp{display:inline-block;animation:bob 1.6s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-2px) scale(1.15)}}
+#chU.pop{animation:pop .6s}@keyframes pop{30%{transform:scale(1.12);border-color:var(--good)}}
+.drw{background:#0e1626;color:#e5edf8;border:1px solid #2d3f63;border-radius:6px;padding:10px}.drw .muted{color:#8fa3bf}.hdl{height:5px;width:46px;border-radius:3px;background:#5b6f94;margin:9px auto 0}
+.ov{position:fixed;inset:0;background:rgba(2,8,20,.7);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.ov.h{display:none}.box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;width:100%;max-width:380px}
+input[type=text]{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:15px;margin:8px 0 12px}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));background:var(--text);color:var(--bg);padding:8px 14px;border-radius:99px;font-size:12px;font-weight:700;z-index:10;max-width:90%;text-align:center;opacity:0;transition:opacity .25s;pointer-events:none}
+#toast.s{opacity:1}
+</style>
 </head>
-<body class="flex justify-center items-center min-h-screen p-0 sm:p-4 bg-black">
-
-    <!-- Mobile Screen Frame Container -->
-    <div class="w-full max-w-md h-screen sm:h-[844px] bg-vip-black border-0 sm:border border-amber-500/30 rounded-none sm:rounded-[40px] shadow-2xl flex flex-col relative overflow-hidden">
-        
-        <!-- Top VIP Header -->
-        <header class="bg-vip-card/90 backdrop-blur-md border-b border-gray-800/80 px-4 py-3 flex items-center justify-between z-20 flex-shrink-0">
-            <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 shadow-lg">
-                    <div class="w-full h-full bg-black rounded-[10px] flex items-center justify-center font-black text-xs text-amber-400">
-                        VIP
-                    </div>
-                </div>
-                <div>
-                    <h1 class="text-xs font-black text-white tracking-wide uppercase">VIP MEDIA EMPIRE</h1>
-                    <span id="header-title" class="text-[10px] text-amber-400 font-bold block">VIP Home</span>
-                </div>
-            </div>
-            
-            <div class="flex items-center space-x-2">
-                <button id="btn-copy-code" onclick="copyAppCode()" class="bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-full flex items-center space-x-1 hover:bg-amber-500/20 transition-all active:scale-95">
-                    <i class="fa-solid fa-copy text-amber-400 text-xs"></i>
-                    <span class="text-[10px] font-bold text-amber-300">Copy Code</span>
-                </button>
-                <button onclick="showToast('VIP Crown Status: Active Gold')" class="bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-full flex items-center space-x-1 hover:bg-amber-500/20 transition-all">
-                    <i class="fa-solid fa-crown text-amber-400 text-xs"></i>
-                    <span class="text-[10px] font-bold text-amber-300">PRO</span>
-                </button>
-            </div>
-        </header>
-
-        <!-- Top Navigation Bar -->
-        <nav class="bg-vip-card/95 backdrop-blur-md border-b border-gray-800/80 z-30 flex-shrink-0">
-            <div class="flex space-x-3 overflow-x-auto px-3 py-2.5" style="scrollbar-width:none">
-                <button id="nav-home" onclick="switchTab('home')" class="nav-tab text-amber-400 flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
-                    <i class="fa-solid fa-house text-base"></i>
-                    <span class="text-[10px] font-bold mt-1">Home</span>
-                </button>
-                <button id="nav-trp" onclick="switchTab('trp')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
-                    <i class="fa-solid fa-chart-line text-base"></i>
-                    <span class="text-[10px] font-bold mt-1">TRP Ranking</span>
-                </button>
-                <div class="w-px bg-gray-700/70 my-1 flex-shrink-0"></div>
-                <button id="nav-tvshows" onclick="switchTab('tvshows')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
-                    <i class="fa-solid fa-rectangle-list text-base"></i>
-                    <span class="text-[10px] font-bold mt-1">My Shows</span>
-                </button>
-                <button id="nav-market" onclick="switchTab('market')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
-                    <i class="fa-solid fa-store text-base"></i>
-                    <span class="text-[10px] font-bold mt-1">Buy Shows</span>
-                </button>
-                <div class="w-px bg-gray-700/70 my-1 flex-shrink-0"></div>
-                <button id="nav-tv" onclick="switchTab('tv')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
-                    <i class="fa-solid fa-tv text-base"></i>
-                    <span class="text-[10px] font-bold mt-1">New Channel</span>
-                </button>
-                <button id="nav-shows" onclick="switchTab('shows')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
-                    <i class="fa-solid fa-clapperboard text-base"></i>
-                    <span class="text-[10px] font-bold mt-1">New Show</span>
-                </button>
-                <div class="w-px bg-gray-700/70 my-1 flex-shrink-0"></div>
-                <button id="nav-offch" onclick="switchTab('offch')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
-                    <i class="fa-solid fa-power-off text-base"></i>
-                    <span class="text-[10px] font-bold mt-1">Off-Air Channels</span>
-                </button>
-                <button id="nav-offsh" onclick="switchTab('offsh')" class="nav-tab text-gray-400 hover:text-white flex-shrink-0 min-w-[84px] px-4 py-2 whitespace-nowrap flex flex-col items-center justify-center rounded-xl bg-black/30 border border-gray-800/80 transition-all">
-                    <i class="fa-solid fa-ban text-base"></i>
-                    <span class="text-[10px] font-bold mt-1">Off-Air Shows</span>
-                </button>
-            </div>
-        </nav>
-
-        <!-- Notification Toast -->
-        <div id="toast" class="absolute top-14 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-r from-amber-500 to-yellow-500 text-black text-xs font-extrabold px-4 py-2 rounded-full shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center space-x-2 border border-yellow-200">
-            <i class="fa-solid fa-circle-check"></i>
-            <span id="toast-text">Action Completed</span>
-        </div>
-
-        <!-- Scrollable Page Contents -->
-        <main class="flex-1 overflow-y-auto p-4 space-y-4 pb-6">
-            
-            <!-- PAGE 1: HOME PAGE -->
-            <section id="page-home" class="page-content space-y-4">
-                <!-- Overview Stats -->
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-3.5 flex items-center justify-between shadow-lg">
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Active Channels</p>
-                            <h3 id="stat-total-channels" class="text-xl font-black text-amber-400 mt-0.5">0</h3>
-                        </div>
-                        <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                            <i class="fa-solid fa-tv text-base"></i>
-                        </div>
-                    </div>
-                    <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-3.5 flex items-center justify-between shadow-lg">
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Top TRP Peak</p>
-                            <h3 id="stat-top-trp" class="text-xl font-black text-amber-400 mt-0.5">0.0</h3>
-                        </div>
-                        <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                            <i class="fa-solid fa-chart-line text-base"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Featured Instant Stream Banner -->
-                <div id="featured-banner" class="relative rounded-2xl p-4 bg-gradient-to-r from-amber-950/80 via-vip-card to-black border border-amber-500/30 overflow-hidden shadow-xl">
-                    <div class="relative z-10 space-y-2">
-                        <span class="text-[9px] font-extrabold bg-amber-500 text-black px-2 py-0.5 rounded uppercase tracking-wider">FEATURED BROADCAST</span>
-                        <h2 id="featured-title" class="text-sm font-extrabold text-white">VIP Cinema Gold Live</h2>
-                        <p id="featured-sub" class="text-[11px] text-gray-300">Click below to test live playback engine</p>
-                        <button onclick="playLiveChannel(1)" class="mt-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold text-xs px-4 py-2 rounded-xl flex items-center space-x-2 shadow-lg hover:brightness-110 active:scale-95 transition-all">
-                            <i class="fa-solid fa-circle-play text-sm"></i>
-                            <span>PLAY STREAM NOW</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- TV Channels TRP List Box on Home Page -->
-                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 space-y-3 shadow-lg">
-                    <div class="flex justify-between items-center border-b border-gray-800 pb-2.5">
-                        <div class="flex items-center space-x-2">
-                            <i class="fa-solid fa-ranking-star text-amber-400 text-sm"></i>
-                            <h3 class="text-xs font-bold text-white uppercase tracking-wider">TV Channels TRP Rankings</h3>
-                        </div>
-                        <button onclick="switchTab('trp')" class="text-[11px] text-amber-400 hover:underline font-semibold">View All →</button>
-                    </div>
-
-                    <div id="home-trp-container" class="space-y-2.5">
-                        <!-- Injected Dynamically -->
-                    </div>
-                </div>
-
-                <!-- Premiered Content Box -->
-                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 space-y-3 shadow-lg">
-                    <div class="flex justify-between items-center border-b border-gray-800 pb-2.5">
-                        <div class="flex items-center space-x-2">
-                            <i class="fa-solid fa-clapperboard text-amber-400 text-sm"></i>
-                            <h3 class="text-xs font-bold text-white uppercase tracking-wider">Premiered Shows & Movies</h3>
-                        </div>
-                        <button onclick="switchTab('shows')" class="text-[11px] text-amber-400 hover:underline font-semibold">Launch New →</button>
-                    </div>
-                    <div id="home-shows-container" class="space-y-2.5">
-                        <!-- Injected Dynamically -->
-                    </div>
-                </div>
-            </section>
-
-            <!-- PAGE 2: LAUNCH TV CHANNEL PAGE -->
-            <section id="page-tv" class="page-content hidden space-y-5">
-                <!-- VIP Auto-Preview Card -->
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center px-1">
-                        <span class="text-xs font-semibold text-amber-400 uppercase tracking-widest">
-                            <i class="fa-solid fa-eye mr-1"></i> Live Channel Preview
-                        </span>
-                        <span id="preview-resolution-tag" class="text-[10px] bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 px-2 py-0.5 rounded-full uppercase">
-                            4K ULTRA HD
-                        </span>
-                    </div>
-
-                    <div class="relative rounded-2xl p-5 border border-amber-500/40 bg-gradient-to-br from-gray-900 via-vip-card to-black shadow-2xl overflow-hidden min-h-[160px] flex flex-col justify-between">
-                        <div class="flex items-start space-x-4 relative z-10">
-                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 shadow-xl flex-shrink-0">
-                                <div class="w-full h-full bg-black/95 rounded-[14px] flex flex-col items-center justify-center text-center p-1">
-                                    <span id="preview-initials" class="text-sm font-extrabold text-gold-gradient tracking-wider">VIP</span>
-                                    <i id="preview-cat-icon" class="fa-solid fa-film text-[10px] text-amber-400 mt-0.5"></i>
-                                </div>
-                            </div>
-
-                            <div class="flex-1 overflow-hidden">
-                                <div class="flex items-center space-x-1.5">
-                                    <h4 id="preview-title" class="text-base font-extrabold text-white truncate">My VIP Channel</h4>
-                                    <i class="fa-solid fa-circle-check text-amber-400 text-xs"></i>
-                                </div>
-                                <p id="preview-tagline" class="text-xs text-gray-400 italic truncate mt-0.5">Premium Entertainment Station</p>
-                                
-                                <div class="flex items-center space-x-2 mt-3">
-                                    <span id="preview-category-tag" class="text-[10px] font-semibold bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-md border border-amber-500/30">Movies</span>
-                                    <span class="text-[10px] font-bold text-gray-400">TRP Base: 2.0</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Launch Settings Form -->
-                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-5 space-y-4 shadow-lg">
-                    <h3 class="text-sm font-bold text-white flex items-center">
-                        <i class="fa-solid fa-satellite-dish text-amber-400 mr-2"></i> Launch Setup
-                    </h3>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1">Channel Name</label>
-                        <input type="text" id="input-tv-name" oninput="updateTvPreview()" placeholder="e.g. VIP Star News" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none transition-colors">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1">Tagline / Motto</label>
-                        <input type="text" id="input-tv-tagline" oninput="updateTvPreview()" placeholder="e.g. Always First Always Live" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none transition-colors">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1">Broadcast Resolution</label>
-                        <select id="select-tv-quality" onchange="updateTvPreview()" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none">
-                            <option value="4K ULTRA HD">4K ULTRA HD</option>
-                            <option value="1080p FULL HD">1080p FULL HD</option>
-                            <option value="8K IMAX VIP">8K IMAX VIP</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1.5">Category</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button type="button" onclick="selectTvCategory('Movies', 'fa-film', this)" class="tv-cat-btn border border-amber-500 bg-amber-500/20 text-amber-300 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
-                                Movies
-                            </button>
-                            <button type="button" onclick="selectTvCategory('Shows', 'fa-tv', this)" class="tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
-                                Shows
-                            </button>
-                            <button type="button" onclick="selectTvCategory('Sports', 'fa-trophy', this)" class="tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
-                                Sports
-                            </button>
-                            <button type="button" onclick="selectTvCategory('News', 'fa-newspaper', this)" class="tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
-                                News
-                            </button>
-                            <button type="button" onclick="selectTvCategory('Music', 'fa-music', this)" class="tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
-                                Music
-                            </button>
-                            <button type="button" onclick="selectTvCategory('Gaming', 'fa-gamepad', this)" class="tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
-                                Gaming
-                            </button>
-                        </div>
-                    </div>
-
-                    <button onclick="launchTvChannel()" class="w-full mt-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-3 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2 text-xs">
-                        <i class="fa-solid fa-rocket text-sm"></i>
-                        <span>LAUNCH TV CHANNEL</span>
-                    </button>
-                </div>
-            </section>
-
-            <!-- PAGE 3: TRP LEADERBOARD PAGE -->
-            <section id="page-trp" class="page-content hidden space-y-4">
-                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xs font-bold text-white uppercase tracking-wider">TRP Leaderboard</h3>
-                        <p class="text-[10px] text-gray-400">Channels ranked dynamically by view ratings</p>
-                    </div>
-                    <i class="fa-solid fa-award text-amber-400 text-xl"></i>
-                </div>
-
-                <div id="trp-list-container" class="space-y-3">
-                    <!-- Populated dynamically -->
-                </div>
-            </section>
-
-            <!-- PAGE 4: SHOWS & MOVIES LAUNCH PAGE -->
-            <section id="page-shows" class="page-content hidden space-y-5">
-                <!-- Preview Poster -->
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center px-1">
-                        <span class="text-xs font-semibold text-amber-400 uppercase tracking-widest">
-                            <i class="fa-solid fa-eye mr-1"></i> Live Poster Preview
-                        </span>
-                        <span id="content-preview-type-badge" class="text-[10px] bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 px-2 py-0.5 rounded-full uppercase">
-                            Movie
-                        </span>
-                    </div>
-
-                    <div id="vip-content-card" class="relative rounded-2xl p-4 border border-amber-500/40 bg-gradient-to-br from-gray-900 via-vip-card to-black shadow-2xl overflow-hidden min-h-[160px] flex flex-col justify-between">
-                        <div class="flex items-start space-x-4 relative z-10">
-                            <div class="w-14 h-18 aspect-[2/3] rounded-xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 shadow-xl flex-shrink-0">
-                                <div class="w-full h-full bg-black/95 rounded-[10px] flex flex-col items-center justify-center text-center p-1 space-y-0.5">
-                                    <span id="content-preview-initials" class="text-xs font-extrabold text-gold-gradient tracking-wider">VIP</span>
-                                    <i id="content-preview-cat-icon" class="fa-solid fa-fire text-[10px] text-amber-400"></i>
-                                </div>
-                            </div>
-
-                            <div class="flex-1 overflow-hidden">
-                                <div class="flex items-center space-x-1.5">
-                                    <h4 id="content-preview-title" class="text-sm font-extrabold text-white truncate">My VIP Premiere</h4>
-                                    <i class="fa-solid fa-circle-check text-amber-400 text-xs"></i>
-                                </div>
-                                <p id="content-preview-subtitle" class="text-[11px] text-gray-400 italic truncate mt-0.5">Exclusive VIP Premiere Edition</p>
-                                
-                                <div class="flex items-center space-x-2 mt-2">
-                                    <span id="content-preview-category-tag" class="text-[9px] font-semibold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">Action</span>
-                                    <span id="content-preview-channel-tag" class="text-[9px] font-bold bg-gray-800 text-amber-400 px-2 py-0.5 rounded truncate">Select Channel</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="relative z-10 pt-2 mt-2 border-t border-gray-800/80 flex items-center justify-between text-[10px] text-gray-400">
-                            <span><i class="fa-solid fa-clock text-amber-400 mr-1"></i> <span id="content-preview-time-tag">08:00 PM</span></span>
-                            <span class="text-amber-400 font-bold"><i class="fa-solid fa-star text-amber-400 mr-1"></i> TRP +2.5</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Launch Form Settings -->
-                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-5 space-y-4 shadow-lg">
-                    <h3 class="text-sm font-bold text-white flex items-center">
-                        <i class="fa-solid fa-clapperboard text-amber-400 mr-2"></i> Launch & Schedule Details
-                    </h3>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1.5">Content Type</label>
-                        <div class="grid grid-cols-2 gap-2 p-1 bg-black/60 border border-gray-800 rounded-xl">
-                            <button type="button" id="btn-type-movie" onclick="selectContentType('Movie')" class="content-type-btn py-2 text-center text-xs font-bold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow transition-all">
-                                <i class="fa-solid fa-film mr-1.5"></i> Movie
-                            </button>
-                            <button type="button" id="btn-type-show" onclick="selectContentType('TV Show')" class="content-type-btn py-2 text-center text-xs font-bold rounded-lg text-gray-400 hover:text-white transition-all">
-                                <i class="fa-solid fa-tv mr-1.5"></i> TV Show
-                            </button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label id="lbl-content-title" class="block text-xs font-medium text-gray-400 mb-1">Movie Title</label>
-                        <input type="text" id="input-content-title" oninput="updateContentPreview()" placeholder="e.g. VIP Dynasty" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none transition-colors">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1">Select Target TV Channel</label>
-                        <select id="select-content-channel" onchange="updateContentPreview()" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-amber-400 font-medium focus:outline-none">
-                            <!-- Populated dynamically -->
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1">Schedule Start Time</label>
-                        <input type="time" id="select-content-time" value="20:00" onchange="updateContentPreview()" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none">
-                    </div>
-
-                    <div id="movie-duration-box">
-                        <label class="block text-xs font-medium text-gray-400 mb-1">Movie Duration</label>
-                        <div class="flex space-x-2">
-                            <input type="number" id="input-movie-mins" min="1" value="30" class="flex-1 bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none min-w-0">
-                            <select id="unit-movie" class="w-24 bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-[11px] text-amber-400 font-medium focus:outline-none flex-shrink-0"><option value="1">Seconds</option><option value="60" selected>Minutes</option><option value="3600">Hours</option></select>
-                        </div>
-                    </div>
-
-                    <div id="tv-episode-box" style="display:none">
-                        <label class="block text-xs font-medium text-gray-400 mb-1">Episode Length (new episode every)</label>
-                        <div class="flex space-x-2">
-                            <input type="number" id="input-tv-ep" min="1" value="1" class="flex-1 bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none min-w-0">
-                            <select id="unit-tv-ep" class="w-24 bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-[11px] text-amber-400 font-medium focus:outline-none flex-shrink-0"><option value="1">Seconds</option><option value="60" selected>Minutes</option><option value="3600">Hours</option></select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-medium text-gray-400 mb-1.5">Genre / Category</label>
-                        <div class="grid grid-cols-4 gap-2">
-                            <button type="button" onclick="selectContentCategory('Action', 'fa-fire', this)" class="content-cat-btn border border-amber-500 bg-amber-500/20 text-amber-300 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
-                                Action
-                            </button>
-                            <button type="button" onclick="selectContentCategory('Drama', 'fa-masks-theater', this)" class="content-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
-                                Drama
-                            </button>
-                            <button type="button" onclick="selectContentCategory('Comedy', 'fa-face-laugh', this)" class="content-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
-                                Comedy
-                            </button>
-                            <button type="button" onclick="selectContentCategory('Thriller', 'fa-ghost', this)" class="content-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all">
-                                Thriller
-                            </button>
-                        </div>
-                    </div>
-
-                    <button onclick="launchContent()" class="w-full mt-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-3 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2 text-xs">
-                        <i class="fa-solid fa-rocket text-sm"></i>
-                        <span id="btn-launch-content-text">LAUNCH MOVIE</span>
-                    </button>
-                </div>
-            </section>
-
-        <!-- PAGE 5: TV SHOWS LIST PAGE -->
-            <section id="page-tvshows" class="page-content hidden space-y-4">
-                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xs font-bold text-white uppercase tracking-wider">TV Shows & Movies List</h3>
-                        <p class="text-[10px] text-gray-400">All launched TV shows. Tap a show to manage episodes</p>
-                    </div>
-                    <i class="fa-solid fa-rectangle-list text-amber-400 text-xl"></i>
-                </div>
-                <div id="tvshows-list-container" class="space-y-3">
-                    <!-- Populated dynamically -->
-                </div>
-            </section>
-
-        <!-- PAGE 6: OFF-AIR CHANNELS -->
-            <section id="page-offch" class="page-content hidden space-y-4">
-                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Off-Air Channels</h3>
-                        <p class="text-[10px] text-gray-400">Channels that have gone off air</p>
-                    </div>
-                    <i class="fa-solid fa-power-off text-red-400 text-xl"></i>
-                </div>
-                <div id="offch-list-container" class="space-y-3"></div>
-            </section>
-
-            <!-- PAGE 7: OFF-AIR SHOWS & MOVIES -->
-            <section id="page-offsh" class="page-content hidden space-y-4">
-                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 flex items-center justify-between">
-                    <div>
-                        <h3 class="text-xs font-bold text-white uppercase tracking-wider">Off-Air Shows & Movies</h3>
-                        <p class="text-[10px] text-gray-400">Launch the next season or part from here</p>
-                    </div>
-                    <i class="fa-solid fa-ban text-red-400 text-xl"></i>
-                </div>
-                <div id="offsh-list-container" class="space-y-3"></div>
-            </section>
-        <!-- PAGE 8: NEW TV SHOWS MARKET -->
-            <section id="page-market" class="page-content hidden space-y-4">
-                <div class="bg-vip-card border border-gray-800/90 rounded-2xl p-4 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="text-xs font-bold text-white uppercase tracking-wider">New TV Shows</h3>
-                            <p class="text-[10px] text-gray-400">New shows keep arriving. Buy one for your channel</p>
-                        </div>
-                        <i class="fa-solid fa-store text-amber-400 text-xl"></i>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <select id="market-channel" onchange="window._marketCh=this.value;renderMarket()" class="flex-1 min-w-0 bg-black/60 border border-gray-700 rounded-xl px-3 py-2.5 text-xs text-amber-400 font-medium focus:outline-none"></select>
-                        <span id="market-budget" class="text-xs font-extrabold text-amber-400 whitespace-nowrap">--</span>
-                    </div>
-                </div>
-                <div id="market-list" class="space-y-3"></div>
-            </section>
-        </main>
-
-        <!-- Channel Details Modal Popup -->
-        <div id="channel-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden transition-all duration-300">
-            <div class="bg-vip-card border border-amber-500/40 rounded-3xl w-full max-w-sm shadow-2xl relative flex flex-col" style="max-height:90vh">
-
-                <!-- Header -->
-                <div class="p-5 pb-3 border-b border-gray-800 flex items-center space-x-3.5 pr-14 flex-shrink-0">
-                    <button onclick="closeChannelModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/60 border border-gray-700 text-gray-400 hover:text-white flex items-center justify-center">
-                        <i class="fa-solid fa-xmark text-sm"></i>
-                    </button>
-                    <div id="modal-channel-logo" class="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 flex-shrink-0">
-                        <div class="w-full h-full bg-black rounded-[10px] flex items-center justify-center font-bold text-xs text-amber-300">VIP</div>
-                    </div>
-                    <div class="min-w-0">
-                        <h3 id="modal-channel-name" class="text-base font-extrabold text-white truncate">Channel Name</h3>
-                        <div class="flex items-center space-x-2 mt-0.5">
-                            <span id="modal-channel-cat" class="text-[10px] text-amber-400 font-semibold uppercase">Category</span>
-                            <span id="modal-channel-rank" class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-bold">Rank #1</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-5 pt-4 space-y-4 overflow-y-auto">
-
-                    <!-- Stats -->
-                    <div class="grid grid-cols-3 gap-2">
-                        <div class="bg-black/40 border border-gray-800 rounded-2xl p-2.5 text-center">
-                            <p class="text-[9px] text-gray-400 uppercase font-medium">Live TRP</p>
-                            <h4 id="modal-channel-trp" class="text-lg font-extrabold text-amber-400">0.0</h4>
-                        </div>
-                        <div class="bg-black/40 border border-gray-800 rounded-2xl p-2.5 text-center">
-                            <p class="text-[9px] text-gray-400 uppercase font-medium">Budget</p>
-                            <h4 id="ch-budget" class="text-[11px] font-extrabold text-amber-400 mt-2">0 Coins</h4>
-                        </div>
-                        <div class="bg-black/40 border border-gray-800 rounded-2xl p-2.5 text-center">
-                            <p class="text-[9px] text-gray-400 uppercase font-medium">Content</p>
-                            <h4 id="modal-channel-shows-count" class="text-lg font-extrabold text-white">0</h4>
-                        </div>
-                    </div>
-                    <div class="bg-black/30 border border-gray-800 rounded-xl p-2.5 space-y-1">
-                        <p id="dash-top" class="text-[10px] text-gray-300">--</p>
-                        <p id="dash-trend" class="text-[10px] text-gray-300">--</p>
-                    </div>
-
-                    <!-- Watch -->
-                    <button id="btn-modal-watch-live" onclick="" class="w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2.5 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2 text-xs">
-                        <i class="fa-solid fa-circle-play text-sm"></i>
-                        <span>WATCH LIVE STREAM</span>
-                    </button>
-
-                    <!-- Manage content -->
-                    <div>
-                        <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center"><i class="fa-solid fa-clapperboard text-amber-400 mr-2"></i>Manage Content</h4>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="goLaunch('TV Show')" class="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2 rounded-xl text-[10px] active:scale-95"><i class="fa-solid fa-rocket mr-1"></i>LAUNCH TV SHOW</button>
-                            <button onclick="openMarketFor()" class="border border-amber-500/60 bg-amber-500/10 text-amber-300 font-extrabold py-2 rounded-xl text-[10px] active:scale-95"><i class="fa-solid fa-store mr-1"></i>BUY NEW TV SHOW</button>
-                            <button id="btn-ch-launch-movie" onclick="goLaunch('Movie')" class="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2 rounded-xl text-[10px] active:scale-95" style="display:none"><i class="fa-solid fa-clapperboard mr-1"></i>LAUNCH MOVIE</button>
-                            <button id="btn-ch-buy-movie" onclick="openStore()" class="border border-amber-500/60 bg-amber-500/10 text-amber-300 font-extrabold py-2 rounded-xl text-[10px] active:scale-95" style="display:none"><i class="fa-solid fa-film mr-1"></i>BUY MOVIE</button>
-                        </div>
-                        <p class="text-[10px] text-gray-500 mt-1.5">Own launch costs 150 coins (movie 100). Income comes from channel TRP.</p>
-                    </div>
-
-                    <!-- Auto mode -->
-                    <div id="auto-panel" class="hidden bg-black/50 border border-amber-500/30 rounded-2xl p-3 space-y-2">
-                        <div class="flex items-center justify-between">
-                            <p class="text-xs font-bold text-amber-400"><i class="fa-solid fa-robot mr-1"></i>AUTO MODE</p>
-                            <span id="auto-status" class="text-[10px] font-bold text-gray-400">Auto is OFF</span>
-                        </div>
-                        <p class="text-[10px] text-gray-400">Hand this channel to the computer. It buys shows with the budget, swaps weak shows for better ones, replays finished movies and fights hard for #1.</p>
-                        <label class="block text-[10px] text-gray-400">TV shows to keep running</label>
-                        <div class="flex space-x-2">
-                            <input type="number" id="auto-min" min="1" max="20" value="5" class="flex-1 min-w-0 bg-black/60 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
-                            <button onclick="startAuto()" class="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold px-3 py-2 rounded-xl text-[10px] active:scale-95">START AUTO</button>
-                            <button id="btn-auto-stop" onclick="stopAuto()" class="border border-red-500/50 bg-red-500/10 text-red-400 font-bold px-3 py-2 rounded-xl text-[10px]" style="display:none">STOP</button>
-                        </div>
-                    </div>
-                    <div id="automovie-panel" class="hidden" style="display:none">
-                        <span id="automovie-status"></span>
-                        <button id="btn-automovie" onclick="toggleAutoMovie()"></button>
-                    </div>
-
-                    <!-- Schedule -->
-                    <div>
-                        <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center"><i class="fa-solid fa-list-check text-amber-400 mr-2"></i>Broadcast Schedule</h4>
-                        <div id="modal-shows-list" class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                            <!-- Dynamic list -->
-                        </div>
-                        <div id="replay-panel" class="hidden bg-black/50 border border-amber-500/30 rounded-2xl p-3 space-y-2 mt-2">
-                            <p id="replay-title" class="text-xs font-bold text-amber-400">Air Movie Again</p>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label class="block text-[10px] text-gray-400 mb-1">Start Time</label>
-                                    <input type="time" id="replay-time" class="w-full bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-xs text-white focus:outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] text-gray-400 mb-1">Duration</label>
-                                    <div class="flex space-x-1">
-                                        <input type="number" id="replay-mins" min="1" value="30" class="w-full bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-2 py-2 text-xs text-white focus:outline-none min-w-0">
-                                        <select id="replay-unit" class="w-[74px] bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-[11px] text-amber-400 font-medium focus:outline-none flex-shrink-0"><option value="1">Seconds</option><option value="60" selected>Minutes</option><option value="3600">Hours</option></select>
-                                    </div>
-                                </div>
-                            </div>
-                            <button onclick="confirmReplay()" class="w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2 rounded-xl text-xs active:scale-95">AIR MOVIE AGAIN</button>
-                        </div>
-                    </div>
-
-                    <!-- Danger zone -->
-                    <button onclick="takeChannelOffAir()" class="w-full border border-red-500/50 bg-red-500/10 text-red-400 font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 text-xs">
-                        <i class="fa-solid fa-power-off text-sm"></i>
-                        <span>TAKE CHANNEL OFF AIR</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- TV Show Details Modal -->
-        <div id="tvshow-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden transition-all duration-300">
-            <div class="bg-vip-card border border-amber-500/40 rounded-3xl w-full max-w-sm p-5 space-y-4 shadow-2xl relative">
-                <button onclick="closeTvShowModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/60 border border-gray-700 text-gray-400 hover:text-white flex items-center justify-center">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-
-                <div class="flex items-center space-x-3.5 border-b border-gray-800 pb-3 pr-8">
-                    <div id="tvm-poster" class="flex-shrink-0"></div>
-                    <div class="min-w-0">
-                        <h3 id="tvm-name" class="text-base font-extrabold text-white truncate">TV Show</h3>
-                        <span id="tvm-status" class="text-[10px] font-bold px-2 py-0.5 rounded border">ON AIR</span>
-                    </div>
-                </div>
-
-                <div class="bg-black/40 border border-gray-800 rounded-2xl p-3 space-y-2.5">
-                    <div class="flex justify-between items-center">
-                        <span class="text-[10px] text-gray-400 uppercase font-medium">Airing On Channel</span>
-                        <span id="tvm-channel" class="text-xs font-bold text-amber-400 truncate pl-2">-</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-[10px] text-gray-400 uppercase font-medium">Episodes Completed</span>
-                        <span id="tvm-episodes" class="text-xs font-bold text-white">1</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-[10px] text-gray-400 uppercase font-medium">Live TRP</span>
-                        <span id="tvm-trp" class="text-xs font-extrabold text-amber-400">0.0</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-[10px] text-gray-400 uppercase font-medium">Schedule Slot</span>
-                        <span id="tvm-slot" class="text-xs font-medium text-gray-300 truncate pl-2">-</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-[10px] text-gray-400 uppercase font-medium">Live Countdown</span>
-                        <span id="tvm-cd" class="text-xs font-bold text-amber-300 pl-2">--</span>
-                    </div>
-                </div>
-
-                <button id="btn-tvm-next" onclick="launchNextEpisode()" class="w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2.5 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2 text-xs">
-                    <i class="fa-solid fa-forward-step text-sm"></i>
-                    <span>LAUNCH NEXT EPISODE</span>
-                </button>
-
-                <button id="btn-tvm-air" onclick="toggleShowAir()" class="w-full border border-red-500/50 bg-red-500/10 text-red-400 font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 text-xs">
-                    <i class="fa-solid fa-power-off text-sm"></i>
-                    <span>TAKE OFF AIR</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Air On Another Channel Modal -->
-        <div id="rerun-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden transition-all duration-300">
-            <div class="bg-vip-card border border-amber-500/40 rounded-3xl w-full max-w-sm p-5 space-y-3 shadow-2xl relative">
-                <button onclick="closeRerunModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/60 border border-gray-700 text-gray-400 hover:text-white flex items-center justify-center">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-                <h3 id="rerun-title" class="text-sm font-extrabold text-white pr-8">Air on another channel</h3>
-                <div>
-                    <label class="block text-xs font-medium text-gray-400 mb-1">Which Channel</label>
-                    <select id="rerun-channel" onchange="updateRerunPrice()" class="w-full bg-black/60 border border-gray-700 rounded-xl px-3 py-2.5 text-xs text-amber-400 font-medium focus:outline-none"></select>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-gray-400 mb-1">Start Time</label>
-                    <input type="time" id="rerun-time" class="w-full bg-black/60 border border-gray-700 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none">
-                </div>
-                <div>
-                    <label id="rerun-third-label" class="block text-xs font-medium text-gray-400 mb-1">Movie Duration</label>
-                    <div class="flex space-x-2">
-                        <input type="number" id="rerun-third" min="1" value="30" class="flex-1 bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none min-w-0">
-                        <select id="rerun-third-unit" class="w-24 bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-[11px] text-amber-400 font-medium focus:outline-none flex-shrink-0"><option value="1">Seconds</option><option value="60" selected>Minutes</option><option value="3600">Hours</option></select>
-                    </div>
-                </div>
-                <div id="rerun-ep-box">
-                    <label class="block text-xs font-medium text-gray-400 mb-1">New Episode Comes After (each episode length)</label>
-                    <div class="flex space-x-2">
-                        <input type="number" id="rerun-ep" min="1" value="1" class="flex-1 bg-black/60 border border-gray-700 focus:border-amber-500 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none min-w-0">
-                        <select id="rerun-ep-unit" class="w-24 bg-black/60 border border-gray-700 rounded-xl px-2 py-2 text-[11px] text-amber-400 font-medium focus:outline-none flex-shrink-0"><option value="1">Seconds</option><option value="60" selected>Minutes</option><option value="3600">Hours</option></select>
-                    </div>
-                </div>
-                <button id="btn-rerun-confirm" onclick="confirmRerun()" class="w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2.5 rounded-xl text-xs active:scale-95">AIR ON THIS CHANNEL</button>
-            </div>
-        </div>
-
-        <!-- Movie Store Modal -->
-        <div id="store-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden transition-all duration-300">
-            <div class="bg-vip-card border border-amber-500/40 rounded-3xl w-full max-w-sm p-5 space-y-3 shadow-2xl relative max-h-[85vh] overflow-y-auto">
-                <button onclick="closeStore()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/60 border border-gray-700 text-gray-400 hover:text-white flex items-center justify-center">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-                <h3 id="store-title" class="text-sm font-extrabold text-white pr-8">Movie Store</h3>
-                <p class="text-[10px] text-gray-400">Buy a finished (off-air) movie and air it on this channel. Budget: <b id="store-budget" class="text-amber-400">0</b></p>
-                <div id="store-list" class="space-y-2"></div>
-            </div>
-        </div>
-
-        <!-- Interactive Stream Player Modal -->
-        <div id="player-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 hidden transition-all duration-300">
-            <div class="bg-vip-card border border-amber-500/50 rounded-3xl w-full max-w-sm p-4 space-y-3.5 shadow-2xl relative overflow-hidden">
-                <button onclick="closePlayerModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/70 border border-gray-700 text-gray-400 hover:text-white flex items-center justify-center z-20">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-
-                <!-- Simulated Video Screen -->
-                <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-amber-500/30 shadow-2xl flex flex-col justify-between p-3">
-                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-950 via-gray-900 to-black opacity-90"></div>
-                    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/20 via-transparent to-transparent animate-pulse"></div>
-
-                    <div class="relative z-10 flex justify-between items-start">
-                        <div class="flex items-center space-x-2 bg-black/60 backdrop-blur px-2.5 py-1 rounded-lg border border-amber-500/30">
-                            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-                            <span class="text-[10px] font-extrabold text-amber-400 tracking-wider uppercase" id="player-channel-badge">VIP STREAM</span>
-                        </div>
-                        <span id="player-quality-badge" class="text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded">4K ULTRA HD</span>
-                    </div>
-
-                    <div class="relative z-10 my-auto text-center space-y-1.5">
-                        <div class="w-12 h-12 mx-auto rounded-full bg-amber-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400 text-xl shadow-lg">
-                            <i id="player-screen-icon" class="fa-solid fa-tv animate-bounce"></i>
-                        </div>
-                        <div>
-                            <h3 id="player-screen-title" class="text-xs font-extrabold text-white">Playing Live Stream</h3>
-                            <p id="player-screen-sub" class="text-[10px] text-amber-400/90 font-medium truncate">Now Broadcasting On Air</p>
-                        </div>
-                    </div>
-
-                    <div class="relative z-10 flex items-center justify-between text-[10px] text-gray-300 bg-black/70 backdrop-blur px-2.5 py-1 rounded-lg border border-gray-800">
-                        <span class="truncate flex items-center"><i class="fa-solid fa-circle-play text-amber-400 mr-1.5"></i> <span id="player-now-playing">Main Broadcast Engine</span></span>
-                        <span id="player-live-trp" class="text-amber-400 font-extrabold ml-2 flex-shrink-0">TRP 4.5</span>
-                    </div>
-                </div>
-
-                <!-- Live Stream Controls -->
-                <div class="bg-black/50 border border-gray-800 rounded-2xl p-3 space-y-2.5">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-2">
-                            <button id="btn-player-toggle" onclick="togglePlayPause()" class="w-9 h-9 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-extrabold flex items-center justify-center shadow-md hover:brightness-110 active:scale-95">
-                                <i id="icon-player-toggle" class="fa-solid fa-pause text-xs"></i>
-                            </button>
-                            <div>
-                                <h4 id="player-controls-name" class="text-xs font-bold text-white">VIP Cinema Gold</h4>
-                                <span class="text-[9px] text-gray-400">Live Player System</span>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center space-x-2 text-gray-400 text-xs">
-                            <button onclick="speakChannelReport()" class="text-amber-400 hover:text-amber-300 p-1"><i class="fa-solid fa-volume-high"></i></button>
-                            <button onclick="showToast('Quality: 4K Ultra')" class="hover:text-amber-400 p-1"><i class="fa-solid fa-gear"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Equalizer Animation -->
-                    <div class="flex items-end justify-between h-4 px-2 bg-black/80 rounded-lg border border-gray-900 pt-1">
-                        <div class="w-1 bg-amber-400 h-2/3 animate-pulse rounded-full"></div>
-                        <div class="w-1 bg-amber-400 h-full animate-pulse rounded-full"></div>
-                        <div class="w-1 bg-amber-400 h-1/2 animate-pulse rounded-full"></div>
-                        <div class="w-1 bg-amber-400 h-4/5 animate-pulse rounded-full"></div>
-                        <div class="w-1 bg-amber-400 h-1/3 animate-pulse rounded-full"></div>
-                        <div class="w-1 bg-amber-400 h-3/4 animate-pulse rounded-full"></div>
-                        <div class="w-1 bg-amber-400 h-full animate-pulse rounded-full"></div>
-                        <div class="w-1 bg-amber-400 h-1/2 animate-pulse rounded-full"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        
-
+<body>
+<div id="app">
+  <header>
+    <div class="row"><div><span class="brand" id="hn" onclick="simInfo()" style="cursor:pointer;text-decoration:underline dotted">VIP SIM</span><span class="gen" id="hg">1G</span><div class="sub" id="hd">Day 1</div></div><div style="text-align:right"><div class="money" id="hm">Rs 0</div><div class="sub" id="hc">⏱ --</div><div class="sp" id="sp"></div></div></div>
+    <div class="sub" id="news" style="margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+    <div class="stats">
+      <div class="st" id="chU"><b><span class="pp">👤</span> <span id="sU">0</span></b><span>Users</span></div>
+      <div class="st"><b id="sS">0</b><span>SIMs sold</span></div>
+      <div class="st"><b id="sG">0%</b><span>Signal</span></div>
+      <div class="st"><b id="sP">0</b><span>Net speed</span></div>
     </div>
-
-    <!-- JavaScript Logic -->
-    <script>
-        // State Store
-        let launchedChannels = [
-            { id: 1, name: 'VIP Cinema Gold', category: 'Movies', icon: 'fa-film', resolution: '4K ULTRA HD', tagline: '24/7 Blockbuster Hits', baseTrp: 3.0, totalTrp: 3.0 },
-            { id: 2, name: 'VIP Sports Max', category: 'Sports', icon: 'fa-trophy', resolution: '8K IMAX VIP', tagline: 'Live World Championship Coverage', baseTrp: 2.5, totalTrp: 2.5 }
-        ];
-
-        let launchedShows = [
-            { id: 1, name: 'The Golden Kingdom', type: 'Movie', category: 'Action', channelId: 1, timeSlot: '08:00 PM (Prime Time)', trpBoost: 3.5 }
-        ];
-
-        let selectedTvCategory = 'Movies';
-        let selectedTvIcon = 'fa-film';
-
-        let selectedContentType = 'Movie';
-        let selectedContentCategory = 'Action';
-        let selectedContentIcon = 'fa-fire';
-
-        let isPlaying = true;
-
-        // Toast Helper
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-text').innerText = message;
-            toast.classList.remove('opacity-0', 'pointer-events-none');
-            toast.classList.add('opacity-100');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100');
-                toast.classList.add('opacity-0', 'pointer-events-none');
-            }, 2500);
-        }
-
-        // Initials generator
-        function getInitials(name) {
-            if (!name) return 'VIP';
-            const words = name.trim().split(' ').filter(w => w.length > 0);
-            if (words.length === 1) return words[0].substring(0, 3).toUpperCase();
-            return (words[0][0] + words[1][0]).toUpperCase();
-        }
-
-        // Recalculate TRPs
-        function recalculateChannelTRPs() {
-            launchedChannels.forEach(ch => {
-                const assigned = launchedShows.filter(s => parseInt(s.channelId) === parseInt(ch.id));
-                const showsTrpSum = assigned.filter(isLive).reduce((sum, s) => sum + (s.trpBoost || 2.0), 0);
-                ch.totalTrp = parseFloat((ch.baseTrp + showsTrpSum).toFixed(1));
-            });
-        }
-
-        // Switch Tabs Smoothly
-        function switchTab(pageId) {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
-
-            const activePage = document.getElementById(`page-${pageId}`);
-            if (activePage) activePage.classList.remove('hidden');
-
-            document.querySelectorAll('.nav-tab').forEach(t => {
-                t.classList.remove('text-amber-400');
-                t.classList.add('text-gray-400');
-            });
-
-            const activeNavBtn = document.getElementById(`nav-${pageId}`);
-            if (activeNavBtn) {
-                activeNavBtn.classList.remove('text-gray-400');
-                activeNavBtn.classList.add('text-amber-400');
-            }
-
-            const headerTitle = document.getElementById('header-title');
-            if (pageId === 'home') headerTitle.innerText = 'VIP Home';
-            else if (pageId === 'tv') headerTitle.innerText = 'Launch TV Channel';
-            else if (pageId === 'trp') headerTitle.innerText = 'TRP Leaderboard';
-            else if (pageId === 'tvshows') { headerTitle.innerText = 'TV Shows & Movies'; renderTvShows(); }
-            else if (pageId === 'offch') { headerTitle.innerText = 'Off-Air Channels'; renderOffAir(); }
-            else if (pageId === 'offsh') { headerTitle.innerText = 'Off-Air Shows & Movies'; renderOffAir(); }
-            else if (pageId === 'market') { headerTitle.innerText = 'New TV Shows'; renderMarket(); }
-            else if (pageId === 'shows') {
-                headerTitle.innerText = 'Launch Shows & Movies';
-                populateChannelDropdown();
-            }
-        }
-
-        // Dropdown populate
-        function populateChannelDropdown() {
-            const dropdown = document.getElementById('select-content-channel');
-            const tEl = document.getElementById('select-content-time');
-            if (tEl && !tEl.dataset.set) { tEl.value = nowHHMM(); tEl.dataset.set = '1'; }
-            if (launchedChannels.filter(c => c.status !== 'Off Air' && !c.rival).length === 0) {
-                dropdown.innerHTML = `<option value="">No Channels Available (Launch TV Channel First)</option>`;
-            } else {
-                dropdown.innerHTML = launchedChannels.filter(c => c.status !== 'Off Air' && !c.rival).map(ch => `
-                    <option value="${ch.id}">${ch.name} (${ch.category}) • ${Math.floor(ch.budget || 0)} coins</option>
-                `).join('');
-            }
-            updateContentPreview();
-        }
-
-        // Form Category Selectors
-        function selectTvCategory(catName, iconClass, btn) {
-            selectedTvCategory = catName;
-            selectedTvIcon = iconClass;
-
-            document.querySelectorAll('.tv-cat-btn').forEach(b => {
-                b.className = 'tv-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all';
-            });
-            btn.className = 'tv-cat-btn border border-amber-500 bg-amber-500/20 text-amber-300 rounded-xl p-2 text-center text-[11px] font-medium transition-all';
-
-            updateTvPreview();
-        }
-
-        function updateTvPreview() {
-            const nameVal = document.getElementById('input-tv-name').value.trim();
-            const taglineVal = document.getElementById('input-tv-tagline').value.trim();
-            const qualityVal = document.getElementById('select-tv-quality').value;
-
-            document.getElementById('preview-title').innerText = nameVal || 'My VIP Channel';
-            document.getElementById('preview-tagline').innerText = taglineVal || 'Premium Entertainment Station';
-            document.getElementById('preview-initials').innerText = getInitials(nameVal);
-            document.getElementById('preview-category-tag').innerText = selectedTvCategory;
-            document.getElementById('preview-resolution-tag').innerText = qualityVal;
-            document.getElementById('preview-cat-icon').className = `fa-solid ${selectedTvIcon} text-[10px] text-amber-400 mt-0.5`;
-        }
-
-        function launchTvChannel() {
-            const nameVal = document.getElementById('input-tv-name').value.trim();
-            const taglineVal = document.getElementById('input-tv-tagline').value.trim();
-            const qualityVal = document.getElementById('select-tv-quality').value;
-
-            if (!nameVal) {
-                showToast('Please enter a Channel Name!');
-                return;
-            }
-
-            const newChannel = {
-                id: Date.now(),
-                name: nameVal,
-                category: selectedTvCategory,
-                icon: selectedTvIcon,
-                resolution: qualityVal,
-                tagline: taglineVal || 'VIP Premier Network',
-                baseTrp: 2.0,
-                totalTrp: 2.0
-            };
-
-            launchedChannels.unshift(newChannel);
-            generateArt('channel', newChannel);
-            renderChannels();
-
-            document.getElementById('input-tv-name').value = '';
-            document.getElementById('input-tv-tagline').value = '';
-            updateTvPreview();
-
-            showToast(`Channel "${nameVal}" Launched!`);
-            switchTab('trp');
-        }
-
-        function selectContentType(type) {
-            selectedContentType = type;
-
-            const btnMovie = document.getElementById('btn-type-movie');
-            const btnShow = document.getElementById('btn-type-show');
-            const lblTitle = document.getElementById('lbl-content-title');
-            const btnLaunchText = document.getElementById('btn-launch-content-text');
-            const typeBadge = document.getElementById('content-preview-type-badge');
-
-            if (type === 'Movie') {
-                btnMovie.className = 'content-type-btn py-2 text-center text-xs font-bold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow transition-all';
-                btnShow.className = 'content-type-btn py-2 text-center text-xs font-bold rounded-lg text-gray-400 hover:text-white transition-all';
-                lblTitle.innerText = 'Movie Title';
-                document.getElementById('movie-duration-box').style.display = '';
-                document.getElementById('tv-episode-box').style.display = 'none';
-                btnLaunchText.innerText = 'LAUNCH MOVIE';
-                typeBadge.innerText = 'Movie';
-            } else {
-                btnShow.className = 'content-type-btn py-2 text-center text-xs font-bold rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow transition-all';
-                btnMovie.className = 'content-type-btn py-2 text-center text-xs font-bold rounded-lg text-gray-400 hover:text-white transition-all';
-                lblTitle.innerText = 'TV Show Title';
-                document.getElementById('movie-duration-box').style.display = 'none';
-                document.getElementById('tv-episode-box').style.display = '';
-                btnLaunchText.innerText = 'LAUNCH TV SHOW';
-                typeBadge.innerText = 'TV Show';
-            }
-
-            updateContentPreview();
-        }
-
-        function selectContentCategory(catName, iconClass, btn) {
-            selectedContentCategory = catName;
-            selectedContentIcon = iconClass;
-
-            document.querySelectorAll('.content-cat-btn').forEach(b => {
-                b.className = 'content-cat-btn border border-gray-800 bg-black/40 text-gray-400 hover:border-gray-700 rounded-xl p-2 text-center text-[11px] font-medium transition-all';
-            });
-
-            btn.className = 'content-cat-btn border border-amber-500 bg-amber-500/20 text-amber-300 rounded-xl p-2 text-center text-[11px] font-medium transition-all';
-
-            document.getElementById('content-preview-category-tag').innerText = catName;
-            document.getElementById('content-preview-cat-icon').className = `fa-solid ${iconClass} text-[10px] text-amber-400`;
-        }
-
-        function updateContentPreview() {
-            const titleInput = document.getElementById('input-content-title').value.trim();
-            const channelSelect = document.getElementById('select-content-channel');
-            const timeSelect = document.getElementById('select-content-time');
-
-            document.getElementById('content-preview-title').innerText = titleInput || (selectedContentType === 'Movie' ? 'My VIP Movie' : 'My VIP TV Show');
-            document.getElementById('content-preview-initials').innerText = getInitials(titleInput);
-            document.getElementById('content-preview-initials').parentElement.style.background = posterBg(titleInput);
-
-            if (channelSelect && channelSelect.options[channelSelect.selectedIndex]) {
-                document.getElementById('content-preview-channel-tag').innerText = channelSelect.options[channelSelect.selectedIndex].text;
-            } else {
-                document.getElementById('content-preview-channel-tag').innerText = 'Select Channel';
-            }
-
-            if (timeSelect) {
-                document.getElementById('content-preview-time-tag').innerText = fmtTime(timeSelect.value);
-            }
-        }
-
-        function launchContent() {
-            const titleInput = document.getElementById('input-content-title').value.trim();
-            const channelSelect = document.getElementById('select-content-channel');
-            const timeSelect = document.getElementById('select-content-time');
-
-            if (!titleInput) {
-                showToast(`Please enter a ${selectedContentType} Title!`);
-                return;
-            }
-
-            if (!channelSelect || !channelSelect.value) {
-                showToast('Please select a Target Channel!');
-                return;
-            }
-
-            const channelId = parseInt(channelSelect.value);
-            const trpBoost = parseFloat((Math.random() * 2 + 2.0).toFixed(1));
-
-            const chb = launchedChannels.find(c => parseInt(c.id) === channelId);
-            const ownCost = selectedContentType === 'Movie' ? COST_MOVIE : COST_SHOW;
-            if (chb && (chb.budget || 0) < ownCost) { showToast(`Not enough budget! Need ${ownCost} coins`); return; }
-            if (chb) chb.budget -= ownCost;
-            const hhmm = timeSelect.value || nowHHMM();
-            const startAt = hhmmToTs(hhmm);
-            const isMovie = selectedContentType === 'Movie';
-            const secs = isMovie ? Math.max(1, readDur('input-movie-mins', 'unit-movie') || 1800) : 0;
-            const epSec = !isMovie ? Math.max(1, readDur('input-tv-ep', 'unit-tv-ep') || 60) : 0;
-            launchedShows.unshift({
-                id: Date.now(),
-                name: titleInput,
-                type: selectedContentType,
-                category: selectedContentCategory,
-                channelId: channelId,
-                timeSlot: fmtTime(hhmm),
-                startAt: startAt,
-                durationSec: secs,
-                epSec: epSec,
-                autoEp: !isMovie,
-                endAt: isMovie ? startAt + secs * 1000 : 0,
-                episodes: 1,
-                status: 'On Air',
-                trend: 0,
-                trpBoost: trpBoost
-            });
-            generateArt('show', launchedShows[0]);
-
-            recalculateChannelTRPs();
-            renderChannels();
-            renderShows();
-
-            renderTvShows();
-            showToast(`${selectedContentType} "${titleInput}" Scheduled!`);
-            document.getElementById('input-content-title').value = '';
-            updateContentPreview();
-            switchTab('home');
-        }
-
-        // Open Channel Modal
-        function openChannelModal(channelId) {
-            recalculateChannelTRPs();
-            const sorted = [...launchedChannels].filter(c => c.status !== 'Off Air').sort((a, b) => b.totalTrp - a.totalTrp);
-            window.currentChannelModalId = channelId;
-            const channel = sorted.find(c => parseInt(c.id) === parseInt(channelId));
-            if (!channel) return;
-
-            const rank = sorted.findIndex(c => parseInt(c.id) === parseInt(channelId)) + 1;
-            const assignedShows = launchedShows.filter(s => s.status !== 'Off Air' && parseInt(s.channelId) === parseInt(channelId));
-
-            document.getElementById('modal-channel-name').innerText = channel.name;
-            document.getElementById('modal-channel-cat').innerText = channel.category;
-            document.getElementById('modal-channel-rank').innerText = `Rank #${rank}`;
-            document.getElementById('modal-channel-trp').innerText = channel.totalTrp.toFixed(1);
-            document.getElementById('modal-channel-shows-count').innerText = assignedShows.length;
-
-            document.getElementById('modal-channel-logo').innerHTML = channel.art
-                ? `<img src="${artSrc(channel.art)}" class="w-full h-full rounded-[10px] object-cover">`
-                : `<div class="w-full h-full bg-black rounded-[10px] flex items-center justify-center font-bold text-xs text-amber-300">${getInitials(channel.name)}</div>`;
-
-            document.getElementById('btn-modal-watch-live').setAttribute('onclick', `closeChannelModal(); playLiveChannel(${channel.id});`);
-
-            const listContainer = document.getElementById('modal-shows-list');
-            if (assignedShows.length === 0) {
-                listContainer.innerHTML = `<div class="text-center py-4 text-xs text-gray-500">No scheduled content on this channel yet.</div>`;
-            } else {
-                listContainer.innerHTML = assignedShows.map(s => `
-                    <div onclick="closeChannelModal(); playContentStream('${s.name}', '${s.type}', '${channel.name}', ${s.trpBoost});" class="bg-black/60 border border-gray-800/80 p-2 rounded-xl flex items-center justify-between cursor-pointer hover:border-amber-500/40 transition-all">
-                        <div class="truncate pr-2">
-                            <h5 class="text-xs font-bold text-white truncate flex items-center"><i class="fa-solid fa-circle-play text-amber-400 mr-1.5 text-[10px]"></i>${s.name}</h5>
-                            <span class="text-[10px] text-amber-400"><i class="fa-solid fa-clock mr-1"></i>${s.timeSlot}</span>
-                        </div>
-                        <span class="text-[11px] font-extrabold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-                            TRP +${s.trpBoost.toFixed(1)}
-                        </span>
-                    </div>
-                `).join('');
-            }
-
-            const ended = launchedShows.filter(s => s.type === 'Movie' && s.status === 'Off Air' && parseInt(s.channelId) === parseInt(channelId));
-            if (ended.length) {
-                if (assignedShows.length === 0) listContainer.innerHTML = '';
-                listContainer.insertAdjacentHTML('beforeend', ended.map(s => `
-                    <div onclick="openReplayPanel(${s.id})" class="bg-black/40 border border-red-500/20 p-2 rounded-xl flex items-center justify-between cursor-pointer hover:border-amber-500/40 transition-all opacity-80">
-                        <h5 class="text-xs font-bold text-white truncate pr-2">${showLabel(s)}</h5>
-                        <span class="text-[10px] font-bold text-red-400 flex-shrink-0">OFF AIR • TAP TO REPLAY</span>
-                    </div>`).join(''));
-            }
-            refreshAutoPanel(channel);
-            refreshAutoMoviePanel(channel);
-            refreshBudgetPanel(channel);
-            document.getElementById('channel-modal').classList.remove('hidden');
-        }
-
-        function closeChannelModal() {
-            window._autoPanelFor = null;
-            document.getElementById('replay-panel').classList.add('hidden');
-            document.getElementById('channel-modal').classList.add('hidden');
-        }
-
-        // Live Player Engine
-        function playLiveChannel(channelId) {
-            const activeCh = launchedChannels.filter(c => c.status !== 'Off Air').sort((a, b) => b.totalTrp - a.totalTrp);
-            const channel = activeCh.find(c => parseInt(c.id) === parseInt(channelId)) || activeCh[0];
-            if (!channel) return;
-
-            const assignedShows = launchedShows.filter(s => parseInt(s.channelId) === parseInt(channel.id));
-            window.currentPlayerChannelId = channel.id;
-            const activeShowName = assignedShows.length > 0 ? assignedShows[0].name : 'VIP Live Broadcast Stream';
-
-            document.getElementById('player-channel-badge').innerText = channel.name;
-            document.getElementById('player-quality-badge').innerText = channel.resolution || '4K ULTRA HD';
-            document.getElementById('player-screen-title').innerText = channel.name;
-            document.getElementById('player-screen-sub').innerText = `Live Broadcast • ${channel.category}`;
-            document.getElementById('player-screen-icon').className = `fa-solid ${channel.icon || 'fa-tv'} animate-bounce`;
-            setPlayerArt(channel.art);
-            document.getElementById('player-now-playing').innerText = activeShowName;
-            document.getElementById('player-live-trp').innerText = `TRP ${channel.totalTrp.toFixed(1)}`;
-            document.getElementById('player-controls-name').innerText = channel.name;
-
-            isPlaying = true;
-            updatePlayPauseButton();
-
-            document.getElementById('player-modal').classList.remove('hidden');
-            showToast(`Streaming Live: ${channel.name}`);
-        }
-
-        function playContentStream(title, type, channelName, trpBoost) {
-            const pc = launchedChannels.find(c => c.name === channelName);
-            window.currentPlayerChannelId = pc ? pc.id : null;
-            document.getElementById('player-channel-badge').innerText = type.toUpperCase();
-            document.getElementById('player-quality-badge').innerText = '1080p FULL HD';
-            document.getElementById('player-screen-title').innerText = title;
-            document.getElementById('player-screen-sub').innerText = `Broadcasting on ${channelName}`;
-            document.getElementById('player-screen-icon').className = `fa-solid ${type === 'Movie' ? 'fa-film' : 'fa-tv'} animate-bounce`;
-            const ps = launchedShows.find(x => x.art && title.indexOf(x.name) === 0);
-            setPlayerArt(ps ? ps.art : null);
-            document.getElementById('player-now-playing').innerText = title;
-            document.getElementById('player-live-trp').innerText = `TRP +${trpBoost.toFixed(1)}`;
-            document.getElementById('player-controls-name').innerText = title;
-
-            isPlaying = true;
-            updatePlayPauseButton();
-
-            document.getElementById('player-modal').classList.remove('hidden');
-            showToast(`Now Playing: ${title}`);
-        }
-
-        function togglePlayPause() {
-            isPlaying = !isPlaying;
-            updatePlayPauseButton();
-            showToast(isPlaying ? 'Stream Resumed' : 'Stream Paused');
-        }
-
-        function updatePlayPauseButton() {
-            const btnIcon = document.getElementById('icon-player-toggle');
-            if (isPlaying) {
-                btnIcon.className = 'fa-solid fa-pause text-xs';
-            } else {
-                btnIcon.className = 'fa-solid fa-play text-xs ml-0.5';
-            }
-        }
-
-        function closePlayerModal() {
-            if ('speechSynthesis' in window) speechSynthesis.cancel();
-            document.getElementById('player-modal').classList.add('hidden');
-        }
-
-        // Render UI
-        function renderChannels() {
-            saveState();
-            recalculateChannelTRPs();
-            const sortedChannels = [...launchedChannels].filter(c => c.status !== 'Off Air').sort((a, b) => b.totalTrp - a.totalTrp);
-
-            document.getElementById('stat-total-channels').innerText = sortedChannels.filter(c => !c.rival).length;
-            const topTrp = sortedChannels.length > 0 ? sortedChannels[0].totalTrp.toFixed(1) : '0.0';
-            document.getElementById('stat-top-trp').innerText = topTrp;
-
-            if (sortedChannels.length > 0) {
-                document.getElementById('featured-title').innerText = `${sortedChannels[0].name} Live`;
-                document.getElementById('featured-sub').innerText = `Currently #1 Ranked Station with TRP ${sortedChannels[0].totalTrp.toFixed(1)}`;
-                document.querySelector('#featured-banner button').setAttribute('onclick', `playLiveChannel(${sortedChannels[0].id})`);
-            }
-
-            // Home Page Render
-            const homeContainer = document.getElementById('home-trp-container');
-            if (sortedChannels.length === 0) {
-                homeContainer.innerHTML = `<div class="text-center py-4 text-xs text-gray-500">No channels launched yet.</div>`;
-            } else {
-                homeContainer.innerHTML = sortedChannels.map((ch, idx) => `
-                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-black/40 border border-gray-800/80 hover:border-amber-500/50 transition-all">
-                        <div onclick="openChannelModal(${ch.id})" class="flex items-center space-x-3 overflow-hidden cursor-pointer flex-1">
-                            <span class="w-5 text-center font-extrabold text-xs ${idx === 0 ? 'text-amber-400' : 'text-gray-400'}">#${idx + 1}</span>
-                            ${logo(ch, "w-8 h-8")}
-                            <div class="truncate">
-                                <h4 class="text-xs font-bold text-white truncate">${ch.name}${ch.rival ? ' <span class="text-[8px] text-red-400 border border-red-500/40 rounded px-1">RIVAL</span>' : ''}</h4>
-                                <span class="text-[10px] text-amber-400/80 font-medium">${ch.category}</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2 flex-shrink-0 pl-2">
-                            <button onclick="playLiveChannel(${ch.id})" class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-400 hover:bg-amber-500 hover:text-black flex items-center justify-center transition-all">
-                                <i class="fa-solid fa-play text-xs"></i>
-                            </button>
-                            <div onclick="openChannelModal(${ch.id})" class="text-right cursor-pointer min-w-[32px]">
-                                <span class="text-xs font-extrabold text-amber-400">${ch.totalTrp.toFixed(1)}</span>
-                                <span class="text-[9px] block text-gray-400 font-medium">TRP</span>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            // TRP Leaderboard Render
-            const trpContainer = document.getElementById('trp-list-container');
-            if (sortedChannels.length === 0) {
-                trpContainer.innerHTML = `<div class="text-center py-8 text-xs text-gray-500">No channels found.</div>`;
-            } else {
-                trpContainer.innerHTML = sortedChannels.map((ch, idx) => `
-                    <div class="bg-vip-card border border-gray-800 rounded-2xl p-3 flex items-center justify-between shadow-lg hover:border-amber-500/50 transition-all">
-                        <div onclick="openChannelModal(${ch.id})" class="flex items-center space-x-3 flex-1 min-w-0 cursor-pointer">
-                            <div class="flex flex-col items-center justify-center w-5">
-                                ${idx === 0 ? '<i class="fa-solid fa-crown text-amber-400 text-xs mb-0.5"></i>' : ''}
-                                <span class="text-xs font-extrabold ${idx === 0 ? 'text-amber-400' : 'text-gray-400'}">#${idx + 1}</span>
-                            </div>
-                            ${logo(ch, "w-10 h-10")}
-                            <div class="flex-1 min-w-0 pr-2">
-                                <div class="flex items-center space-x-1.5">
-                                    <h4 class="text-xs font-bold text-white truncate">${ch.name}${ch.rival ? ' <span class="text-[8px] text-red-400 border border-red-500/40 rounded px-1">RIVAL</span>' : ''}</h4>
-                                    <i class="fa-solid fa-circle-check text-amber-400 text-[10px]"></i>
-                                </div>
-                                <p class="text-[10px] text-gray-400 truncate mt-0.5">${ch.tagline}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2 flex-shrink-0 pl-2 border-l border-gray-800">
-                            <button onclick="playLiveChannel(${ch.id})" class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-400 hover:bg-amber-500 hover:text-black flex items-center justify-center transition-all">
-                                <i class="fa-solid fa-play text-xs"></i>
-                            </button>
-                            <div onclick="openChannelModal(${ch.id})" class="text-right cursor-pointer min-w-[32px]">
-                                <span class="text-xs font-extrabold text-amber-400">${ch.totalTrp.toFixed(1)}</span>
-                                <span class="text-[8px] block text-gray-400 font-medium uppercase">TRP</span>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function renderShows() {
-            const homeShowsContainer = document.getElementById('home-shows-container');
-            if (launchedShows.filter(s => s.status !== 'Off Air').length === 0) {
-                homeShowsContainer.innerHTML = `<div class="text-center py-4 text-xs text-gray-500">No movies/shows launched yet.</div>`;
-            } else {
-                homeShowsContainer.innerHTML = launchedShows.filter(s => s.status !== 'Off Air').map(item => {
-                    const ch = launchedChannels.find(c => parseInt(c.id) === parseInt(item.channelId));
-                    const chName = ch ? ch.name : 'Unassigned';
-                    return `
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-black/40 border border-gray-800/80">
-                            <div onclick="playContentStream('${item.name}', '${item.type}', '${chName}', ${item.trpBoost})" class="flex items-center space-x-3 overflow-hidden cursor-pointer flex-1">
-                                ${poster(item.name, "w-7 h-9")}
-                                <div class="truncate">
-                                    <h4 class="text-xs font-bold text-white truncate flex items-center"><i class="fa-solid fa-circle-play text-amber-400 mr-1 text-[9px]"></i>${item.name}</h4>
-                                    <span class="text-[10px] text-amber-400/80 font-medium">${item.type} • ${chName}</span>
-                                </div>
-                            </div>
-                            <div class="text-right flex-shrink-0 pl-2">
-                                <span class="text-xs font-extrabold text-amber-400">+${item.trpBoost.toFixed(1)}</span>
-                                <span class="text-[9px] block text-gray-400 font-medium">${item.timeSlot.split(' ')[0]}</span>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-        }
-
-        // ===== TV Shows: list, episodes, live TRP =====
-        let currentTvShowId = null;
-
-        function getTvShows() { return launchedShows.filter(s => s.type === 'TV Show'); }
-        function getShowChannel(s) { return launchedChannels.find(c => parseInt(c.id) === parseInt(s.channelId)); }
-        function clampTrp(v) { return Math.max(0.5, Math.min(8, parseFloat(v.toFixed(1)))); }
-
-        function renderTvShows() {
-            const box = document.getElementById('tvshows-list-container');
-            if (!box) return;
-            const list = launchedShows.filter(s => s.status !== 'Off Air');
-            if (list.length === 0) {
-                box.innerHTML = `<div class="text-center py-8 text-xs text-gray-500">No TV shows launched yet. Launch one from the Shows/Movies tab.</div>`;
-                return;
-            }
-            box.innerHTML = list.map(s => {
-                const ch = getShowChannel(s);
-                const on = s.status !== 'Off Air';
-                const arrow = s.trend > 0 ? '<span class="text-green-400 text-[10px]">▲</span>' : s.trend < 0 ? '<span class="text-red-400 text-[10px]">▼</span>' : '';
-                return `
-                    <div onclick="openTvShowModal(${s.id})" class="bg-vip-card border border-gray-800 rounded-2xl p-3 flex items-center justify-between shadow-lg hover:border-amber-500/50 transition-all cursor-pointer">
-                        <div class="flex items-center space-x-3 flex-1 min-w-0">
-                            ${poster(s.name, "w-10 h-12")}
-                            <div class="min-w-0">
-                                <h4 class="text-xs font-bold text-white truncate">${showLabel(s)}</h4>
-                                <p class="text-[10px] text-amber-400/80 truncate"><i class="fa-solid fa-tv mr-1"></i>${ch ? ch.name : 'Unassigned'}</p>
-                                <div class="mt-0.5">
-                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border ${on ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'}">${on ? (isLive(s) ? 'ON AIR' : 'SCHEDULED') : 'OFF AIR'}</span>
-                                    <span class="text-[9px] text-gray-400 ml-1">${s.type === 'Movie' ? ('MOVIE' + (s.endAt ? ' • ' + leftTxt(s) : '')) : ((s.episodes || 1) + ' EP' + ((s.autoEp || s.rerunTotal > 0 || (s.startAt && Date.now() < s.startAt)) ? ' • ' + leftTxt(s) : ''))}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-right flex-shrink-0 pl-2">
-                            <span class="text-xs font-extrabold ${on ? 'text-amber-400' : 'text-gray-500'}">${on && isLive(s) ? '+' + s.trpBoost.toFixed(1) : '--'}</span> ${on ? arrow : ''}
-                            <span class="text-[8px] block text-gray-400 font-medium uppercase">TRP</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function openTvShowModal(id) {
-            currentTvShowId = id;
-            refreshTvShowModal();
-            document.getElementById('tvshow-modal').classList.remove('hidden');
-        }
-
-        function closeTvShowModal() {
-            document.getElementById('tvshow-modal').classList.add('hidden');
-        }
-
-        function refreshTvShowModal() {
-            const s = launchedShows.find(x => x.id === currentTvShowId);
-            if (!s) return;
-            const ch = getShowChannel(s);
-            const on = s.status !== 'Off Air';
-
-            document.getElementById('tvm-poster').innerHTML = poster(s.name, 'w-12 h-14');
-            document.getElementById('tvm-name').innerText = showLabel(s);
-            const st = document.getElementById('tvm-status');
-            st.innerText = on ? 'ON AIR' : 'OFF AIR';
-            st.className = 'text-[10px] font-bold px-2 py-0.5 rounded border ' + (on ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30');
-            document.getElementById('tvm-channel').innerText = ch ? `${ch.name} (${ch.category})` : 'Unassigned';
-            document.getElementById('tvm-episodes').innerText = s.type === 'Movie' ? 'Movie' : (s.episodes || 1);
-            document.getElementById('btn-tvm-next').style.display = s.type === 'Movie' ? 'none' : '';
-            document.getElementById('tvm-trp').innerText = on ? '+' + s.trpBoost.toFixed(1) : 'Off Air (0.0)';
-            document.getElementById('tvm-slot').innerText = s.timeSlot;
-            document.getElementById('tvm-cd').innerText = cdText(s) || '--';
-
-            const nextBtn = document.getElementById('btn-tvm-next');
-            nextBtn.className = 'w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2.5 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center space-x-2 text-xs' + (on ? '' : ' opacity-40');
-
-            const airBtn = document.getElementById('btn-tvm-air');
-            if (on) {
-                airBtn.className = 'w-full border border-red-500/50 bg-red-500/10 text-red-400 font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 text-xs';
-                airBtn.innerHTML = '<i class="fa-solid fa-power-off text-sm"></i><span>TAKE OFF AIR</span>';
-            } else {
-                airBtn.className = 'w-full border border-green-500/50 bg-green-500/10 text-green-400 font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 text-xs';
-                airBtn.innerHTML = '<i class="fa-solid fa-tower-broadcast text-sm"></i><span>BRING BACK ON AIR</span>';
-            }
-        }
-
-        function refreshAllViews() {
-            renderMarket();
-            if (!document.getElementById('store-modal').classList.contains('hidden')) renderStore();
-            renderOffAir();
-            renderChannels();
-            renderShows();
-            renderTvShows();
-            if (!document.getElementById('tvshow-modal').classList.contains('hidden')) refreshTvShowModal();
-            if (!document.getElementById('channel-modal').classList.contains('hidden') && window.currentChannelModalId) openChannelModal(window.currentChannelModalId);
-        }
-
-        function launchNextEpisode() {
-            const s = launchedShows.find(x => x.id === currentTvShowId);
-            if (!s) return;
-            if (s.status === 'Off Air') {
-                showToast('Show is Off Air! Bring it back on air first');
-                return;
-            }
-            if (s.rerunTotal > 0) { showToast('Rerun is playing automatically'); return; }
-            const ch0 = getShowChannel(s);
-            if (ch0 && ch0.status === 'Off Air') { showToast('This channel is Off Air'); return; }
-            if (s.autoEp) {
-                if (!isLive(s)) { showToast('Show has not started yet'); return; }
-                s.startAt -= (s.epSec || 60) * 1000;
-            }
-            s.episodes = (s.episodes || 1) + 1;
-            const nv = clampTrp(s.trpBoost + (Math.random() * 3 - 1.5));
-            s.trend = nv > s.trpBoost ? 1 : nv < s.trpBoost ? -1 : 0;
-            s.trpBoost = nv;
-
-            const ch = getShowChannel(s);
-            refreshAllViews();
-            closeTvShowModal();
-            playContentStream(`${showLabel(s)} • Episode ${s.episodes}`, 'TV Show', ch ? ch.name : 'Unassigned', s.trpBoost);
-        }
-
-        function toggleShowAir() {
-            const q = launchedShows.find(x => x.id === currentTvShowId);
-            if (q && q.rerunTotal > 0) { q.episodes = q.rerunTotal; q.rerunTotal = 0; }
-            const s = launchedShows.find(x => x.id === currentTvShowId);
-            if (!s) return;
-            s.status = 'Off Air';
-            s.trend = 0;
-            closeTvShowModal();
-            refreshAllViews();
-            showToast(`${showLabel(s)} is now Off Air`);
-        }
-
-        function takeChannelOffAir() {
-            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window.currentChannelModalId));
-            if (!c) return;
-            if (c.rival) { showToast('Rival channels cannot be taken off air'); return; }
-            c.status = 'Off Air';
-            closeChannelModal();
-            window.currentChannelModalId = null;
-            refreshAllViews();
-            showToast(`${c.name} is now Off Air`);
-        }
-
-        function relaunchShow(id) {
-            const s = launchedShows.find(x => x.id === id);
-            if (!s) return;
-            const ch = getShowChannel(s);
-            if (!ch || ch.status === 'Off Air') { showToast('Its channel is Off Air!'); return; }
-            if (s.type !== 'Movie') {
-                if (s.sequelLaunched) { showToast('Next season is already launched'); return; }
-                const ns = Object.assign({}, s, {
-                    id: Date.now(),
-                    season: (s.season || 1) + 1,
-                    episodes: 1,
-                    status: 'On Air',
-                    trend: 0,
-                    rerunTotal: 0,
-                    sequelLaunched: false,
-                    startAt: Date.now(),
-                    trpBoost: parseFloat((Math.random() * 2 + 2.0).toFixed(1))
-                });
-                s.sequelLaunched = true;
-                launchedShows.unshift(ns);
-                refreshAllViews();
-                showToast(`${showLabel(ns)} Launched!`);
-                switchTab('tvshows');
-                return;
-            }
-            s.season = (s.season || 1) + 1;
-            s.startAt = Date.now();
-            if (s.type === 'Movie') s.endAt = s.startAt + (s.durationSec || (s.durationMin || 30) * 60) * 1000;
-            s.episodes = 1;
-            s.status = 'On Air';
-            s.trend = 0;
-            s.trpBoost = parseFloat((Math.random() * 2 + 2.0).toFixed(1));
-            refreshAllViews();
-            showToast(`${showLabel(s)} Launched!`);
-            switchTab('tvshows');
-        }
-
-        function showLabel(s) {
-            const n = s.season || 1;
-            return (n > 1 || (s.sequelLaunched && s.type !== 'Movie')) ? `${s.name} • ${s.type === 'Movie' ? 'Part' : 'Season'} ${n}` : s.name;
-        }
-
-        function renderOffAir() {
-            const a = document.getElementById('offch-list-container');
-            const b = document.getElementById('offsh-list-container');
-            if (!a || !b) return;
-            const chs = launchedChannels.filter(c => c.status === 'Off Air');
-            a.innerHTML = chs.length === 0 ? `<div class="text-center py-8 text-xs text-gray-500">No off-air channels.</div>` : chs.map(c => `
-                <div class="bg-vip-card border border-gray-800 rounded-2xl p-3 flex items-center justify-between opacity-80">
-                    <div class="flex items-center space-x-3 min-w-0">
-                        ${poster(c.name, 'w-10 h-10')}
-                        <div class="min-w-0">
-                            <h4 class="text-xs font-bold text-white truncate">${c.name}</h4>
-                            <p class="text-[10px] text-gray-400 truncate">${c.category} • ${c.tagline}</p>
-                        </div>
-                    </div>
-                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border bg-red-500/20 text-red-400 border-red-500/30">OFF AIR</span>
-                </div>`).join('');
-            const shs = launchedShows.filter(x => x.status === 'Off Air');
-            b.innerHTML = shs.length === 0 ? `<div class="text-center py-8 text-xs text-gray-500">No off-air shows or movies.</div>` : shs.map(x => {
-                const ch = getShowChannel(x);
-                const nxt = (x.season || 1) + 1;
-                return `
-                <div class="bg-vip-card border border-gray-800 rounded-2xl p-3 space-y-2.5">
-                    <div class="flex items-center space-x-3 min-w-0">
-                        ${poster(x.name, 'w-10 h-12')}
-                        <div class="min-w-0 flex-1">
-                            <h4 class="text-xs font-bold text-white truncate">${showLabel(x)}</h4>
-                            <p class="text-[10px] text-amber-400/80 truncate">${x.type} • ${ch ? ch.name : 'Unassigned'}${x.type === 'Movie' ? '' : ' • ' + (x.episodes || 1) + ' episodes completed'}</p>
-                        </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border bg-red-500/20 text-red-400 border-red-500/30">OFF AIR</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="relaunchShow(${x.id})" class="bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2 rounded-xl active:scale-95 transition-all flex items-center justify-center space-x-1.5 text-[10px]">
-                            <i class="fa-solid fa-rocket"></i><span>${x.sequelLaunched ? 'SEASON ' + nxt + ' LAUNCHED' : 'LAUNCH ' + (x.type === 'Movie' ? 'PART' : 'SEASON') + ' ' + nxt}</span>
-                        </button>
-                        <button onclick="openRerunModal(${x.id})" class="border border-amber-500/60 bg-amber-500/10 text-amber-300 font-extrabold py-2 rounded-xl active:scale-95 transition-all flex items-center justify-center space-x-1.5 text-[10px]">
-                            <i class="fa-solid fa-shuffle"></i><span>AIR ON ANOTHER CHANNEL</span>
-                        </button>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        // Auto-generated VIP poster from title
-        function hashHue(n) { let h = 0; for (const c of (n || 'VIP')) h = (h * 31 + c.charCodeAt(0)) % 360; return h; }
-        function posterBg(n) { const h = hashHue(n); return `linear-gradient(160deg, hsl(${h},70%,32%), hsl(${(h + 50) % 360},75%,10%))`; }
-        function poster(n, size) {
-            const a = artFor(n);
-            if (a) return `<img src="${artSrc(a)}" class="${size} rounded-lg flex-shrink-0 object-cover border border-amber-400/60 shadow">`;
-            return `<div class="${size} rounded-lg flex-shrink-0 flex flex-col items-center justify-center border border-amber-400/60 shadow" style="background:${posterBg(n)}"><i class="fa-solid fa-crown text-[7px] text-amber-300"></i><span class="font-extrabold text-[10px] text-amber-200">${getInitials(n)}</span></div>`;
-        }
-
-        // Local storage (data survives refresh / app restart)
-        const STORE_KEY = 'vipMediaEmpireV1';
-        function saveState() {
-            ensureBudgets();
-            try { localStorage.setItem(STORE_KEY, JSON.stringify({ c: launchedChannels, s: launchedShows, m: market })); } catch (e) {}
-        }
-        function loadState() {
-            try {
-                const raw = localStorage.getItem(STORE_KEY);
-                if (!raw) return;
-                const d = JSON.parse(raw);
-                if (Array.isArray(d.c)) launchedChannels = d.c;
-                if (Array.isArray(d.s)) launchedShows = d.s;
-                if (Array.isArray(d.m)) market = d.m;
-            } catch (e) {}
-        }
-
-        // Live TRP: on-air TV shows move up and down; each channel TRP = base + sum of its on-air shows TRP, ranking follows
-        function startLiveTrp() {
-            setInterval(secondTick, 1000);
-            setInterval(() => {
-                endFinishedMovies();
-                getTvShows().filter(isLive).forEach(s => {
-                    const e = s.episodes || 1;
-                    const bias = e < 10 ? 0.05 : -Math.min(0.25, (e - 10) * 0.005);
-                    const nv = clampTrp(s.trpBoost + bias + (Math.random() * 1.2 - 0.6));
-                    s.trend = nv > s.trpBoost ? 1 : nv < s.trpBoost ? -1 : 0;
-                    s.trpBoost = nv;
-                });
-                
-                refreshAllViews();
-                checkRanks();
-            }, 4000);
-        }
-
-        // Scheduling helpers
-        function isLive(s) { return s.status !== 'Off Air' && (!s.startAt || Date.now() >= s.startAt); }
-        function nowHHMM() { const d = new Date(); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
-        function hhmmToTs(v) {
-            const [h, m] = (v || '').split(':').map(Number);
-            if (isNaN(h) || isNaN(m)) return Date.now();
-            const d = new Date(); d.setHours(h, m, 0, 0);
-            return d.getTime() <= Date.now() ? Date.now() : d.getTime();
-        }
-        function fmtTime(v) {
-            const [h, m] = (v || '').split(':').map(Number);
-            if (isNaN(h) || isNaN(m)) return v || '';
-            return `${String(h % 12 || 12).padStart(2, '0')}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
-        }
-        function leftTxt(s) { return `<b data-cd="${s.id}" class="text-amber-300">${cdText(s)}</b>`; }
-        function fmtDur(sec) {
-            sec = Math.max(0, Math.ceil(sec));
-            const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), x = sec % 60;
-            const mm = String(m).padStart(2, '0'), ss = String(x).padStart(2, '0');
-            return h > 0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
-        }
-        function cdText(s) {
-            const now = Date.now();
-            if (s.startAt && now < s.startAt) return 'Starts in ' + fmtDur((s.startAt - now) / 1000);
-            if (s.type === 'Movie') return s.endAt ? 'Ends in ' + fmtDur((s.endAt - now) / 1000) : '';
-            if (s.autoEp && !(s.rerunTotal > 0)) {
-                const L = (s.epSec || 60) * 1000, el = now - s.startAt;
-                const ep = Math.floor(el / L) + 1;
-                return `EP ${ep} • Next in ${fmtDur((ep * L - el) / 1000)}`;
-            }
-            if (s.rerunTotal > 0) {
-                const L = (s.epSec || 60) * 1000, el = now - s.startAt;
-                const ep = Math.min(s.rerunTotal, Math.floor(el / L) + 1);
-                return `EP ${ep}/${s.rerunTotal} • ${ep < s.rerunTotal ? 'Next in ' : 'Ends in '}${fmtDur((ep * L - el) / 1000)}`;
-            }
-            return '';
-        }
-        function readDur(valId, unitId) {
-            const v = parseFloat(document.getElementById(valId).value);
-            const m = parseFloat(document.getElementById(unitId).value) || 60;
-            return isNaN(v) ? 0 : Math.round(v * m);
-        }
-        function setDur(valId, unitId, sec) {
-            let u = 1;
-            if (sec >= 3600 && sec % 3600 === 0) u = 3600; else if (sec >= 60 && sec % 60 === 0) u = 60;
-            document.getElementById(valId).value = sec / u;
-            document.getElementById(unitId).value = String(u);
-        }
-        function updateCountdowns() {
-            document.querySelectorAll('[data-cd]').forEach(el => {
-                const sh = launchedShows.find(x => x.id === Number(el.dataset.cd));
-                if (sh) el.textContent = cdText(sh);
-            });
-            const tm = document.getElementById('tvshow-modal');
-            if (tm && !tm.classList.contains('hidden')) {
-                const sh = launchedShows.find(x => x.id === currentTvShowId);
-                if (sh) document.getElementById('tvm-cd').textContent = cdText(sh) || '--';
-            }
-        }
-        function secondTick() {
-            ensureBudgets();
-            launchedChannels.forEach(c => { if (c.status !== 'Off Air' && !c.rival) c.budget += (c.totalTrp || 0) * 0.25; });
-            let mk = false;
-            if (Date.now() - (window._mk || 0) > 30000) {
-                window._mk = Date.now();
-                market.push(makeOffer());
-                if (market.length > 10) market.shift();
-                mk = true;
-            }
-            const sig = () => JSON.stringify(launchedShows.map(x => [x.status, x.episodes]));
-            const before = sig();
-            endFinishedMovies();
-            if (before !== sig() || mk) refreshAllViews();
-            updateCountdowns();
-            updateBudgetLabels();
-        }
-        function endFinishedMovies() {
-            advanceReruns();
-            autoManageChannels();
-            autoUpgrade();
-            launchedShows.forEach(s => {
-                if (s.type === 'Movie' && s.status !== 'Off Air' && s.endAt && Date.now() >= s.endAt) {
-                    const mch = getShowChannel(s);
-                    const dSec = s.durationSec || (s.durationMin || 0) * 60;
-                    if (mch && mch.status !== 'Off Air' && mch.autoMovie && dSec > 0) {
-                        s.startAt = Date.now();
-                        s.endAt = s.startAt + dSec * 1000;
-                        showToast(`${showLabel(s)} airing again (Auto)`);
-                    } else {
-                        s.status = 'Off Air';
-                        showToast(`${showLabel(s)} finished - Off Air`);
-                    }
-                }
-            });
-        }
-
-        // Air off-air movie / TV show rerun on another channel
-        let rerunShowId = null;
-        function openRerunModal(id) {
-            const sh = launchedShows.find(x => x.id === id);
-            if (!sh) return;
-            let act = launchedChannels.filter(c => c.status !== 'Off Air' && !c.rival);
-            if (window.pendingBuy) act = act.filter(c => parseInt(c.id) === parseInt(window.pendingBuy.channelId));
-            if (act.length === 0) { showToast('No channel is On Air!'); return; }
-            rerunShowId = id;
-            const isMovie = sh.type === 'Movie';
-            document.getElementById('rerun-title').innerText = window.pendingBuy ? 'Air "' + showLabel(sh) + '" on this channel' : 'Air "' + showLabel(sh) + '" on a channel';
-            updateRerunPrice();
-            document.getElementById('rerun-channel').innerHTML = act.map(c => `<option value="${c.id}" ${parseInt(c.id) === parseInt(sh.channelId) ? 'selected' : ''}>${c.name} (${c.category})</option>`).join('');
-            document.getElementById('rerun-time').value = nowHHMM();
-            document.getElementById('rerun-third-label').innerText = isMovie ? 'Movie Duration' : 'Number of Episodes to air';
-            document.getElementById('rerun-third-unit').style.display = isMovie ? '' : 'none';
-            document.getElementById('rerun-ep-box').style.display = isMovie ? 'none' : '';
-            if (isMovie) setDur('rerun-third', 'rerun-third-unit', sh.durationSec || (sh.durationMin || 30) * 60);
-            else setDur('rerun-ep', 'rerun-ep-unit', sh.epSec || 60);
-            if (!isMovie) document.getElementById('rerun-third').value = sh.episodes || 1;
-            updateRerunPrice();
-            document.getElementById('rerun-modal').classList.remove('hidden');
-        }
-        function closeRerunModal() { window.pendingBuy = null; document.getElementById('rerun-modal').classList.add('hidden'); }
-        function confirmRerun() {
-            const sh = launchedShows.find(x => x.id === rerunShowId);
-            if (!sh) return;
-            const chId = parseInt(document.getElementById('rerun-channel').value);
-            if (!chId) { showToast('Please select a channel!'); return; }
-            const price = resalePrice(sh, chId);
-            if (price > 0) {
-                const bch = launchedChannels.find(c => parseInt(c.id) === chId);
-                if (!bch || bch.budget < price) { showToast('Not enough budget! Need ' + price + ' coins'); return; }
-                bch.budget -= price;
-                const seller = getShowChannel(sh);
-                if (seller && parseInt(seller.id) !== chId) seller.budget = (seller.budget || 0) + price;
-            }
-            const hhmm = document.getElementById('rerun-time').value || nowHHMM();
-            const n = Math.max(1, parseInt(document.getElementById('rerun-third').value) || 1);
-            const secs = Math.max(1, readDur('rerun-third', 'rerun-third-unit') || 60);
-            const epSec = Math.max(1, readDur('rerun-ep', 'rerun-ep-unit') || 60);
-            sh.channelId = chId;
-            sh.startAt = hhmmToTs(hhmm);
-            sh.timeSlot = fmtTime(hhmm);
-            sh.status = 'On Air';
-            sh.trend = 0;
-            sh.trpBoost = parseFloat((Math.random() * 2 + 2.0).toFixed(1));
-            if (sh.type === 'Movie') {
-                sh.durationSec = secs;
-                sh.endAt = sh.startAt + secs * 1000;
-            } else {
-                sh.rerunTotal = n;
-                sh.epSec = epSec;
-                sh.episodes = 1;
-            }
-            closeRerunModal();
-            refreshAllViews();
-            showToast(`${showLabel(sh)} airing on ${getShowChannel(sh).name}`);
-            switchTab('tvshows');
-        }
-        function advanceReruns() {
-            launchedShows.forEach(sh => {
-                if (sh.autoEp && !(sh.rerunTotal > 0) && sh.status !== 'Off Air' && Date.now() >= sh.startAt) {
-                    sh.episodes = Math.floor((Date.now() - sh.startAt) / ((sh.epSec || 60) * 1000)) + 1;
-                    return;
-                }
-                if (!(sh.rerunTotal > 0) || sh.status === 'Off Air' || Date.now() < sh.startAt) return;
-                const ep = Math.floor((Date.now() - sh.startAt) / ((sh.epSec || 60) * 1000)) + 1;
-                if (ep > sh.rerunTotal) {
-                    sh.status = 'Off Air';
-                    sh.episodes = sh.rerunTotal;
-                    sh.rerunTotal = 0;
-                    showToast(`${showLabel(sh)} rerun finished - Off Air`);
-                } else {
-                    sh.episodes = ep;
-                }
-            });
-        }
-
-        // Movie replay from channel popup
-        let replayShowId = null;
-        function openReplayPanel(id) {
-            const s = launchedShows.find(x => x.id === id);
-            if (!s) return;
-            replayShowId = id;
-            document.getElementById('replay-title').innerText = 'Air again: ' + showLabel(s);
-            document.getElementById('replay-time').value = nowHHMM();
-            setDur('replay-mins', 'replay-unit', s.durationSec || (s.durationMin || 30) * 60);
-            document.getElementById('replay-panel').classList.remove('hidden');
-        }
-        function confirmReplay() {
-            const s = launchedShows.find(x => x.id === replayShowId);
-            if (!s) return;
-            const ch = getShowChannel(s);
-            if (!ch || ch.status === 'Off Air') { showToast('Its channel is Off Air!'); return; }
-            const hhmm = document.getElementById('replay-time').value || nowHHMM();
-            const secs = Math.max(1, readDur('replay-mins', 'replay-unit') || 1800);
-            s.startAt = hhmmToTs(hhmm);
-            s.durationSec = secs;
-            s.endAt = s.startAt + secs * 1000;
-            s.timeSlot = fmtTime(hhmm);
-            s.status = 'On Air';
-            s.trpBoost = parseFloat((Math.random() * 2 + 2.0).toFixed(1));
-            document.getElementById('replay-panel').classList.add('hidden');
-            replayShowId = null;
-            refreshAllViews();
-            showToast(`${showLabel(s)} airing again`);
-        }
-
-        // Voice report: rank, TRP, performance, shows and channel news
-        function buildChannelReport(c) {
-            const act = launchedChannels.filter(x => x.status !== 'Off Air').sort((a, b) => b.totalTrp - a.totalTrp);
-            const N = act.length;
-            const rank = act.findIndex(x => parseInt(x.id) === parseInt(c.id)) + 1;
-            const mine = launchedShows.filter(x => parseInt(x.channelId) === parseInt(c.id));
-            const live = mine.filter(isLive).sort((a, b) => b.trpBoost - a.trpBoost);
-            const up = live.filter(x => x.trend > 0).length, down = live.filter(x => x.trend < 0).length;
-            const r = [];
-            r.push(`${c.name} चैनल की रिपोर्ट।`);
-            r.push(`यह चैनल ${N} चैनलों में ${rank} नंबर पर चल रहा है, और TRP लिस्ट में इसकी TRP ${c.totalTrp.toFixed(1)} है।`);
-            if (rank > 1) r.push(`नंबर ${rank - 1} वाले चैनल से यह ${(act[rank - 2].totalTrp - c.totalTrp).toFixed(1)} TRP पीछे है।`);
-            else if (N > 1) r.push(`यह दूसरे नंबर वाले चैनल से ${(c.totalTrp - act[1].totalTrp).toFixed(1)} TRP आगे है।`);
-            r.push(rank === 1 ? 'चैनल का प्रदर्शन बेहतरीन है।' : rank <= Math.ceil(N / 2) ? 'चैनल अच्छा प्रदर्शन कर रहा है।' : 'चैनल का प्रदर्शन कमज़ोर है, सुधार की ज़रूरत है।');
-            if (up > down) r.push('अभी चैनल की TRP बढ़ रही है।'); else if (down > up) r.push('अभी चैनल की TRP गिर रही है।');
-            if (live.length === 0) r.push('अभी इस चैनल पर कोई शो नहीं चल रहा।');
-            else {
-                r.push(`चैनल पर ${live.length} शो चल रहे हैं।`);
-                live.slice(0, 8).forEach((x, i) => r.push(`${i + 1} नंबर पर ${showLabel(x)}, TRP ${x.trpBoost.toFixed(1)}${x.trend > 0 ? ', बढ़ रही है' : x.trend < 0 ? ', गिर रही है' : ''}।`));
-                if (live.length > 8) r.push('और बाकी शो भी चल रहे हैं।');
-                r.push(`सबसे बढ़िया परफॉर्म करने वाला शो ${showLabel(live[0])} है।`);
-                if (live.length > 1) r.push(`सबसे कमज़ोर शो ${showLabel(live[live.length - 1])} है।`);
-            }
-            r.push('अब चैनल की ख़बरें।');
-            const news = [];
-            if (rank === 1) news.push(`ब्रेकिंग न्यूज़: ${c.name} इस समय नंबर वन चैनल है।`);
-            if (live.length) news.push(`${live[0].name} दर्शकों की पहली पसंद बना हुआ है।`);
-            live.filter(x => x.type !== 'Movie').slice(0, 2).forEach(x => news.push(`${showLabel(x)} का एपिसोड ${x.episodes || 1} इस समय चल रहा है।`));
-            live.filter(x => x.type === 'Movie' && x.endAt).slice(0, 1).forEach(x => {
-                const sec = Math.max(0, Math.ceil((x.endAt - Date.now()) / 1000));
-                news.push(`फ़िल्म ${x.name} अभी प्रसारित हो रही है, ${sec < 60 ? sec + ' सेकंड' : Math.ceil(sec / 60) + ' मिनट'} बाक़ी।`);
-            });
-            mine.filter(x => x.status === 'Off Air').slice(0, 2).forEach(x => news.push(x.type === 'Movie' ? `फ़िल्म ${x.name} ऑफ एयर हो चुकी है।` : `${showLabel(x)} ऑफ एयर हो चुका है, ${x.episodes || 1} एपिसोड पूरे हुए।`));
-            if (N > 1 && rank === N) news.push('TRP में सबसे नीचे होने से चैनल पर दबाव बना हुआ है।');
-            if (news.length === 0) news.push('फ़िलहाल कोई नई ख़बर नहीं है।');
-            return r.concat(news);
-        }
-        function speakChannelReport() {
-            if (!('speechSynthesis' in window)) { showToast('Voice is not supported on this device'); return; }
-            if (speechSynthesis.speaking) { speechSynthesis.cancel(); showToast('Voice stopped'); return; }
-            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window.currentPlayerChannelId));
-            if (!c || c.status === 'Off Air') { showToast('No channel selected for report'); return; }
-            const voice = speechSynthesis.getVoices().find(v => /^hi/i.test(v.lang));
-            buildChannelReport(c).forEach(line => {
-                const u = new SpeechSynthesisUtterance(line);
-                u.lang = 'hi-IN';
-                u.rate = 0.95;
-                if (voice) u.voice = voice;
-                speechSynthesis.speak(u);
-            });
-            showToast('Channel report playing...');
-        }
-
-        // AI logo / poster maker (Claude draws SVG art from the name)
-        function artSrc(svg) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); }
-        function artFor(n) {
-            const it = launchedShows.find(x => x.name === n && x.art) || launchedChannels.find(x => x.name === n && x.art);
-            return it ? it.art : null;
-        }
-        function logo(ch, size) {
-            if (ch.art) return `<img src="${artSrc(ch.art)}" class="${size} rounded-lg flex-shrink-0 object-cover border border-amber-400/60">`;
-            return `<div class="${size} rounded-lg bg-gradient-to-tr from-amber-600 via-yellow-400 to-amber-200 p-0.5 flex-shrink-0"><div class="w-full h-full bg-black rounded-[6px] flex items-center justify-center font-bold text-[9px] text-amber-300">${getInitials(ch.name)}</div></div>`;
-        }
-        function setPlayerArt(art) {
-            const ic = document.getElementById('player-screen-icon');
-            const w = ic.parentElement;
-            w.querySelectorAll('img').forEach(i => i.remove());
-            ic.style.display = art ? 'none' : '';
-            if (art) w.insertAdjacentHTML('beforeend', `<img src="${artSrc(art)}" class="w-full h-full rounded-full object-cover">`);
-        }
-        function cleanSvg(text) {
-            const m = (text || '').match(/<svg[\s\S]*<\/svg>/i);
-            if (!m) return null;
-            let svg = m[0];
-            if (svg.length > 30000) return null;
-            if (/<script|<foreignObject|<image|javascript:|\son\w+\s*=|href\s*=\s*["']?\s*https?:/i.test(svg)) return null;
-            if (!/xmlns\s*=/.test(svg)) svg = svg.replace(/<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
-            return svg;
-        }
-        let artQueue = Promise.resolve();
-        function generateArt(kind, item, silent) {
-            if (typeof claude === 'undefined' || !claude.use) return;
-            artQueue = artQueue.then(async () => {
-                try {
-                    const sample = await claude.use('sample');
-                    if (!sample) return;
-                    const isCh = kind === 'channel';
-                    const prompt = isCh
-                        ? `Design a premium TV channel logo for a channel named "${item.name}" (category: ${item.category}, tagline: "${item.tagline}"). Luxury VIP style on a dark background with gold or a colour that suits the name. Use bold simple shapes plus the channel name or its initials. Output ONLY one self-contained SVG, no markdown, with viewBox="0 0 200 200", under 3KB, no scripts, no images, no external fonts (use font-family sans-serif).`
-                        : `Design a cinematic ${item.type === 'Movie' ? 'movie' : 'TV show'} poster for the title "${item.name}" (genre: ${item.category}). Dramatic gradient background, a bold symbolic illustration made from simple SVG shapes that fits the title, the title text near the bottom (max 2 lines, centered, font-size 20 or smaller), and a small gold crown or "VIP" mark at the top. Output ONLY one self-contained SVG, no markdown, with viewBox="0 0 200 300", under 4KB, no scripts, no images, no external fonts (use font-family sans-serif).`;
-                    const r = await sample(prompt, { modelTier: 'default', cache: false });
-                    const svg = cleanSvg(r && r.text);
-                    if (!svg) return;
-                    item.art = svg;
-                    refreshAllViews();
-                    showToast(isCh ? 'AI logo ready!' : 'AI poster ready!');
-                } catch (e) {
-                    if (!silent) showToast('AI art could not be made');
-                }
-            });
-        }
-
-        // Auto shows: keep exactly N TV shows running on a channel
-        const AUTO_NAMES = {
-            Drama: ['The Last Verdict', 'Midnight Letters', 'Broken Crown', 'Silent Waters', 'House of Whispers', 'The Hidden Heir', 'Rivers of Ash', 'A Promise Kept', 'Golden Cage', 'Unspoken Vows', 'The Quiet Storm', 'Faded Horizons', 'Bridge of Memories', 'The Family Throne', 'Beyond the Window'],
-            Comedy: ['Home Sweet Chaos', 'Neighbours Gone Wild', 'Laugh Factory Lane', 'Dinner for Eleven', 'Wrong Number Wedding', 'The Lazy Landlord', 'Oops Brothers', 'Crazy Cousins Club', 'Chai Time Chaos', 'My Boss Is a Goat', 'Three Roommates', 'Mad House Mondays', 'The Prank Squad', 'Funny Business Inc', 'Wedding Week Madness'],
-            Thriller: ['Dark Alibi', 'The Vanishing Hour', 'Shadow Protocol', 'Cold Case 9', 'The Silent Witness', 'Zero Hour Chase', 'Night Watchers', 'The Locked Room', 'Echoes in the Dark', 'Blind Spot', 'The Final Signal', 'Red Thread', 'Mind Games Unit', 'Safe House 13', 'The Last Witness'],
-            Action: ['Iron Brigade', 'Operation Thunderstrike', 'Desert Storm Squad', 'Steel Hunters', 'Rapid Response', 'Code Red Force', 'Border Strike', 'The Last Mission', 'Falcon Unit', 'Rogue Agents', 'Blaze Commandos', 'Storm Chasers Elite', 'Combat Zone 7', 'Phoenix Squad', 'Night Raid Team']
-        };
-        const AUTO_GENRE = Object.keys(AUTO_NAMES);
-        // Pick the genre this channel is running least, so the line-up stays varied
-        function pickAutoGenre(c) {
-            const mine = launchedShows.filter(x => x.type === 'TV Show' && x.status !== 'Off Air' && parseInt(x.channelId) === parseInt(c.id));
-            const cnt = {};
-            AUTO_GENRE.forEach(g => cnt[g] = 0);
-            mine.forEach(x => { if (cnt[x.category] !== undefined) cnt[x.category]++; });
-            const min = Math.min(...AUTO_GENRE.map(g => cnt[g]));
-            const best = AUTO_GENRE.filter(g => cnt[g] === min);
-            return best[Math.floor(Math.random() * best.length)];
-        }
-        function isShowsChannel(c) {
-            if (c.rival) return false;
-            return c.category === 'Shows' || launchedShows.some(x => x.type === 'TV Show' && parseInt(x.channelId) === parseInt(c.id));
-        }
-        function autoShowName(genre) {
-            const used = n => launchedShows.some(x => x.name === n) || market.some(m => m.name === n);
-            let pool = AUTO_NAMES[genre].filter(n => !used(n));
-            if (pool.length === 0) pool = [].concat(...AUTO_GENRE.map(g => AUTO_NAMES[g])).filter(n => !used(n));
-            if (pool.length > 0) return pool[Math.floor(Math.random() * pool.length)];
-            const base = AUTO_NAMES[genre][Math.floor(Math.random() * AUTO_NAMES[genre].length)];
-            for (let i = 2; i < 500; i++) { if (!used(base + ' ' + i)) return base + ' ' + i; }
-            return base + ' ' + Date.now();
-        }
-        function launchAutoShow(c) {
-            const ok = market.filter(m => m.price <= c.budget);
-            if (ok.length === 0) return false;
-            const g = pickAutoGenre(c);
-            const pref = ok.filter(m => m.genre === g);
-            const offer = (pref.length ? pref : ok).sort((a, b) => b.rating - a.rating)[0];
-            buyOffer(offer, c, true);
-            return true;
-        }
-        function autoManageChannels() {
-            let changed = false;
-            launchedChannels.forEach(c => {
-                if (c.status === 'Off Air' || !(c.autoMin > 0)) return;
-                const mine = launchedShows.filter(x => x.type === 'TV Show' && x.status !== 'Off Air' && parseInt(x.channelId) === parseInt(c.id));
-                if (mine.length > c.autoMin) {
-                    const t = Date.now();
-                    mine.sort((a, b) => ((t - (a.startAt || 0) < 30000) - (t - (b.startAt || 0) < 30000)) || (a.trpBoost - b.trpBoost));
-                    mine.slice(0, mine.length - c.autoMin).forEach(x => {
-                        x.status = 'Off Air';
-                        x.trend = 0;
-                        if (x.rerunTotal > 0) { x.episodes = x.rerunTotal; x.rerunTotal = 0; }
-                        changed = true;
-                    });
-                } else if (mine.length < c.autoMin) {
-                    for (let i = mine.length; i < c.autoMin; i++) { if (!launchAutoShow(c)) break; changed = true; }
-                }
-            });
-            if (changed) refreshAllViews();
-        }
-        function refreshAutoPanel(c) {
-            const panel = document.getElementById('auto-panel');
-            const ok = !c.rival;
-            panel.classList.toggle('hidden', !ok);
-            if (!ok) return;
-            if (window._autoPanelFor !== c.id) {
-                document.getElementById('auto-min').value = c.autoMin || 5;
-                window._autoPanelFor = c.id;
-            }
-            const on = c.autoMin > 0;
-            const st = document.getElementById('auto-status');
-            const run = launchedShows.filter(x => x.type === 'TV Show' && x.status !== 'Off Air' && parseInt(x.channelId) === parseInt(c.id)).length;
-            st.innerText = on ? `Auto ON • ${run}/${c.autoMin} shows (buys with budget)` : 'Auto is OFF';
-            st.className = 'text-[10px] font-bold ' + (on ? 'text-green-400' : 'text-gray-400');
-            document.getElementById('btn-auto-stop').style.display = on ? '' : 'none';
-        }
-        function startAuto() {
-            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window.currentChannelModalId));
-            if (!c) return;
-            const n = Math.max(1, Math.min(20, parseInt(document.getElementById('auto-min').value) || 5));
-            document.getElementById('auto-min').value = n;
-            c.autoMin = n;
-            c.autoMovie = true;
-            autoManageChannels();
-            refreshAllViews();
-            showToast(`Auto ON: ${n} shows on ${c.name}`);
-        }
-        function stopAuto() {
-            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window.currentChannelModalId));
-            if (!c) return;
-            c.autoMin = 0;
-            c.autoMovie = false;
-            refreshAllViews();
-            showToast(`Auto OFF for ${c.name}`);
-        }
-
-        // Auto movies: replay a finished movie at once on its channel
-        function isMovieChannel(c) {
-            if (c.rival) return false;
-            return c.category === 'Movies' || launchedShows.some(x => x.type === 'Movie' && parseInt(x.channelId) === parseInt(c.id));
-        }
-        function refreshAutoMoviePanel(c) {
-            const panel = document.getElementById('automovie-panel');
-            const ok = false;
-            panel.classList.toggle('hidden', !ok);
-            if (!ok) return;
-            const st = document.getElementById('automovie-status');
-            st.innerText = c.autoMovie ? 'Auto is ON' : 'Auto is OFF';
-            st.className = 'text-[10px] font-bold ' + (c.autoMovie ? 'text-green-400' : 'text-gray-400');
-            const b = document.getElementById('btn-automovie');
-            b.innerText = c.autoMovie ? 'TURN AUTO OFF' : 'TURN AUTO ON';
-            b.className = c.autoMovie
-                ? 'w-full border border-red-500/50 bg-red-500/10 text-red-400 font-bold py-2 rounded-xl text-[10px]'
-                : 'w-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black font-extrabold py-2 rounded-xl text-[10px] active:scale-95';
-        }
-        function toggleAutoMovie() {
-            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window.currentChannelModalId));
-            if (!c) return;
-            c.autoMovie = !c.autoMovie;
-            refreshAllViews();
-            showToast(`Auto Movies ${c.autoMovie ? 'ON' : 'OFF'} for ${c.name}`);
-        }
-
-        // ===== Economy: channel budgets, New TV Shows market, movie store =====
-        const COST_SHOW = 150, COST_MOVIE = 100;
-        let market = [];
-        function ensureBudgets() { launchedChannels.forEach(c => { if (typeof c.budget !== 'number' || isNaN(c.budget)) c.budget = 1000; }); }
-        function coins(n) { return Math.floor(n || 0).toLocaleString() + ' Coins'; }
-        function makeOffer() {
-            const genre = AUTO_GENRE[Math.floor(Math.random() * AUTO_GENRE.length)];
-            const rating = parseFloat((2 + Math.random() * 3).toFixed(1));
-            return { id: Date.now() + Math.floor(Math.random() * 1000000), name: autoShowName(genre), genre: genre, rating: rating, price: Math.round(150 + rating * 80) };
-        }
-        function refillMarket() { while (market.length < 8) market.push(makeOffer()); }
-        function buyOffer(offer, c, auto) {
-            c.budget -= offer.price;
-            market = market.filter(m => m.id !== offer.id);
-            const now = Date.now();
-            const item = {
-                id: now + Math.floor(Math.random() * 1000), name: offer.name, type: 'TV Show', category: offer.genre,
-                channelId: c.id, timeSlot: fmtTime(nowHHMM()), startAt: now, durationSec: 0, epSec: 60, autoEp: true,
-                endAt: 0, episodes: 1, status: 'On Air', trend: 0, autoCreated: !!auto, trpBoost: offer.rating
-            };
-            launchedShows.unshift(item);
-            generateArt('show', item, !!auto);
-            showToast(`${auto ? 'Auto bought' : 'Bought'}: ${item.name} (-${offer.price})`);
-        }
-        function marketChannel() {
-            const act = launchedChannels.filter(c => c.status !== 'Off Air' && !c.rival);
-            return act.find(c => parseInt(c.id) === parseInt(window._marketCh)) || act.find(c => !(c.autoMin > 0)) || act[0] || null;
-        }
-        function renderMarket() {
-            const list = document.getElementById('market-list');
-            if (!list) return;
-            const act = launchedChannels.filter(c => c.status !== 'Off Air' && !c.rival);
-            const sel = document.getElementById('market-channel');
-            const c = marketChannel();
-            const sig = act.map(x => x.id + x.name + (x.autoMin > 0)).join('|');
-            if (sel.dataset.sig !== sig) {
-                sel.innerHTML = act.map(x => `<option value="${x.id}">${x.name}${x.autoMin > 0 ? ' (Auto)' : ''}</option>`).join('');
-                sel.dataset.sig = sig;
-            }
-            if (c) { sel.value = String(c.id); window._marketCh = c.id; }
-            document.getElementById('market-budget').innerText = c ? coins(c.budget) : '--';
-            list.innerHTML = market.length === 0 ? `<div class="text-center py-8 text-xs text-gray-500">No new shows right now. Check again soon.</div>` : market.map(m => {
-                const can = c && c.budget >= m.price;
-                return `
-                <div class="bg-vip-card border border-gray-800 rounded-2xl p-3 flex items-center justify-between shadow-lg">
-                    <div class="flex items-center space-x-3 flex-1 min-w-0">
-                        ${poster(m.name, 'w-10 h-12')}
-                        <div class="min-w-0">
-                            <h4 class="text-xs font-bold text-white truncate">${m.name}</h4>
-                            <p class="text-[10px] text-gray-400">${m.genre} • Rating ${m.rating}</p>
-                            <p class="text-[10px] font-bold text-amber-400">${m.price} coins</p>
-                        </div>
-                    </div>
-                    <button onclick="buyForChannel(${m.id})" class="flex-shrink-0 ml-2 px-3 py-2 rounded-xl text-[10px] font-extrabold ${can ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black' : 'bg-gray-800 text-gray-500'}">BUY</button>
-                </div>`;
-            }).join('');
-        }
-        function buyForChannel(id) {
-            const offer = market.find(m => m.id === id);
-            const c = marketChannel();
-            if (!offer || !c) return;
-            if (c.budget < offer.price) { showToast('Not enough budget!'); return; }
-            buyOffer(offer, c, false);
-            refreshAllViews();
-        }
-        function openMarketFor() {
-            window._marketCh = window.currentChannelModalId;
-            closeChannelModal();
-            switchTab('market');
-        }
-        function goLaunch(type) {
-            const id = window.currentChannelModalId;
-            closeChannelModal();
-            switchTab('shows');
-            selectContentType(type);
-            const d = document.getElementById('select-content-channel');
-            if (d && id) d.value = String(id);
-            updateContentPreview();
-        }
-        function refreshBudgetPanel(c) {
-            ensureBudgets();
-            const rv = !!c.rival;
-            document.getElementById('ch-budget').innerText = coins(c.budget);
-            document.getElementById('ch-budget').closest('.rounded-2xl').style.display = rv ? 'none' : '';
-            const off = document.querySelector('[onclick="takeChannelOffAir()"]');
-            if (off) off.style.display = rv ? 'none' : '';
-            const live = launchedShows.filter(x => parseInt(x.channelId) === parseInt(c.id) && isLive(x)).sort((a, b) => b.trpBoost - a.trpBoost);
-            document.getElementById('dash-top').innerText = live.length ? `🏆 Top: ${showLabel(live[0])} (TRP +${live[0].trpBoost.toFixed(1)}) • ${live.length} live` : 'No live shows right now';
-            const upN = live.filter(x => x.trend > 0).length, dnN = live.filter(x => x.trend < 0).length;
-            document.getElementById('dash-trend').innerText = upN > dnN ? '📈 TRP is rising' : dnN > upN ? '📉 TRP is falling' : '➖ TRP is steady';
-            const mv = !rv && isMovieChannel(c) ? '' : 'none';
-            document.getElementById('btn-ch-launch-movie').style.display = mv;
-            document.getElementById('btn-ch-buy-movie').style.display = mv;
-        }
-        function moviePrice(m) { return Math.round(100 + (m.trpBoost || 3) * 30); }
-        function openStore() {
-            window._storeCh = window.currentChannelModalId;
-            document.getElementById('store-modal').classList.remove('hidden');
-            renderStore();
-        }
-        function closeStore() { document.getElementById('store-modal').classList.add('hidden'); }
-        function renderStore() {
-            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window._storeCh));
-            if (!c) return;
-            document.getElementById('store-title').innerText = c.name + ' • Movie Store';
-            document.getElementById('store-budget').innerText = coins(c.budget);
-            const ms = launchedShows.filter(x => x.type === 'Movie' && x.status === 'Off Air');
-            document.getElementById('store-list').innerHTML = ms.length === 0 ? `<div class="text-center py-6 text-xs text-gray-500">No off-air movies to buy yet.</div>` : ms.map(m => {
-                const pr = resalePrice(m, c.id);
-                return `
-                <div class="bg-black/40 border border-gray-800 rounded-xl p-2 flex items-center justify-between">
-                    <div class="flex items-center space-x-2 min-w-0">
-                        ${poster(m.name, 'w-8 h-10')}
-                        <div class="min-w-0">
-                            <h5 class="text-xs font-bold text-white truncate">${showLabel(m)}</h5>
-                            <p class="text-[10px] font-bold text-amber-400">${pr > 0 ? pr + ' coins' : 'FREE (own movie)'}</p>
-                        </div>
-                    </div>
-                    <button onclick="buyMovie(${m.id})" class="flex-shrink-0 ml-2 px-3 py-1.5 rounded-lg text-[10px] font-extrabold ${c.budget >= pr ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 text-black' : 'bg-gray-800 text-gray-500'}">BUY</button>
-                </div>`;
-            }).join('');
-        }
-        function buyMovie(id) {
-            const m = launchedShows.find(x => x.id === id);
-            const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window._storeCh));
-            if (!m || !c) return;
-            const price = resalePrice(m, c.id);
-            if (c.budget < price) { showToast('Not enough budget!'); return; }
-            window.pendingBuy = { price: price, channelId: c.id };
-            closeStore();
-            openRerunModal(id);
-        }
-        function updateBudgetLabels() {
-            const cm = document.getElementById('channel-modal');
-            if (cm && !cm.classList.contains('hidden') && window.currentChannelModalId) {
-                const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window.currentChannelModalId));
-                if (c) document.getElementById('ch-budget').innerText = coins(c.budget);
-            }
-            const mc = marketChannel();
-            const mb = document.getElementById('market-budget');
-            if (mb && mc) mb.innerText = coins(mc.budget);
-            const sm = document.getElementById('store-modal');
-            if (sm && !sm.classList.contains('hidden')) {
-                const c = launchedChannels.find(x => parseInt(x.id) === parseInt(window._storeCh));
-                if (c) document.getElementById('store-budget').innerText = coins(c.budget);
-            }
-        }
-
-        // ===== Rivals, audience fatigue, resale price, rank alerts =====
-        function resalePrice(sh, chId) {
-            if (parseInt(sh.channelId) === parseInt(chId)) return 0;
-            return sh.type === 'Movie' ? moviePrice(sh) : Math.round(200 + (sh.trpBoost || 3) * 40 + Math.min(sh.episodes || 1, 50) * 4);
-        }
-        function updateRerunPrice() {
-            const sh = launchedShows.find(x => x.id === rerunShowId);
-            const sel = document.getElementById('rerun-channel');
-            if (!sh || !sel) return;
-            const pr = resalePrice(sh, parseInt(sel.value));
-            document.getElementById('btn-rerun-confirm').innerText = pr > 0 ? `BUY & AIR (${pr} coins)` : 'AIR ON THIS CHANNEL (FREE)';
-        }
-        function ensureRivals() {
-            if (launchedChannels.some(c => c.rival)) return;
-            [['Crown TV', 'Shows', 'fa-tv', 'Drama Every Night'], ['Metro Max', 'Movies', 'fa-film', 'Blockbuster Marathon'], ['Galaxy One', 'News', 'fa-newspaper', 'Breaking 24x7'], ['Prime Pulse', 'Music', 'fa-music', 'Non-Stop Hits'], ['Sapphire Sports', 'Sports', 'fa-trophy', 'Live Every Match']].forEach((r, i) => {
-                launchedChannels.push({
-                    id: 9000 + i, name: r[0], category: r[1], icon: r[2], resolution: '4K ULTRA HD', tagline: r[3],
-                    baseTrp: 8 + Math.random() * 5, totalTrp: 8, rival: true, status: 'On Air',
-                    phase: Math.random() * 6.28, period: 90 + Math.random() * 110, amp: 0.12 + Math.random() * 0.13
-                });
-            });
-        }
-        // Rivals chase your best channel, swing above and below it, and sometimes launch a hit
-        function rivalTick() {
-            const mine = launchedChannels.filter(c => !c.rival && c.status !== 'Off Air');
-            const best = Math.max(8, ...mine.map(c => c.totalTrp || 0));
-            const t = Date.now() / 1000;
-            launchedChannels.filter(c => c.rival).forEach(r => {
-                const target = best * (1 + r.amp * Math.sin(t / r.period * 6.28 + r.phase));
-                let v = r.baseTrp + (target - r.baseTrp) * 0.2 + (Math.random() - 0.5) * 1.0;
-                if (Math.random() < 0.03) { v += 2 + Math.random() * 3; showToast(`📺 Rival ${r.name} launched a hit show! TRP surging`); }
-                r.baseTrp = Math.max(2, parseFloat(v.toFixed(2)));
-            });
-        }
-        function checkRanks() {
-            const act = launchedChannels.filter(c => c.status !== 'Off Air').sort((a, b) => b.totalTrp - a.totalTrp);
-            const prev = window._ranks || {}, now = {};
-            let msg = null;
-            act.forEach((c, i) => {
-                now[c.id] = i + 1;
-                if (c.rival || !prev[c.id]) return;
-                if (i + 1 > prev[c.id]) msg = `⚠️ ${c.name} dropped to #${i + 1}!`;
-                else if (i + 1 < prev[c.id] && !msg) msg = i === 0 ? `🏆 ${c.name} is now #1!` : `🔥 ${c.name} climbed to #${i + 1}`;
-            });
-            window._ranks = now;
-            if (msg) showToast(msg);
-        }
-
-        // Auto mode: computer swaps weak shows for better ones and goes for hits
-        function autoUpgrade() {
-            const now = Date.now();
-            launchedChannels.forEach(c => {
-                if (c.status === 'Off Air' || !(c.autoMin > 0) || now - (c._upg || 0) < 20000) return;
-                const mine = launchedShows.filter(x => x.type === 'TV Show' && x.status !== 'Off Air' && parseInt(x.channelId) === parseInt(c.id) && now - (x.startAt || 0) > 30000);
-                if (mine.length === 0) return;
-                const weak = mine.sort((a, b) => a.trpBoost - b.trpBoost)[0];
-                const offer = market.filter(m => m.price <= c.budget && m.rating >= weak.trpBoost + 0.8).sort((a, b) => b.rating - a.rating)[0];
-                if (!offer) return;
-                c._upg = now;
-                weak.status = 'Off Air';
-                weak.trend = 0;
-                if (weak.rerunTotal > 0) { weak.episodes = weak.rerunTotal; weak.rerunTotal = 0; }
-                buyOffer(offer, c, true);
-                if (offer.rating >= 4) showToast(`📺 ${c.name} (Auto) launched a hit: ${offer.name}!`);
-                refreshAllViews();
-            });
-        }
-
-        // Copy full app code button
-        window.__vipSrc = document.documentElement.outerHTML;
-        async function copyAppCode() {
-            let src = '';
-            try {
-                const r = await fetch(location.href.split('#')[0]);
-                if (r.ok) src = await r.text();
-            } catch (e) {}
-            if (!src || src.indexOf('copyAppCode') < 0) src = '<!DOCTYPE html>\n' + window.__vipSrc;
-            let ok = false;
-            try { await navigator.clipboard.writeText(src); ok = true; } catch (e) {}
-            if (!ok) {
-                try {
-                    const ta = document.createElement('textarea');
-                    ta.value = src;
-                    ta.style.position = 'fixed';
-                    ta.style.opacity = '0';
-                    document.body.appendChild(ta);
-                    ta.select();
-                    ok = document.execCommand('copy');
-                    ta.remove();
-                } catch (e) {}
-            }
-            showToast(ok ? 'Full code copied!' : 'Copy blocked on this device');
-        }
-
-        // On Load Init
-        window.onload = function() {
-            loadState();
-            ensureBudgets();
-            launchedChannels = launchedChannels.filter(c => !c.rival);
-            refillMarket();
-            endFinishedMovies();
-            renderOffAir();
-            renderTvShows();
-            startLiveTrp();
-            recalculateChannelTRPs();
-            renderChannels();
-            renderShows();
-            switchTab('home');
-        };
-    </script>
+  </header>
+  <main id="main"></main>
+  <nav id="nav"></nav>
+</div>
+
+<div class="ov" id="start"><div class="box">
+  <div style="font-size:30px">📡</div>
+  <h2 style="margin:4px 0">Launch your SIM</h2>
+  <div class="muted">Pick a name for your official SIM company. You start with Rs 1,00,000, one tower and a Daily Saver pack.</div>
+  <input type="text" id="cn" maxlength="20" placeholder="e.g. VIP Telecom" autocomplete="off">
+  <button class="btn" onclick="launch()">Launch SIM 🚀</button>
+</div></div>
+<div class="ov h" id="modal"><div class="box" id="mb"></div></div>
+<div id="toast"></div>
+
+<script>
+const KEY='vipSimTycoonV1';
+const GENS=[
+ {g:'1G',spd:0.002,cost:0,lic:0,need:0},{g:'2G',spd:0.1,cost:60000,lic:200,need:3},
+ {g:'3G',spd:5,cost:120000,lic:500,need:6},{g:'4G',spd:40,cost:240000,lic:1500,need:10},
+ {g:'5G',spd:400,cost:480000,lic:4000,need:16},{g:'6G',spd:2000,cost:960000,lic:9000,need:22}];
+const PLANS=[
+ {id:'daily',n:'Daily Saver',d:'Rs 25 / day, 1 GB',arpu:150,ap:.05,cost:5000,gen:0},
+ {id:'night',n:'Night Data',d:'Rs 49, midnight to 6 am',arpu:120,ap:.04,cost:10000,gen:1},
+ {id:'week',n:'Weekly Booster',d:'Rs 99, 7 days, 6 GB',arpu:220,ap:.06,cost:12000,gen:1},
+ {id:'month',n:'Monthly Unlimited',d:'Rs 299, 30 days',arpu:300,ap:.08,cost:30000,gen:2},
+ {id:'stud',n:'Student Pack',d:'Rs 149, 30 days, 40 GB',arpu:180,ap:.10,cost:25000,gen:2},
+ {id:'fam',n:'Family Share',d:'Rs 499, 4 SIMs',arpu:450,ap:.09,cost:80000,gen:3},
+ {id:'biz',n:'Business Pro',d:'Rs 799, priority speed',arpu:600,ap:.05,cost:60000,gen:3},
+ {id:'game',n:'5G Gamer Ultra',d:'Rs 999, low ping',arpu:800,ap:.07,cost:150000,gen:4}];
+const ADS=[{n:'Off',c:0,b:0},{n:'Local news',c:1000,b:.06},{n:'TV news',c:4000,b:.12},{n:'National campaign',c:12000,b:.2}];
+const STAFF={eng:{n:'Engineers',sal:1000,fee:5000,fx:'Slower tower wear and auto-repair'},sup:{n:'Support team',sal:700,fee:4000,fx:'Fewer users leave, better reputation'},sales:{n:'Sales agents',sal:900,fee:4000,fx:'More new SIMs sold each day'}};
+const MILES=[1000,5000,10000,25000,50000,100000];
+const SP=[0.001,0.002,0.005,0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000,2000,5000,10000];
+const UREQ=[0,500,2000,6000,15000,40000];
+function nearSp(v){let b=0;SP.forEach((x,i)=>{if(Math.abs(Math.log(x/v))<Math.abs(Math.log(SP[b]/v)))b=i});return b}
+let lastTick=Date.now(),S=null,tab='net',hold=0,timer=null,toastT=null,rstAsk=0;
+const $=id=>document.getElementById(id);
+const fm=n=>Math.round(n).toLocaleString('en-IN');
+const rs=n=>(n<0?'-':'')+'Rs '+fm(Math.abs(n));
+function fs(m){return m<1?Math.round(m*1000)+' Kbps':m<1000?m.toFixed(1)+' Mbps':(m/1000).toFixed(1)+' Gbps'}
+function toast(t){const e=$('toast');e.textContent=t;e.className='s';clearTimeout(toastT);toastT=setTimeout(()=>e.className='',2200)}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);fixS();return true}}catch(e){}return false}
+function launch(){
+  const n=$('cn').value.trim();if(!n){toast('Please type a SIM name');return}
+  S={name:n,day:1,money:100000,users:0,sims:0,gen:0,towers:[{p:12,lvl:1,hp:100}],plans:[{id:'p0',n:'Starter Pack',price:150,days:30,gb:5,sms:100,min:100}],ads:0,staff:{eng:0,sup:0,sales:0},rep:.5,speed:1,pen:0,fin:{rev:0,tax:0,sal:0,twr:0,ads:0,lic:0,net:0},tot:{rev:0,tax:0,exp:0},over:false,ms:0};fixS();
+  $('start').className='ov h';save();run();render();toast('Your SIM is live. Build more towers!');
+}
+function calc(){
+  const T=S.towers,G=GENS[S.gen];
+  const pw=S.plans.map(planV),sw=pw.reduce((a,b)=>a+b,0)||1,dem=S.plans.reduce((a,p,i)=>a+S.users*pw[i]/sw*p.gb*30/p.days*.5/1000,0),pf=Math.min(1,S.pool/Math.max(.01,dem));
+  const cov=T.reduce((a,t)=>a+3000*(1+.5*(t.lvl-1))*t.hp/100,0);
+  const cap=T.reduce((a,t)=>a+1200*t.lvl*(t.bw/2)*(1+.4*(t.g||0))*(t.hp>20?1:.3),0);
+  const hp=T.reduce((a,t)=>a+t.hp,0)/T.length;
+  const mkt=40000+20000*(S.gen+1);
+  const cong=S.users>cap?cap/S.users:1;
+  const tcov=T.map(t=>3000*(1+.5*(t.lvl-1))*t.hp/100),sc0=tcov.reduce((a,b)=>a+b,0)||1;
+  const ts=T.map((t,i)=>{const u=S.users*tcov[i]/sc0,cp=1200*t.lvl*(t.bw/2)*(1+.4*(t.g||0))*(t.hp>20?1:.3),cg=u>cp?cp/u:1;return{u,cap:cp,cong:cg,spd:SP[t.si]*cg*pf*t.hp/100}});
+  const uu=ts.reduce((a,x)=>a+x.u,0),spd=uu>0?ts.reduce((a,x)=>a+x.u*x.spd,0)/uu:ts.reduce((a,x)=>a+x.spd,0)/ts.length;
+  const sc=Math.min(1,Math.log10(1+spd)/3.3);
+  const pb=Math.min(.35,S.plans.reduce((a,p,i)=>a+Math.min(.1,.03*pw[i]),0));
+  const ap=Math.max(.05,Math.min(.95,.15+pb+.3*sc+.15*hp/100+ADS[S.ads].b+.2*S.rep-(S.pen>0?.12:0)-(S.price-1)*.35+(S.offer>0?.15:0)-(1-pf)*.2-Math.min(.15,S.towers.reduce((a,t)=>a+t.cmp,0)*.004)));
+  const arpu=S.plans.reduce((a,p,i)=>a+pw[i]*p.price*30/p.days,0)/sw,cost=S.plans.reduce((a,p,i)=>a+pw[i]*pCost(p)*30/p.days,0)/sw;
+  return{cov,cap,hp,mkt,cong,spd,ap,arpu,ts,cost,pf,dem,pw,sw};
+}
+function tick(){
+  if(!S||S.over)return;lastTick=Date.now();
+  S.day++;
+  const st=S.staff,nd=need(),engR=Math.min(.5,st.eng*.05)-(st.eng<nd.eng?.3:0);
+  S.towers.forEach((t,i)=>{
+    t.hp=Math.max(0,t.hp-(.3+Math.random()*.9)/Math.sqrt(t.lvl)*(1-engR));
+    if(Math.random()<.012*(1-engR)){t.hp=Math.max(0,t.hp-40);toast('Tower #'+(i+1)+' is down! Repair it');}
+  });
+  if(st.eng){const w=S.towers.reduce((a,b)=>a.hp<b.hp?a:b);w.hp=Math.min(100,w.hp+2*st.eng)}
+  if(S.pen>0)S.pen--;if(S.offer>0)S.offer--;
+  if(Math.random()<.03){
+    const r=Math.random();
+    if(r<.4){const t=S.towers[Math.floor(Math.random()*S.towers.length)];t.hp=Math.max(0,t.hp-35);toast('Storm hit your network!')}
+    else if(r<.7){S.users*=1.05;S.rep=Math.min(1,S.rep+.05);toast('Good news about your SIM went viral!')}
+    else{S.pen=10;toast('Rival price war: users hesitate for 10 days')}
+  }
+  const c=calc();
+  S.towers.forEach((t,i)=>{const x=c.ts[i],a=(t.hp<70?(70-t.hp)/25:0)+(x.cong<1?1.5+(1-x.cong)*3:0);if(Math.random()<a/3)t.cmp=Math.min(99,t.cmp+Math.ceil(a))});
+  if(st.sup){const w=S.towers.reduce((a,b)=>a.cmp>b.cmp?a:b);w.cmp=Math.max(0,w.cmp-st.sup)}
+  S.rep=Math.max(0,S.rep-Math.min(.01,S.towers.reduce((a,t)=>a+t.cmp,0)*.0002));
+  S.riv.forEach(r=>{r.ap=Math.max(.35,Math.min(.8,r.ap+(.45+.05*S.gen-r.ap)*.02+(Math.random()-.5)*.03))});
+  const shr=c.ap/(c.ap+.35*S.riv.reduce((a,r)=>a+r.ap,0));S.share=shr;
+  const target=Math.min(c.mkt,c.cov)*c.ap*Math.min(1.2,shr*1.7);
+  const d=target-S.users;
+  if(d>0){const g=d*.025*(1+Math.min(1,st.sales*.1))*(st.sales<nd.sales?.7:1);S.users+=g;S.sims+=g}
+  else S.users+=d*.08*(st.sup<nd.sup?1.4:1)/(1+st.sup*.1);
+  if(S.users>c.cap){S.users-=(S.users-c.cap)*.05;S.rep=Math.max(0,S.rep-.004)}
+  S.rep=Math.max(0,Math.min(1,S.rep+(c.hp/100-.6)*.01+st.sup*.0015-(st.sup<nd.sup?.003:0)));
+  const rev=S.users*c.arpu*S.price/30,tax=rev*.15;
+  const sal=st.eng*STAFF.eng.sal+st.sup*STAFF.sup.sal+st.sales*STAFF.sales.sal;
+  const twr=S.towers.reduce((a,t)=>a+upkeep(t),0);
+  const ads=ADS[S.ads].c,lic=GENS[S.gen].lic;
+  const int=S.loan*.001,A=S.acc;
+  S.money+=rev;A.sal+=sal;A.twr+=twr;A.ads+=ads;A.lic+=lic;A.tax+=tax;A.loan+=int;const pk=S.users*c.cost/30,nt=S.pool*1000/30;A.pack+=pk;A.net+=nt;
+  S.fin={rev,tax,sal,twr,ads,lic,pk,nt,net:rev-tax-sal-twr-ads-lic-int-pk-nt};
+  S.h.u.push(S.users);S.h.r.push(rev);S.h.g.push(c.hp);for(const k in S.h)if(S.h[k].length>60)S.h[k].shift();
+  if(S.day%30===0)invoice(c);
+  checkDue();
+  S.tot.rev+=rev;S.tot.tax+=tax;S.tot.exp+=sal+twr+ads+lic+pk+nt;
+  while(S.ms<MILES.length&&S.users>=MILES[S.ms]){toast('Milestone: '+fm(MILES[S.ms])+' users!');S.ms++}
+  
+  if(S.day%5===0)save();
+  render();
+}
+function dayMs(){return Math.max(300,S.monthMin*60000/30/(S.speed||1))}
+function run(){lastTick=Date.now();clearInterval(timer);if(S&&S.speed>0&&!S.over)timer=setInterval(tick,dayMs())}
+function setSpeed(v){S.speed=v;run();save();render()}
+function over(){clearInterval(timer);$('mb').innerHTML='<h2 style="margin:0 0 6px">Company bankrupt 💥</h2><div class="muted">Your cash ran out. You reached '+fm(S.users)+' users and sold '+fm(S.sims)+' SIMs.</div><div style="height:12px"></div><button class="btn" onclick="reset(true)">Start a new SIM</button>';$('modal').className='ov'}
+function reset(go){try{localStorage.removeItem(KEY)}catch(e){}S=null;$('modal').className='ov h';$('start').className='ov';clearInterval(timer);$('cn').value=''}
+// ----- rendering -----
+function render(force){
+  if(!S)return;
+  if(!force&&Date.now()-hold<700)return;
+  const c=calc();
+  $('hn').textContent=S.name;$('hg').textContent=GENS[S.gen].g;$('hd').textContent='Day '+S.day+' · '+S.towers.length+' towers';
+  const m=$('hm');m.textContent=rs(S.money);m.className='money'+(S.money<0?' neg':'');
+  $('sU').textContent=fm(S.users);{const u=Math.round(S.users);if(u>(window._lu||0)){const e=$('chU');e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop')}window._lu=u}$('sS').textContent=fm(S.sims);$('sG').textContent=Math.round(c.hp)+'%';$('sP').textContent=fs(c.spd);
+  $('sp').innerHTML=[[0,'⏸'],[1,'▶'],[3,'⏩'],[10,'🚀']].map(a=>'<button class="'+(S.speed===a[0]?'on':'')+'" onclick="setSpeed('+a[0]+')">'+a[1]+'</button>').join(' ');
+  $('nav').innerHTML=[['net','🗼','Network'],['plan','📦','Plans'],['ads','📣','Ads'],['team','👥','Team'],['bill','🧾','Bills'],['fin','💰','Finance']].map(a=>'<button class="'+(tab===a[0]?'on':'')+'" onclick="go(\''+a[0]+'\')"><i>'+a[1]+'</i>'+a[2]+(a[0]==='bill'&&S.invs.length?' 🔴':'')+(a[0]==='team'?' '+staffState().light:'')+'</button>').join('');
+  if(!(!force&&document.activeElement&&document.activeElement.tagName==='INPUT'&&$('main').contains(document.activeElement)))$('main').innerHTML=({net:vNet,plan:vPlan,ads:vAds,team:vTeam,bill:vBills,fin:vFin})[tab](c);
+}
+function askReset(){if(Date.now()-rstAsk<4000){reset();return}rstAsk=Date.now();render(true)}
+function go(t){tab=t;render(true);$('main').scrollTop=0}
+function hpc(h){return h>=70?'var(--good)':h>=40?'var(--warn)':'var(--bad)'}
+function towerCost(){return Math.round(30000*Math.pow(1.17,S.towers.length-1)/100)*100}
+function vNetCards(c){
+  
+  const nx=GENS[S.gen+1];let up='<div class="muted">You run the best network: 6G. 🎉</div>';
+  if(nx){const okT=S.towers.length>=nx.need,okH=c.hp>=60;
+    up='<div class="row"><b>Next: '+nx.g+'</b><span class="tag">'+fs(nx.spd)+'</span></div><div class="muted" style="margin:4px 0 8px">Needs '+nx.need+' towers '+(okT?'✅':'('+S.towers.length+')')+' · average signal 60%+ '+(okH?'✅':'('+Math.round(c.hp)+'%)')+' · licence '+rs(nx.lic)+'/day</div><button class="btn" '+(genReq(S.gen+1).ok&&S.money>=nx.cost?'':'disabled')+' onclick="upGen()">Upgrade to '+nx.g+' · '+rs(nx.cost)+'</button>'}
+  return '<div class="card"><h3>Network generation · now '+GENS[S.gen].g+'</h3>'+up+'</div>'
+   +'<div class="card"><h3>Network health</h3><div class="g2"><div>Coverage<br><b>'+fm(c.cov)+' people</b></div><div>Capacity<br><b>'+fm(c.cap)+' users</b></div><div>Market size<br><b>'+fm(c.mkt)+'</b></div><div>Reputation<br><b>'+Math.round(S.rep*100)+'%</b></div></div>'+(S.users>c.cap?'<div class="muted" style="color:var(--bad);margin-top:6px">Network is congested. Build or upgrade towers!</div>':'')+'</div>';
+}
+function upkeep(t){return Math.max(150,300*(1+.3*(t.lvl-1))+100*(t.bw-2)+60*(t.g||0)+8*Math.pow(t.si||0,1.7))}
+function genReq(k){const c=calc(),nx=GENS[k],l=[[S.towers.length>=nx.need,nx.need+' towers (you have '+S.towers.length+')'],[S.users>=UREQ[k],fm(UREQ[k])+' customers (you have '+fm(S.users)+')'],[c.spd>=GENS[k-1].spd*.3,'net speed '+fs(GENS[k-1].spd*.3)+' (now '+fs(c.spd)+')'],[c.hp>=60,'average signal 60% (now '+Math.round(c.hp)+'%)']];return{ok:l.every(x=>x[0]),l}}
+function convertTowers(k){const T=S.towers.filter(t=>(t.g||0)<k),c=T.reduce((a,t)=>a+costOf(k)-costOf(t.g||0),0);if(!T.length||k>S.gen||S.money<c)return;S.money-=c;T.forEach(t=>t.g=k);toast(T.length+' towers moved to '+GENS[k].g);save();simInfo()}
+function simInfo(){hold=0;const rows=[1,2,3,4,5].map(k=>{const g=GENS[k],un=S.gen>=k,nx=S.gen+1===k,rq=genReq(k),T=S.towers.filter(t=>(t.g||0)<k),cc=T.reduce((a,t)=>a+costOf(k)-costOf(t.g||0),0);
+  return '<div class="card" style="margin:6px 0"><div class="row"><b>'+g.g+' network</b><span class="tag '+(un?'ok':'')+'">'+(un?'UNLOCKED':'Rs '+fm(g.cost))+'</span></div>'+(un?(T.length?'<button class="btn s o" style="margin-top:8px" '+(S.money>=cc?'':'disabled')+' onclick="convertTowers('+k+')">Convert '+T.length+' towers to '+g.g+' · '+rs(cc)+'</button>':'<div class="muted" style="margin-top:6px">All towers are on '+g.g+' or better</div>'):'<div class="muted" style="margin:6px 0">'+rq.l.map(x=>(x[0]?'✅ ':'❌ ')+x[1]).join('<br>')+'</div>'+(nx?'<button class="btn s" '+(rq.ok&&S.money>=g.cost?'':'disabled')+' onclick="upGen();simInfo()">Unlock '+g.g+' · '+rs(g.cost)+'</button>':'<div class="muted">Unlock the earlier one first</div>'))+'</div>'}).join('');
+  $('mb').innerHTML='<h3 style="margin:0">'+S.name+'</h3><div class="muted" style="margin-bottom:8px">'+fm(S.users)+' users · '+fm(S.sims)+' SIMs sold · '+S.towers.length+' towers · now '+GENS[S.gen].g+'</div><div style="max-height:55vh;overflow-y:auto">'+rows+'</div><div style="height:8px"></div><button class="btn o" onclick="closeM()">Close</button>';$('modal').className='ov'}
+function costOf(g){return 6000*g*g}
+function techCost(t){return costOf(S.gen)-costOf(t.g||0)}
+function buildCost(bw,sp,g){return Math.max(10000,towerCost()+5000*(bw-2)+1500*(sp-1))+costOf(g||0)}
+function closeM(){$('modal').className='ov h';render(true)}
+function stp(l,h,fn,v){return '<div class="row" style="margin:7px 0"><div><b>'+l+'</b><div class="muted">'+h+'</div></div><div style="white-space:nowrap"><button class="btn s o" onclick="'+fn+',-1)">−</button> <b style="display:inline-block;min-width:18px;text-align:center">'+v+'</b> <button class="btn s o" onclick="'+fn+',1)">+</button></div></div>'}
+function vNet(c){
+  const rows=S.towers.map((t,i)=>{const x=c.ts[i],col=hpc(x.cong<1?Math.min(t.hp,35):t.hp);return '<div class="unit" onclick="tower('+i+')"><span class="led" style="background:'+col+';color:'+col+'"></span><b>Tower #'+(i+1)+' <span style="font-weight:600;color:#7dd3fc">'+GENS[t.g||0].g+'</span></b><span>👥 '+fm(x.u)+'</span><span>⚡ '+fs(x.spd)+'</span>'+(t.cmp?'<span class="cm">📞 '+t.cmp+'</span>':'')+'</div>'}).join('');
+  const n=S.nt;if(n.si===undefined)n.si=nearSp(GENS[S.gen].spd);n.g=Math.min(S.gen,n.g===undefined?S.gen:n.g);const G=GENS[n.g],bc=buildCost(n.bw,n.si,n.g),full=S.towers.length>=25;
+  return '<div class="card"><h3>Tower rack · '+S.towers.length+'/25 slots</h3><div class="rack">'+rows+'</div><div class="muted" style="margin-top:6px">Tap a tower to see its users, speed and complaints, and to fix problems.</div></div>'
+   +netCard(c)+'<div class="card"><h3>Add a new tower</h3>'+stp('Net allocation','Holds '+fm(1200*n.bw/2)+' users','ntOpt(\'bw\'',n.bw)+stp('Net speed','Your choice. Faster costs more upkeep','ntOpt(\'si\'',fs(SP[n.si]))+stp('Technology','Tower generation · unlocked up to '+GENS[S.gen].g,'ntOpt(\'g\'',GENS[n.g].g)+'<div class="row muted"><span>Internet used / left</span><b>'+n.bw+' TB / '+left()+' TB</b></div><div class="row muted"><span>Build cost</span><b>'+rs(bc)+'</b></div><div class="row muted" style="margin-bottom:8px"><span>Upkeep a day</span><b>'+rs(upkeep({lvl:1,bw:n.bw,si:n.si,g:n.g}))+'</b></div><button class="btn" '+(S.money>=bc&&!full&&left()>=n.bw?'':'disabled')+' onclick="addTower()">'+(full?'Rack is full':'Build tower')+'</button></div>'
+   +vNetCards(c);
+}
+function ntOpt(k,d){if(k==='g')S.nt.g=Math.max(0,Math.min(S.gen,(S.nt.g===undefined?S.gen:S.nt.g)+d));else if(k==='si')S.nt.si=Math.max(0,Math.min(SP.length-1,S.nt.si+d));else S.nt[k]=Math.max(1,Math.min(5,S.nt[k]+d));render(true)}
+function addTower(){const n=S.nt,g=Math.min(S.gen,n.g===undefined?S.gen:n.g),c=buildCost(n.bw,n.si,g);if(S.money<c||S.towers.length>=25)return;if(left()<n.bw){toast('Not enough internet left. Buy more');return}S.money-=c;S.towers.push({p:S.towers.length,lvl:1,hp:100,bw:n.bw,si:n.si,cmp:0,g:g});toast('New '+GENS[g].g+' tower built');save();render(true)}
+function upTech(i){const t=S.towers[i],c=techCost(t);if(!(t.g<S.gen)||S.money<c)return;S.money-=c;t.g=S.gen;t.hp=Math.min(100,t.hp+10);toast('Tower upgraded to '+GENS[S.gen].g);save();tower(i)}
+function tower(i){
+  hold=0;const t=S.towers[i],c=calc(),x=c.ts[i],rc=Math.round((100-t.hp)*60),uc=40000*t.lvl*t.lvl,fc=t.cmp*200,tc=techCost(t);
+  const o=(l,k,h)=>stp(l,h,'opt('+i+',\''+k+'\'',t[k]);
+  $('mb').innerHTML='<h3 style="margin:0 0 6px">Tower #'+(i+1)+' · Level '+t.lvl+'</h3><div class="bar"><i style="width:'+t.hp+'%;background:'+hpc(t.hp)+'"></i></div>'
+   +'<div class="g2" style="margin:8px 0"><div class="muted">Users<br><b style="color:var(--text)">'+fm(x.u)+' / '+fm(x.cap)+'</b></div><div class="muted">Speed each user<br><b style="color:var(--text)">'+fs(x.spd)+'</b></div><div class="muted">Condition<br><b style="color:var(--text)">'+Math.round(t.hp)+'%'+(x.cong<1?' · congested':'')+'</b></div><div class="muted">Complaints<br><b style="color:'+(t.cmp?'var(--bad)':'var(--good)')+'">'+t.cmp+'</b></div></div>'
+   +'<button class="btn" '+(t.cmp&&S.money>=fc?'':'disabled')+' onclick="solve('+i+')">Resolve complaints · '+rs(fc)+'</button><div style="height:6px"></div>'
+   +o('Net allocation','bw','more users fit · +Rs 3,000 per step')+stp('Net speed','your choice · +Rs 3,000 per step up','opt('+i+',\'si\'',fs(SP[t.si]))
+   +'<div class="row" style="margin:7px 0"><div><b>Technology · '+GENS[t.g||0].g+'</b><div class="muted">'+(t.g<S.gen?'Upgrade to '+GENS[S.gen].g+' for faster speed':'Latest generation')+'</div></div><button class="btn s" '+(t.g<S.gen&&S.money>=tc?'':'disabled')+' onclick="upTech('+i+')">'+(t.g<S.gen?'Upgrade · '+rs(tc):'Latest')+'</button></div>'+'<div class="muted" style="margin-bottom:8px">Upkeep '+rs(upkeep(t))+' a day</div><div class="g2"><button class="btn o" '+(t.hp<100&&S.money>=rc?'':'disabled')+' onclick="repair('+i+')">Repair · '+rs(rc)+'</button><button class="btn" '+(t.lvl<3&&S.money>=uc?'':'disabled')+' onclick="upT('+i+')">'+(t.lvl<3?'Upgrade · '+rs(uc):'Max level')+'</button></div><div style="height:8px"></div><button class="btn o" onclick="closeM()">Close</button>';
+  $('modal').className='ov';
+}
+function opt(i,k,d){const t=S.towers[i],hi=k==='si'?SP.length-1:5,lo=k==='si'?0:1,v=Math.max(lo,Math.min(hi,t[k]+d));if(v===t[k])return;if(d>0){if(k==='bw'&&left()<1){toast('No internet left. Buy more in the Network tab');return}if(S.money<3000)return;S.money-=3000}t[k]=v;save();tower(i)}
+function solve(i){const t=S.towers[i],c=t.cmp*200;if(!t.cmp||S.money<c)return;S.money-=c;S.users+=t.cmp*4;t.hp=Math.min(100,t.hp+15);S.rep=Math.min(1,S.rep+.01*Math.min(5,t.cmp));t.cmp=0;toast('Complaints solved. Users are happier');save();tower(i)}
+function repair(i){const t=S.towers[i],c=Math.round((100-t.hp)*60);if(S.money<c)return;S.money-=c;t.hp=100;toast('Tower repaired');save();tower(i)}
+function upT(i){const t=S.towers[i],c=40000*t.lvl*t.lvl;if(S.money<c||t.lvl>=3)return;S.money-=c;t.lvl++;t.hp=100;toast('Tower upgraded');save();tower(i)}
+function upGen(){const nx=GENS[S.gen+1];if(!nx||S.money<nx.cost||!genReq(S.gen+1).ok)return;S.money-=nx.cost;S.gen++;S.rep=Math.min(1,S.rep+.1);toast('Welcome to '+nx.g+'! Upgrade your towers in the rack');save();render(true)}
+const TPL=[{n:'Daily Saver',price:25,days:1,gb:1,sms:20,min:30},{n:'Weekly Booster',price:99,days:7,gb:6,sms:100,min:150},{n:'Monthly Unlimited',price:299,days:30,gb:30,sms:300,min:500},{n:'Student Pack',price:149,days:30,gb:40,sms:200,min:200}];
+function mk(){const d=S.dr;return{id:'p'+Date.now(),n:(d.n||'').trim()||(Math.max(0,d.gb)+' GB · '+Math.max(1,Math.round(d.days))+' day pack'),price:Math.max(1,d.price),days:Math.max(1,Math.round(d.days)),gb:Math.max(0,d.gb),sms:Math.max(0,Math.round(d.sms)),min:Math.max(0,Math.round(d.min))}}
+function pv(){const p=mk(),c=pCost(p),r=p.price-c,k=calc(),w=planV(p),u=(S.users||1000)*w/(k.sw+w),ex=u*r/p.days;return 'Cost to us per user: <b>Rs '+c.toFixed(1)+'</b> · Profit per user: <b style="color:'+(r>=0?'var(--good)':'var(--bad)')+'">Rs '+r.toFixed(1)+'</b> every '+p.days+' day(s)<br>Launch cost now: <b>Rs 5,000</b> · Expected profit: <b style="color:'+(ex>=0?'var(--good)':'var(--bad)')+'">'+rs(ex)+' a day</b> (about '+fm(u)+' users)'}
+function dr(k,v){S.dr[k]=k==='n'?v:(parseFloat(v)||0);$('pv').innerHTML=pv()}
+function tpl(i){Object.assign(S.dr,TPL[i]);render(true)}
+function launchPlan(){if(S.plans.length>=10){toast('Maximum 10 packages');return}if(S.money<5000)return;const p=mk();S.money-=5000;S.plans.push(p);S.dr.n='';toast(p.n+' launched!');save();render(true)}
+function retire(i){if(S.plans.length<2){toast('Keep at least one package');return}S.plans.splice(i,1);save();render(true)}
+function alloc(){return S.towers.reduce((a,t)=>a+t.bw,0)}
+function left(){return S.pool-alloc()}
+function poolSet(d){if(d<0&&S.pool-5<alloc()){toast('That internet is already given to towers');return}S.pool=Math.max(1,S.pool+d*5);save();render(true)}
+function netCard(c){const a=alloc(),l=S.pool-a;return '<div class="card"><h3>Internet</h3><div class="row"><span>Bought a month</span><b>'+S.pool+' TB</b></div><div class="row"><span>Given to towers</span><b>'+a+' TB</b></div><div class="row"><span>Left to give</span><b style="color:'+(l>0?'var(--good)':'var(--warn)')+'">'+l+' TB</b></div><div class="bar" style="margin:6px 0"><i style="width:'+Math.min(100,a/S.pool*100)+'%"></i></div><div class="row"><span>Your users need</span><b>'+c.dem.toFixed(1)+' TB</b></div><div class="muted" style="margin:6px 0 8px">'+(c.pf<1?'Not enough internet! Speed falls to '+Math.round(c.pf*100)+'%. Buy more. ':'')+'Each tower takes its net allocation from here. Costs Rs 1,000 per TB a month.</div><div class="g2"><button class="btn o" '+(S.pool-5>=a?'':'disabled')+' onclick="poolSet(-1)">−5 TB</button><button class="btn" onclick="poolSet(1)">Buy +5 TB · Rs 5,000/mo</button></div></div>'}
+function vPlan(c){
+  const d=S.dr,inp=(l,k,t)=>'<div><label class="muted">'+l+'</label><input type="'+(t||'number')+'" value="'+d[k]+'" min="0" oninput="dr(\''+k+'\',this.value)" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:14px"></div>';
+  const pct=Math.min(100,c.dem/S.pool*100);
+  const drawers=S.plans.map((p,i)=>{const u=S.users*c.pw[i]/c.sw,inc=u*p.price/p.days,cs=u*pCost(p)/p.days,pr=inc-cs;
+    return '<div class="drw"><div class="row"><b>'+p.n+'</b><span class="tag">Rs '+p.price+' / '+p.days+'d</span></div><div class="muted">📶 '+p.gb+' GB · ✉️ '+p.sms+' SMS · 📞 '+p.min+' min</div><div class="g2" style="margin:8px 0"><div class="muted">👤 Users<br><b style="color:#e5edf8">'+fm(u)+'</b></div><div class="muted">Income a day<br><b style="color:#e5edf8">'+rs(inc)+'</b></div><div class="muted">Cost a day<br><b style="color:#e5edf8">'+rs(cs)+'</b></div><div class="muted">Profit a day<br><b style="color:'+(pr>=0?'#4ade80':'#f87171')+'">'+rs(pr)+'</b></div></div><button class="btn s o" onclick="retire('+i+')">Retire package</button><div class="hdl"></div></div>'}).join('<div style="height:6px"></div>');
+  return pricing()
+   +netCard(c)
+   +'<div class="card"><h3>Design a new package</h3><div class="muted" style="margin-bottom:6px">Start from a template or type your own numbers.</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">'+TPL.map((t,i)=>'<button class="btn s o" onclick="tpl('+i+')">'+t.n+'</button>').join('')+'</div>'
+   +'<div class="g2">'+inp('Package name','n','text')+inp('Price (Rs)','price')+inp('Internet (GB)','gb')+inp('SMS','sms')+inp('Call minutes','min')+inp('Valid for (days)','days')+'</div><div class="muted" id="pv" style="margin:10px 0">'+pv()+'</div><button class="btn" '+(S.money>=5000?'':'disabled')+' onclick="launchPlan()">Launch package</button></div>'
+   +'<div class="card"><h3>Your packages</h3><div class="rack" style="padding:6px">'+drawers+'</div></div>';
+}
+function vAds(){
+  return '<div class="card"><div class="muted">News and advertising bring new users, but cost money every single day. Pick a level.</div></div>'+ADS.map((a,i)=>'<div class="card" style="'+(S.ads===i?'border-color:var(--acc)':'')+'"><div class="row"><b>'+a.n+'</b><span class="tag '+(S.ads===i?'ok':'')+'">'+(S.ads===i?'RUNNING':'+'+Math.round(a.b*100)+'% appeal')+'</span></div><div class="muted" style="margin:3px 0 8px">'+(a.c?rs(a.c)+' a day':'No cost')+'</div>'+(S.ads===i?'':'<button class="btn o" onclick="setAds('+i+')">Choose</button>')+'</div>').join('');
+}
+function setAds(i){S.ads=i;toast('Ads: '+ADS[i].n);save();render(true)}
+function vTeam(){
+  return staffCard()+'<div class="card"><div class="muted">Employees are paid salary every day. Hiring costs a one-time fee.</div></div>'+Object.keys(STAFF).map(k=>{const s=STAFF[k],n=S.staff[k];
+    return '<div class="card"><div class="row"><b>'+s.n+'</b><span class="tag">'+n+' hired</span></div><div class="muted" style="margin:3px 0 8px">'+s.fx+' · '+rs(s.sal)+' a day each · <b style="color:'+(n<need()[k]?'var(--bad)':'var(--good)')+'">need '+need()[k]+'</b></div><div class="g2"><button class="btn o" '+(n?'':'disabled')+' onclick="staff(\''+k+'\',-1)">Fire one</button><button class="btn" '+(S.money>=s.fee&&n<10?'':'disabled')+' onclick="staff(\''+k+'\',1)">Hire · '+rs(s.fee)+'</button></div></div>'}).join('');
+}
+function staff(k,d){const s=STAFF[k];if(d>0){if(S.money<s.fee||S.staff[k]>=10)return;S.money-=s.fee}else if(!S.staff[k])return;S.staff[k]+=d;save();render(true)}
+function vFin(){
+  const f=S.fin,row=(a,b)=>'<tr><td>'+a+'</td><td>'+b+'</td></tr>';
+  return charts()+'<div class="card"><h3>Today’s money</h3><table>'+row('Income from users',rs(f.rev))+row('Tax (15%)','-'+rs(f.tax))+row('Salaries','-'+rs(f.sal))+row('Tower upkeep','-'+rs(f.twr))+row('News and ads','-'+rs(f.ads))+row('Network licence','-'+rs(f.lic))+row('Package costs','-'+rs(f.pk||0))+row('Internet purchase','-'+rs(f.nt||0))+row('<b>Profit today</b>','<span style="color:'+(f.net>=0?'var(--good)':'var(--bad)')+'">'+rs(f.net)+'</span>')+'</table></div>'
+   +'<div class="card"><h3>Since launch</h3><table>'+row('Total income',rs(S.tot.rev))+row('Tax paid',rs(S.tot.tax))+row('Other expenses',rs(S.tot.exp))+'</table></div>'
+   +'<div class="card"><h3>Goal: 1,00,000 users</h3><div class="bar"><i style="width:'+Math.min(100,S.users/1000)+'%"></i></div><div class="muted" style="margin-top:6px">'+fm(S.users)+' users joined · '+fm(S.sims)+' SIMs sold</div></div>'
+   +'<button class="btn d" onclick="askReset()">'+(Date.now()-rstAsk<4000?'Tap again to delete everything':'Reset game')+'</button>';
+}
+const CATS=[['sal','Employee salaries'],['tax','Tax'],['twr','Tower upkeep'],['ads','News and ads'],['lic','Network licence'],['loan','Loan interest'],['fine','Government fine'],['pack','Package costs'],['net','Internet purchase']];
+function fixS(){S.acc=S.acc||{sal:0,tax:0,twr:0,ads:0,lic:0,loan:0,fine:0,pack:0,net:0};S.invs=S.invs||[];S.price=S.price||1;S.riv=S.riv||[{n:'AirNova',ap:.55},{n:'Zephyr Mobile',ap:.5}];S.loan=S.loan||0;S.offer=S.offer||0;S.h=S.h||{u:[],r:[],g:[]};S.towers.forEach(t=>{t.bw=t.bw||2;t.sp=t.sp||3;t.cmp=t.cmp||0;t.g=t.g===undefined?S.gen:t.g;t.si=t.si===undefined?nearSp(GENS[t.g].spd*(t.sp||3)/3):t.si});S.monthMin=S.monthMin||15;S.nt=S.nt||{bw:2,sp:3};S.over=false;S.nt.si=S.nt.si===undefined?nearSp(GENS[S.gen].spd):S.nt.si;
+  S.plans=S.plans.map(x=>{if(typeof x!=='string')return x;const p=PLANS.find(q=>q.id===x);return{id:x,n:p.n,price:p.arpu,days:30,gb:5,sms:100,min:100}});
+  S.pool=Math.max(S.pool||5,S.towers.reduce((a,t)=>a+t.bw,0));S.dr=S.dr||{n:'',price:299,days:30,gb:10,sms:100,min:200};S.acc.pack=S.acc.pack||0;S.acc.net=S.acc.net||0}
+function planV(p){return Math.min(5,Math.max(.05,(p.gb/10+p.sms/500+p.min/500+.2)/Math.max(.1,p.price*30/p.days/200)))}
+function pCost(p){return p.gb*1+p.sms*.02+p.min*.1}
+function staffState(){const n=need(),k=Object.keys(STAFF),mn=Math.min(...k.map(x=>S.staff[x]/Math.max(1,n[x])));return{n,have:k.reduce((a,x)=>a+S.staff[x],0),light:k.every(x=>S.staff[x]>=n[x])?'🟢':mn>=.5?'🟡':'🔴'}}
+function staffCard(){const st=staffState(),t={'🟢':'Fully staffed. Great!','🟡':'Normal, but short. Hire a few more.','🔴':'Very few employees! Hire now.'}[st.light];return '<div class="card"><div class="row"><div><h3 style="margin:0">'+st.light+' Employees: '+st.have+'</h3><div class="muted">'+t+'<br>Needed now: '+Object.keys(STAFF).map(k=>STAFF[k].n.split(' ')[0]+' '+st.n[k]).join(' · ')+'</div></div></div><button class="btn" style="margin-top:8px" '+(st.light==='🟢'?'disabled':'')+' onclick="hireAll()">Hire all needed</button></div>'}
+function hireAll(){const n=need();Object.keys(STAFF).forEach(k=>{while(S.staff[k]<Math.min(10,n[k])&&S.money>=STAFF[k].fee){S.money-=STAFF[k].fee;S.staff[k]++}});save();render(true)}
+function monthCtl(){return '<div class="card"><h3>Month length</h3><div class="row"><button class="btn s o" onclick="setMonth(-1)">−1 min</button><b>'+S.monthMin+' real minutes</b><button class="btn s o" onclick="setMonth(1)">+1 min</button></div><div class="muted" style="margin-top:6px">How long one month (30 days) lasts before the bill. The clock at the top counts down.</div></div>'}
+function setMonth(d){S.monthMin=Math.max(1,Math.min(60,S.monthMin+d));run();save();render(true)}
+function newsItems(){const sh=S.share||.5,t=S.riv.reduce((a,r)=>a+r.ap,0)||1,tot=S.users/sh,rv=S.riv.map(r=>({n:r.n,u:tot*(1-sh)*r.ap/t})),all=rv.concat([{n:S.name,u:S.users}]).sort((a,b)=>b.u-a.u),rk=all.findIndex(x=>x.n===S.name)+1,st=staffState(),it=[];
+  if(st.light!=='🟢')it.push((st.light==='🔴'?'🚨':'⚠️')+' Team is short. Open the Team tab to hire.');
+  it.push('🏆 #1 SIM right now: '+all[0].n+' with '+fm(all[0].u)+' users');rv.forEach(r=>it.push('📰 '+r.n+' has sold about '+fm(r.u*1.4)+' SIMs'));it.push('📈 '+S.name+' is #'+rk+' · '+fm(S.sims)+' SIMs sold');return it}
+function clock(){if(!S||S.over)return;const dl=30-(S.day%30),ms=dl*dayMs()-(Date.now()-lastTick);$('hc').textContent=S.speed?'⏱ Bill in '+Math.floor(Math.max(0,ms)/60000)+':'+String(Math.floor(Math.max(0,ms)/1000)%60).padStart(2,'0'):'⏸ Paused';const n=newsItems();$('news').textContent=n[Math.floor(Date.now()/5000)%n.length]}
+setInterval(clock,1000);
+function need(){return{eng:Math.ceil(S.towers.length/4),sup:Math.ceil(S.users/4000),sales:Math.ceil(S.users/10000)}}
+function invoice(c){const it=Object.assign({},S.acc);it.fine=c.hp<45?Math.round(5000+(45-c.hp)*400):0;const tot=Object.values(it).reduce((a,b)=>a+b,0);S.invs.push({m:S.day/30,it,tot,due:S.day+15,late:0});S.acc={sal:0,tax:0,twr:0,ads:0,lic:0,loan:0,fine:0,pack:0,net:0};toast('New monthly bill: '+rs(tot)+'. Pay within 15 days')}
+function checkDue(){S.invs.forEach(b=>{if(S.day>=b.due+b.late*15){b.late++;const pen=Math.round(b.tot*.05);b.tot+=pen;S.rep=Math.max(0,S.rep-.03);toast('Bill is overdue. Late fee '+rs(pen))}})}
+function payBill(i){const b=S.invs[i];if(!b||S.money<b.tot)return;S.money-=b.tot;S.invs.splice(i,1);toast('Bill paid');save();render(true)}
+function takeLoan(){if(S.loan)return;S.money+=500000;S.loan=500000;toast('Loan taken. Interest is added to your bill');save();render(true)}
+function repayLoan(){if(!S.loan||S.money<S.loan)return;S.money-=S.loan;S.loan=0;toast('Loan repaid');save();render(true)}
+function setPrice(d){S.price=Math.max(.7,Math.min(1.5,Math.round((S.price+d)*10)/10));save();render(true)}
+function festival(){if(S.money<20000||S.offer>0)return;S.money-=20000;S.offer=10;toast('Festival offer is live!');save();render(true)}
+function pricing(){return '<div class="card"><h3>Your pricing</h3><div class="row"><button class="btn s o" onclick="setPrice(-.1)">−10%</button><b>'+Math.round(S.price*100)+'% of normal price</b><button class="btn s o" onclick="setPrice(.1)">+10%</button></div><div class="muted" style="margin:6px 0 8px">Cheaper wins more users but earns less per user. Costlier does the opposite.</div><button class="btn" '+(S.money>=20000&&!S.offer?'':'disabled')+' onclick="festival()">'+(S.offer?'Festival offer running · '+S.offer+' days left':'Festival offer · Rs 20,000 · 10 days')+'</button></div>'}
+function bars(it){const mx=Math.max(1,...Object.values(it));return CATS.map(a=>it[a[0]]?'<div style="margin:5px 0"><div class="row"><span>'+a[1]+'</span><b>'+rs(it[a[0]])+'</b></div><div class="bar"><i style="width:'+it[a[0]]/mx*100+'%"></i></div></div>':'').join('')}
+function vBills(){
+  const run=Object.values(S.acc).reduce((a,b)=>a+b,0);
+  let h=monthCtl()+'<div class="card"><h3>This month so far · next bill in '+(30-S.day%30)+' days</h3>'+(run?bars(S.acc):'<div class="muted">Nothing yet</div>')+'<div class="row" style="margin-top:6px"><span>Running total</span><b>'+rs(run)+'</b></div></div>';
+  h+=S.invs.length?S.invs.map((b,i)=>'<div class="card" style="border-color:var(--bad)"><h3>Month '+b.m+' bill · due in '+(b.due+b.late*15-S.day)+' days</h3>'+bars(b.it)+'<div class="row" style="margin:8px 0"><b>Total</b><b>'+rs(b.tot)+'</b></div><button class="btn" '+(S.money>=b.tot?'':'disabled')+' onclick="payBill('+i+')">Pay bill</button></div>').join(''):'<div class="card muted">No unpaid bills. Well done!</div>';
+  return h+'<div class="card"><h3>Bank loan</h3><div class="muted" style="margin-bottom:8px">'+(S.loan?'You owe '+rs(S.loan)+'. Interest is added to your monthly bill.':'Rs 5,00,000 now. Interest 0.1% a day goes into your bill.')+'</div>'+(S.loan?'<button class="btn o" '+(S.money>=S.loan?'':'disabled')+' onclick="repayLoan()">Repay loan</button>':'<button class="btn" onclick="takeLoan()">Take loan</button>')+'</div>';
+}
+function spark(a,c){if(a.length<2)return'';const mx=Math.max(...a),mn=Math.min(...a);return'<svg viewBox="0 0 200 40" style="height:48px;border:0;background:none"><polyline points="'+a.map((v,i)=>(i*200/(a.length-1)).toFixed(1)+','+(38-(v-mn)/(mx-mn||1)*34).toFixed(1)).join(' ')+'" fill="none" stroke="'+c+'" stroke-width="2"/></svg>'}
+function charts(){const h=S.h,sh=S.share||.5,t=S.riv.reduce((a,r)=>a+r.ap,0)||1;
+  const row=(n,p,c)=>'<div class="row"><span>'+n+'</span><b>'+Math.round(p*100)+'%</b></div><div class="bar" style="margin-bottom:6px"><i style="width:'+p*100+'%;background:'+c+'"></i></div>';
+  return '<div class="card"><h3>Market share</h3>'+row(S.name,sh,'var(--acc)')+S.riv.map(r=>row(r.n,(1-sh)*r.ap/t,'var(--muted)')).join('')+'</div><div class="card"><h3>Users</h3>'+spark(h.u,'var(--acc)')+'<h3>Daily income</h3>'+spark(h.r,'var(--good)')+'<h3>Signal</h3>'+spark(h.g,'var(--warn)')+'</div>'}
+document.addEventListener('pointerdown',()=>{hold=Date.now()});
+if(load()){$('start').className='ov h';if(S.over)over();else{run();render(true)}}
+</script>
 </body>
-                                                                                   </html>
+</html>
