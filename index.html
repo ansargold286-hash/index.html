@@ -1,361 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>VIP SIM Tycoon</title>
-<style>
-:root{--bg:#f3f6fb;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--acc:#0284c7;--on:#fff;--good:#16a34a;--warn:#d97706;--bad:#dc2626;--map:#e6edf7;--plot:#b6c3d6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1220;--card:#131c2e;--text:#e5edf8;--muted:#8fa3bf;--line:#223050;--acc:#38bdf8;--on:#06121f;--good:#4ade80;--warn:#fbbf24;--bad:#f87171;--map:#0f1a2e;--plot:#2d3f63}}
-:root[data-theme="dark"]{--bg:#0b1220;--card:#131c2e;--text:#e5edf8;--muted:#8fa3bf;--line:#223050;--acc:#38bdf8;--on:#06121f;--good:#4ade80;--warn:#fbbf24;--bad:#f87171;--map:#0f1a2e;--plot:#2d3f63}
-html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-#app{display:flex;flex-direction:column;height:100%;max-width:520px;margin:0 auto}
-header{padding:10px 12px 8px;background:var(--card);border-bottom:1px solid var(--line)}
-.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.brand{font-weight:800;font-size:15px}.sub{color:var(--muted);font-size:11px}
-.gen{background:var(--acc);color:var(--on);font-weight:800;font-size:11px;padding:2px 8px;border-radius:99px;margin-left:6px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
-.st{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:5px 4px;text-align:center;min-width:0}
-.st b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.st span{font-size:9px;color:var(--muted);text-transform:uppercase}
-.money{font-weight:800;font-size:16px;color:var(--good)}.money.neg{color:var(--bad)}
-.sp button{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:8px;padding:3px 8px;font-size:12px}
-.sp button.on{background:var(--acc);color:var(--on);border-color:var(--acc)}
-main{flex:1;overflow-y:auto;padding:12px}
-nav{display:grid;grid-template-columns:repeat(7,1fr);background:var(--card);border-top:1px solid var(--line)}
-nav button{border:0;background:none;color:var(--muted);padding:8px 1px 7px;font-size:9px;font-weight:700}
-nav button i{display:block;font-style:normal;font-size:19px;line-height:1.2}
-nav button.on{color:var(--acc)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
-.card h3{margin:0 0 6px;font-size:13px}.muted{color:var(--muted);font-size:12px}
-.btn{border:0;border-radius:10px;background:var(--acc);color:var(--on);font-weight:800;padding:9px 12px;font-size:13px;width:100%}
-.btn.s{width:auto;padding:6px 12px;font-size:12px}.btn.o{background:none;border:1px solid var(--acc);color:var(--acc)}.btn.d{background:var(--bad);color:#fff}
-.btn:disabled{opacity:.4}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.tag{font-size:10px;font-weight:800;padding:2px 7px;border-radius:99px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
-.tag.ok{color:var(--good);border-color:var(--good)}
-.bar{height:8px;border-radius:99px;background:var(--bg);border:1px solid var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--acc)}
-table{width:100%;border-collapse:collapse;font-size:13px}td{padding:5px 0;border-bottom:1px solid var(--line)}td:last-child{text-align:right;font-weight:700}
-svg{width:100%;height:auto;display:block;border-radius:14px;background:var(--map);border:1px solid var(--line)}
-.pe{fill:none;stroke:var(--plot);stroke-width:1.5;stroke-dasharray:4 4}.pt{fill:var(--plot);font-size:16px;text-anchor:middle}
-.bl{animation:bl 1s infinite}@keyframes bl{50%{opacity:.25}}
-.rack{background:#1b2536;border:3px solid #3a4a66;border-radius:12px;padding:6px;display:flex;flex-direction:column;gap:4px}.unit{display:flex;align-items:center;gap:8px;background:#0e1626;color:#e5edf8;border:1px solid #2d3f63;border-radius:6px;padding:9px 8px;font-size:12px}.unit b{flex:1}.led{width:10px;height:10px;border-radius:50%;box-shadow:0 0 6px currentColor}.cm{color:#f87171;font-weight:800}
-.pp{display:inline-block;animation:bob 1.6s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-2px) scale(1.15)}}
-#chU.pop{animation:pop .6s}@keyframes pop{30%{transform:scale(1.12);border-color:var(--good)}}
-.drw{background:#0e1626;color:#e5edf8;border:1px solid #2d3f63;border-radius:6px;padding:10px}.drw .muted{color:#8fa3bf}.hdl{height:5px;width:46px;border-radius:3px;background:#5b6f94;margin:9px auto 0}
-.ov{position:fixed;inset:0;background:rgba(2,8,20,.7);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
-.ov.h{display:none}.box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;width:100%;max-width:380px}
-input[type=text]{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:15px;margin:8px 0 12px}
-#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(76px + env(safe-area-inset-bottom,0px));background:var(--text);color:var(--bg);padding:8px 14px;border-radius:99px;font-size:12px;font-weight:700;z-index:10;max-width:90%;text-align:center;opacity:0;transition:opacity .25s;pointer-events:none}
-#toast.s{opacity:1}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#050A14" />
+  <meta name="description" content="NICH Employee Attendance 3 — Standalone Biometric Face-Scanning Web Terminal" />
+  <title>NICH Employee Attendance 3</title>
+  <link rel="icon" type="image/png" href="./assets/nich_official_logo.png" />
+  <link rel="apple-touch-icon" href="./assets/nich_official_logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-<div id="app">
-  <header>
-    <div class="row"><div><span class="brand" id="hn" onclick="simInfo()" style="cursor:pointer;text-decoration:underline dotted">VIP SIM</span><span class="gen" id="hg">1G</span><div class="sub" id="hd">Day 1</div></div><div style="text-align:right"><div class="money" id="hm">Rs 0</div><div class="sub" id="hc">⏱ --</div><div class="sp" id="sp"></div></div></div>
-    <div class="sub" id="news" style="margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
-    <div id="cr" onclick="fixCrisis()" style="display:none;margin-top:6px;background:var(--bad);color:#fff;border-radius:10px;padding:7px 10px;font-weight:800;font-size:12px"></div>
-    <div class="stats">
-      <div class="st" id="chU"><b><span class="pp">👤</span> <span id="sU">0</span></b><span>Users</span></div>
-      <div class="st"><b id="sS">0</b><span>SIMs sold</span></div>
-      <div class="st"><b id="sG">0%</b><span>Signal</span></div>
-      <div class="st"><b id="sP">0</b><span>Net speed</span></div>
-    </div>
-  </header>
-  <main id="main"></main>
-  <nav id="nav"></nav>
-</div>
+  <main id="terminalRoot" class="terminal-root" aria-label="NICH Employee Attendance 3 Biometric Terminal">
+    <!-- Full-screen live camera viewfinder (mirrored for natural front-facing kiosk ergonomics) -->
+    <video
+      id="cameraVideo"
+      class="camera-video"
+      autoplay
+      playsinline
+      muted
+      aria-label="Live biometric camera feed"
+    ></video>
 
-<div class="ov" id="start"><div class="box">
-  <div style="font-size:30px">📡</div>
-  <h2 style="margin:4px 0">Launch your SIM</h2>
-  <div class="muted">Pick a name for your official SIM company. You start with Rs 1,00,000, one tower and a Daily Saver pack.</div>
-  <input type="text" id="cn" maxlength="20" placeholder="e.g. VIP Telecom" autocomplete="off">
-  <button class="btn" onclick="launch()">Launch SIM 🚀</button>
-</div></div>
-<div class="ov h" id="modal"><div class="box" id="mb"></div></div>
-<div id="toast"></div>
+    <!-- Hidden offscreen canvas used strictly for pixel frame analysis and live selfie JPEG capture -->
+    <canvas id="captureCanvas" class="visually-hidden" aria-hidden="true"></canvas>
 
-<script>
-const KEY='vipSimTycoonV1';
-const GENS=[
- {g:'1G',spd:0.002,cost:0,lic:0,need:0},{g:'2G',spd:0.1,cost:60000,lic:200,need:3},
- {g:'3G',spd:5,cost:120000,lic:500,need:6},{g:'4G',spd:40,cost:240000,lic:1500,need:10},
- {g:'5G',spd:400,cost:480000,lic:4000,need:16},{g:'6G',spd:2000,cost:960000,lic:9000,need:22}];
-const PLANS=[
- {id:'daily',n:'Daily Saver',d:'Rs 25 / day, 1 GB',arpu:150,ap:.05,cost:5000,gen:0},
- {id:'night',n:'Night Data',d:'Rs 49, midnight to 6 am',arpu:120,ap:.04,cost:10000,gen:1},
- {id:'week',n:'Weekly Booster',d:'Rs 99, 7 days, 6 GB',arpu:220,ap:.06,cost:12000,gen:1},
- {id:'month',n:'Monthly Unlimited',d:'Rs 299, 30 days',arpu:300,ap:.08,cost:30000,gen:2},
- {id:'stud',n:'Student Pack',d:'Rs 149, 30 days, 40 GB',arpu:180,ap:.10,cost:25000,gen:2},
- {id:'fam',n:'Family Share',d:'Rs 499, 4 SIMs',arpu:450,ap:.09,cost:80000,gen:3},
- {id:'biz',n:'Business Pro',d:'Rs 799, priority speed',arpu:600,ap:.05,cost:60000,gen:3},
- {id:'game',n:'5G Gamer Ultra',d:'Rs 999, low ping',arpu:800,ap:.07,cost:150000,gen:4}];
-const ADS=[{n:'Off',c:0,b:0},{n:'Local news',c:1000,b:.06},{n:'TV news',c:4000,b:.12},{n:'National campaign',c:12000,b:.2}];
-const STAFF={eng:{n:'Engineers',sal:1000,fee:5000,fx:'Slower tower wear and auto-repair'},sup:{n:'Support team',sal:700,fee:4000,fx:'Fewer users leave, better reputation'},sales:{n:'Sales agents',sal:900,fee:4000,fx:'More new SIMs sold each day'}};
-const MILES=[1000,5000,10000,25000,50000,100000,250000,500000,1000000];
-const ZONES=[['Saddar',67.01,24.86,25],['Clifton',67.03,24.81,20],['Gulshan-e-Iqbal',67.09,24.92,35],['North Nazimabad',67.04,24.94,30],['Korangi',67.13,24.83,30],['Malir',67.2,24.89,28],['Landhi',67.21,24.85,22],['Orangi Town',66.99,24.95,35],['Gadap',67.1,25.03,12],
-['Hyderabad',68.37,25.4,60],['Lahore',74.35,31.55,160],['Faisalabad',73.08,31.42,70],['Rawalpindi',73.04,33.6,55],['Islamabad',73.05,33.69,40],['Multan',71.47,30.2,55],['Peshawar',71.58,34.01,60],['Gujranwala',74.19,32.16,45],['Quetta',67.0,30.18,35],['Sukkur',68.86,27.7,25],['Larkana',68.21,27.56,22],['Mirpur Khas',69.01,25.53,18],['Nawabshah',68.41,26.25,14],['Sialkot',74.52,32.49,25],['Bahawalpur',71.67,29.4,22],['Sargodha',72.67,32.08,20],['Mardan',72.04,34.2,22],['Abbottabad',73.22,34.15,15],['Swat',72.43,34.77,18],['Muzaffarabad',73.47,34.37,10],['Gilgit',74.31,35.92,10],['Gwadar',62.32,25.12,8],['Turbat',63.05,26.0,8]];
-const PK=[[61.6,25.1],[66.7,24.8],[67.4,24.0],[68.2,23.7],[69.5,24.3],[70.2,25.2],[70.5,26.7],[71.0,27.8],[72.2,28.6],[73.0,29.9],[74.4,31.0],[74.8,31.9],[75.3,32.4],[74.5,33.2],[74.0,34.6],[75.0,35.5],[76.7,35.7],[77.0,36.3],[75.5,37.0],[74.5,37.0],[72.5,36.9],[71.5,36.5],[71.2,35.5],[70.9,34.5],[71.1,34.0],[70.2,33.9],[69.9,33.0],[69.3,31.9],[68.0,31.6],[66.4,29.9],[64.5,29.5],[62.5,29.4],[60.9,29.8],[61.6,28.0],[62.5,27.0],[63.2,26.5],[61.8,25.3]];
-function down(t){return !!(t.off||(S.cr&&S.cr.type==='power'&&(t.z||0)===S.cr.z))}
-function crisisName(){const c=S.cr,z=ZONES[c.z][0];return c.type==='storm'?'Storm hits '+z:c.type==='power'?'Power cut in '+z:'Cyber attack on your network'}
-function crisisCost(){return 12000+3000*S.zn}
-function fixCrisis(){if(!S.cr)return;const c=crisisCost();if(S.money<c){toast('Not enough money to fix it');return}S.money-=c;S.cr=null;toast('Crisis solved. Customers are safe');save();render(true)}
-function crisisFail(){const c=S.cr;if(c.type==='storm')S.towers.forEach(t=>{if((t.z||0)===c.z){t.hp=10;t.cmp=Math.min(30,t.cmp+5)}});else if(c.type==='power'){S.users*=.9;S.rep=Math.max(0,S.rep-.08)}else{S.users*=.85;S.rep=Math.max(0,S.rep-.1)}S.cr=null;toast('Too late! Customers are leaving after the crisis')}
-function counter(z){const c=10000+2000*z;if(!S.atk[z]||S.money<c)return;S.money-=c;delete S.atk[z];toast('Counter-offer launched. Customers stay with you');save();render(true)}
-function lock(){if(S.invs.some(b=>b.late>0)){toast('🏛️ Government notice: pay your overdue bills first');return true}return false}
-function zoneCount(z){return S.towers.filter(t=>(t.z||0)===z).length}
-function zoneCost(k){return Math.round(40000*Math.pow(1.22,k)/1000)*1000}
-function zoneReq(k){const l=[[S.users>=400*k,fm(400*k)+' customers (you have '+fm(S.users)+')'],[zoneCount(k-1)>0,'a tower in '+ZONES[k-1][0]]];return{ok:l.every(x=>x[0]),l}}
-function unlockZone(){if(lock())return;const k=S.zn;if(k>=ZONES.length)return;const c=zoneCost(k);if(!zoneReq(k).ok||S.money<c)return;S.money-=c;S.zn++;S.nt.z=k;toast(ZONES[k][0]+' is yours! Build a tower there');save();render(true)}
-function ntZone(v){S.nt.z=parseInt(v)||0;render(true)}
-function rankTitle(){const n=S.zn;return n>=ZONES.length?'👑 King of Pakistan':n>=18?'National Giant':n>=10?'Regional Player':n===9?'Karachi Boss':'Karachi Local'}
-function vZone(){
-  const X=(lo)=>(lo-60.5)/17*320+10,Y=(la)=>(37.8-la)/14.2*300+10,pop=ZONES.slice(0,S.zn).reduce((a,z)=>a+z[3],0);
-  let sv='<svg viewBox="0 0 340 320"><polygon points="'+PK.map(q=>X(q[0]).toFixed(1)+','+Y(q[1]).toFixed(1)).join(' ')+'" fill="var(--card)" stroke="var(--acc)" stroke-width="1.5"/>';
-  ZONES.forEach((z,i)=>{if(i<9)return;const un=i<S.zn,x=X(z[1]),y=Y(z[2]);sv+='<circle cx="'+x+'" cy="'+y+'" r="'+(un?5.5:4)+'" fill="'+(un?'var(--good)':'var(--plot)')+'"/><text x="'+x+'" y="'+(y-7)+'" font-size="7.5" text-anchor="middle" fill="currentColor" opacity="'+(un?1:.55)+'">'+z[0]+'</text>'});
-  const kn=Math.min(S.zn,9),kx=X(67.0),ky=Y(24.86);sv+='<circle cx="'+kx+'" cy="'+ky+'" r="8" fill="var(--good)"/><text x="'+(kx+10)+'" y="'+(ky+3)+'" font-size="8" fill="currentColor" font-weight="700">Karachi '+kn+'/9</text></svg>';
-  const k=S.zn,nx=ZONES[k],rq=nx?zoneReq(k):null;
-  const next=nx?'<div class="card"><h3>Next: '+nx[0]+'</h3><div class="muted" style="margin-bottom:8px">'+fm(nx[3]*1000)+' people live here · '+rs(zoneCost(k))+'<br>'+rq.l.map(x=>(x[0]?'✅ ':'❌ ')+x[1]).join('<br>')+'</div><button class="btn" '+(rq.ok&&S.money>=zoneCost(k)?'':'disabled')+' onclick="unlockZone()">Open '+nx[0]+' · '+rs(zoneCost(k))+'</button></div>':'<div class="card"><h3>👑 You rule all of Pakistan!</h3></div>';
-  return '<div class="card"><div class="row"><h3 style="margin:0">'+rankTitle()+'</h3><span class="tag ok">'+S.zn+'/'+ZONES.length+' zones</span></div><div class="bar" style="margin:8px 0"><i style="width:'+S.zn/ZONES.length*100+'%"></i></div><div class="muted">People you can reach: '+fm(pop*1000)+'. Start in Karachi, cover every town, then conquer the big cities.</div></div>'
-   +'<div class="card"><h3>Pakistan map</h3>'+sv+'</div>'+next
-   +'<div class="card"><h3>Your zones</h3>'+ZONES.slice(0,S.zn).map((z,i)=>'<div class="row" style="padding:4px 0;border-bottom:1px solid var(--line)"><span>'+(i<9?'🏙️':'📍')+' '+z[0]+'</span><span class="muted">'+z[3]+'k people · '+zoneCount(i)+'/8 towers</span></div>'+(S.atk[i]?'<div style="padding:4px 0 8px"><span style="color:var(--bad)">🔥 '+S.atk[i].r+' is stealing customers ('+S.atk[i].left+' days)</span> <button class="btn s" onclick="counter('+i+')">Counter-offer · '+rs(10000+2000*i)+'</button></div>':'')).join('')+'</div>';
-}
+    <!-- Full-screen 3D geometric facial mesh & precision L-bracket reticle canvas -->
+    <canvas
+      id="scannerOverlayCanvas"
+      class="scanner-overlay-canvas"
+      aria-hidden="true"
+    ></canvas>
 
-const SP=[0.001,0.002,0.005,0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000,2000,5000,10000];
-const UREQ=[0,500,2000,6000,15000,40000];
-function nearSp(v){let b=0;SP.forEach((x,i)=>{if(Math.abs(Math.log(x/v))<Math.abs(Math.log(SP[b]/v)))b=i});return b}
-let lastTick=Date.now(),S=null,tab='net',hold=0,timer=null,toastT=null,rstAsk=0;
-const $=id=>document.getElementById(id);
-const fm=n=>Math.round(n).toLocaleString('en-IN');
-const rs=n=>(n<0?'-':'')+'Rs '+fm(Math.abs(n));
-function fs(m){return m<1?(m*1000<10?(m*1000).toFixed(1):Math.round(m*1000))+' Kbps':m<1000?m.toFixed(1)+' Mbps':(m/1000).toFixed(1)+' Gbps'}
-function toast(t){const e=$('toast');e.textContent=t;e.className='s';clearTimeout(toastT);toastT=setTimeout(()=>e.className='',2200)}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);fixS();return true}}catch(e){}return false}
-function launch(){
-  const n=$('cn').value.trim();if(!n){toast('Please type a SIM name');return}
-  S={name:n,day:1,money:100000,users:0,sims:0,gen:0,towers:[{p:12,lvl:1,hp:100}],plans:[{id:'p0',n:'Starter Pack',price:150,days:30,gb:5,sms:100,min:100}],ads:0,staff:{eng:0,sup:0,sales:0},rep:.5,speed:1,pen:0,fin:{rev:0,tax:0,sal:0,twr:0,ads:0,lic:0,net:0},tot:{rev:0,tax:0,exp:0},over:false,ms:0};fixS();
-  $('start').className='ov h';save();run();render();toast('Your SIM is live. Build more towers!');
-}
-function calc(){
-  const T=S.towers,G=GENS[S.gen];
-  const pw=S.plans.map(planV),sw=pw.reduce((a,b)=>a+b,0)||1,dem=S.plans.reduce((a,p,i)=>a+S.users*pw[i]/sw*p.gb*30/p.days*.5/1000,0),pf=Math.min(1,S.pool/Math.max(.01,dem)),dm=Math.max(.1,Math.min(1.6,Math.pow(pw.reduce((a,b)=>a+b,0)/S.plans.length,.5)));
-  const cov=T.reduce((a,t)=>a+3000*(1+.5*(t.lvl-1))*t.hp/100*(down(t)?0:1),0);
-  const cap=T.reduce((a,t)=>a+1200*t.lvl*(t.bw/2)*(1+.4*(t.g||0))*(t.hp>20?1:.3)*(down(t)?0:1),0);
-  const hp=T.reduce((a,t)=>a+t.hp,0)/T.length;
-  const gm=.5+.1*S.gen,zp=ZONES.slice(0,S.zn).map(z=>z[3]*1000*gm),mkt=zp.reduce((a,b)=>a+b,0);
-  const cong=S.users>cap?cap/S.users:1;
-  const tcov=T.map(t=>3000*(1+.5*(t.lvl-1))*t.hp/100*(down(t)?0:1)),sc0=tcov.reduce((a,b)=>a+b,0)||1,zc=zp.map((_,z)=>T.reduce((a,t,i)=>a+((t.z||0)===z?tcov[i]:0),0)),qz=z=>{let a=0,b=0;T.forEach((t,i)=>{if((t.z||0)===z){a+=tcov[i]*(t.q||1);b+=tcov[i]}});return b?a/b:1},zt=zp.map((p,z)=>Math.min(p,zc[z])*(S.atk&&S.atk[z]?.5+.4*Math.min(1,qz(z)):1)),zs=zt.reduce((a,b)=>a+b,0)||1;
-  const tw=T.map((t,i)=>tcov[i]*(t.q||1)),zq=zp.map((_,z)=>T.reduce((a,t,i)=>a+((t.z||0)===z?tw[i]:0),0)),qa=tw.reduce((a,b)=>a+b,0)/sc0;
-  const ts=T.map((t,i)=>{const u=S.users*(zt[t.z||0]/zs)*tw[i]/(zq[t.z||0]||1),cp=1200*t.lvl*(t.bw/2)*(1+.4*(t.g||0))*(t.hp>20?1:.3)*(down(t)?0:1),cg=u>cp?cp/u:1;return{u,cap:cp,cong:cg,spd:SP[t.si]*Math.min(1,cg*pf)*(.35+.65*t.hp/100)*(t.w||1)}});
-  const uu=ts.reduce((a,x)=>a+x.u,0),spd=uu>0?ts.reduce((a,x)=>a+x.u*x.spd,0)/uu:ts.reduce((a,x)=>a+x.spd,0)/ts.length;
-  const sc=Math.min(1,Math.log10(1+spd)/3.3);
-  const pb=Math.min(.35,S.plans.reduce((a,p,i)=>a+Math.min(.1,.03*pw[i]),0));
-  const ap=Math.max(.05,Math.min(.95,.15+pb+.3*sc+.15*hp/100+ADS[S.ads].b+.2*S.rep-(S.pen>0?.12:0)-(S.price-1)*.35+(S.offer>0?.15:0)-(1-pf)*.2-Math.min(.15,S.towers.reduce((a,t)=>a+t.cmp,0)*.004)));
-  const arpu=S.plans.reduce((a,p,i)=>a+pw[i]*p.price*30/p.days,0)/sw,cost=S.plans.reduce((a,p,i)=>a+pw[i]*pCost(p)*30/p.days,0)/sw;
-  return{qa,dm,tgt:zt.reduce((a,b)=>a+b,0),cov,cap,hp,mkt,cong,spd,ap,arpu,ts,cost,pf,dem,pw,sw};
-}
-function tick(){
-  if(!S||S.over)return;lastTick=Date.now();
-  S.day++;
-  const st=S.staff,nd=need(),engR=Math.min(.5,st.eng*.05)-(st.eng<nd.eng?.3:0);
-  S.towers.forEach((t,i)=>{
-    t.hp=Math.max(10,t.hp-(.15+Math.random()*.45)/Math.sqrt(t.lvl)*(1-engR));t.w=Math.max(.6,Math.min(1,(t.w||1)+(Math.random()-.55)*.12));
-    if(Math.random()<.006*(1-engR)){t.hp=Math.max(10,t.hp-30);toast('Tower #'+(i+1)+' is down! Repair it');}
-  });
-  if(st.eng){const w=S.towers.reduce((a,b)=>a.hp<b.hp?a:b);w.hp=Math.min(100,w.hp+2*st.eng)}
-  Object.keys(S.atk).forEach(z=>{if(--S.atk[z].left<=0){toast(S.atk[z].r+' offer ended in '+ZONES[z][0]);delete S.atk[z]}});
-  if(S.zn>=2&&Math.random()<.06){const z=Math.floor(Math.random()*S.zn);if(!S.atk[z]){const r=S.riv[Math.floor(Math.random()*S.riv.length)].n;S.atk[z]={r:r,left:8};toast('📣 '+r+' is stealing your customers in '+ZONES[z][0]+'!')}}
-  if(S.cr){const c0=S.cr;c0.left--;if(c0.type==='storm')S.towers.forEach(t=>{if((t.z||0)===c0.z)t.hp=Math.max(10,t.hp-4)});if(c0.type==='cyber'){S.users*=.99;S.rep=Math.max(0,S.rep-.005)}if(c0.left<=0)crisisFail()}
-  else if(S.day>8&&Math.random()<.05){S.cr={type:['storm','power','cyber'][Math.floor(Math.random()*3)],z:Math.floor(Math.random()*S.zn),left:6};toast('🚨 '+crisisName()+'! Fix it before time runs out')}
-  if(S.pen>0)S.pen--;if(S.offer>0)S.offer--;
-  if(Math.random()<.03){
-    const r=Math.random();
-    if(r<.4){const t=S.towers[Math.floor(Math.random()*S.towers.length)];t.hp=Math.max(10,t.hp-25);toast('Storm hit your network!')}
-    else if(r<.7){S.users*=1.05;S.rep=Math.min(1,S.rep+.05);toast('Good news about your SIM went viral!')}
-    else{S.pen=10;toast('Rival price war: users hesitate for 10 days')}
-  }
-  const c=calc();
-  S.towers.forEach((t,i)=>{const x=c.ts[i],a=(t.hp<50?(50-t.hp)/40:0)+(x.cong<1?(1-x.cong)*2:0);{const pf0=Math.min(1,x.spd/Math.max(1e-9,SP[t.si]));t.q=Math.max(.15,Math.min(1.2,(t.q||1)+((.35+.75*pf0-Math.min(.5,t.cmp*.05))-(t.q||1))*.1))}if(t.cmp>0&&Math.random()<.2)t.cmp--;if(Math.random()<a/6)t.cmp=Math.min(30,t.cmp+1)});
-  if(st.sup){const w=S.towers.reduce((a,b)=>a.cmp>b.cmp?a:b);w.cmp=Math.max(0,w.cmp-2*st.sup)}
-  S.rep=Math.max(0,S.rep-Math.min(.01,S.towers.reduce((a,t)=>a+t.cmp,0)*.0002));
-  S.riv.forEach(r=>{r.ap=Math.max(.35,Math.min(.8,r.ap+(.45+.05*S.gen-r.ap)*.02+(Math.random()-.5)*.03))});
-  const shr=c.ap/(c.ap+.35*S.riv.reduce((a,r)=>a+r.ap,0));S.share=shr;
-  const target=c.tgt*c.ap*c.dm*Math.max(.3,Math.min(1.25,.25+c.qa))*Math.min(1.2,shr*1.7);
-  const d=target-S.users;
-  if(d>0){const g=d*.025*(1+Math.min(1,st.sales*.1))*(st.sales<nd.sales?.7:1);S.users+=g;S.sims+=g}
-  else S.users+=d*.08*(st.sup<nd.sup?1.4:1)/(1+st.sup*.1);
-  if(S.users>c.cap){S.users-=(S.users-c.cap)*.05;S.rep=Math.max(0,S.rep-.004)}
-  S.rep=Math.max(0,Math.min(1,S.rep+(c.hp/100-.6)*.01+st.sup*.0015-(st.sup<nd.sup?.003:0)));
-  const rev=S.users*c.arpu*S.price/30,tax=rev*.15;
-  const sal=st.eng*STAFF.eng.sal+st.sup*STAFF.sup.sal+st.sales*STAFF.sales.sal;
-  const twr=S.towers.reduce((a,t)=>a+upkeep(t),0);
-  const ads=ADS[S.ads].c,lic=GENS[S.gen].lic;
-  const int=S.loan*.001,A=S.acc;
-  S.money+=rev;A.sal+=sal;A.twr+=twr;A.ads+=ads;A.lic+=lic;A.tax+=tax;A.loan+=int;const pk=S.users*c.cost/30,nt=S.pool*1000/30;A.pack+=pk;A.net+=nt;
-  S.fin={rev,tax,sal,twr,ads,lic,pk,nt,net:rev-tax-sal-twr-ads-lic-int-pk-nt};
-  S.h.u.push(S.users);S.h.r.push(rev);S.h.g.push(c.hp);for(const k in S.h)if(S.h[k].length>60)S.h[k].shift();
-  if(S.day%30===0)invoice(c);
-  checkDue();
-  S.tot.rev+=rev;S.tot.tax+=tax;S.tot.exp+=sal+twr+ads+lic+pk+nt;
-  while(S.ms<MILES.length&&S.users>=MILES[S.ms]){toast('Milestone: '+fm(MILES[S.ms])+' users!');S.ms++}
-  
-  if(S.day%5===0)save();
-  render();
-}
-function dayMs(){return Math.max(300,S.monthMin*60000/30/(S.speed||1))}
-function run(){lastTick=Date.now();clearInterval(timer);if(S&&S.speed>0&&!S.over)timer=setInterval(tick,dayMs())}
-function setSpeed(v){S.speed=v;run();save();render()}
-function over(){clearInterval(timer);$('mb').innerHTML='<h2 style="margin:0 0 6px">Company bankrupt 💥</h2><div class="muted">Your cash ran out. You reached '+fm(S.users)+' users and sold '+fm(S.sims)+' SIMs.</div><div style="height:12px"></div><button class="btn" onclick="reset(true)">Start a new SIM</button>';$('modal').className='ov'}
-function reset(go){try{localStorage.removeItem(KEY)}catch(e){}S=null;$('modal').className='ov h';$('start').className='ov';clearInterval(timer);$('cn').value=''}
-// ----- rendering -----
-function render(force){
-  if(!S)return;
-  if(!force&&Date.now()-hold<700)return;
-  const c=calc();
-  $('hn').textContent=S.name;$('hg').textContent=GENS[S.gen].g;$('hd').textContent='Day '+S.day+' · '+S.towers.length+' towers';
-  const m=$('hm');m.textContent=rs(S.money);m.className='money'+(S.money<0?' neg':'');
-  $('sU').textContent=fm(S.users);{const u=Math.round(S.users);if(u>(window._lu||0)){const e=$('chU');e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop')}window._lu=u}$('sS').textContent=fm(S.sims);$('sG').textContent=Math.round(c.hp)+'%';$('sP').textContent=fs(c.spd);
-  $('sp').innerHTML=[[0,'⏸'],[1,'▶'],[3,'⏩'],[10,'🚀']].map(a=>'<button class="'+(S.speed===a[0]?'on':'')+'" onclick="setSpeed('+a[0]+')">'+a[1]+'</button>').join(' ');
-  $('nav').innerHTML=[['net','🗼','Network'],['zone','🗺️','Pakistan'],['plan','📦','Plans'],['ads','📣','Ads'],['team','👥','Team'],['bill','🧾','Bills'],['fin','💰','Finance']].map(a=>'<button class="'+(tab===a[0]?'on':'')+'" onclick="go(\''+a[0]+'\')"><i>'+a[1]+'</i>'+a[2]+(a[0]==='bill'&&S.invs.length?' 🔴':'')+(a[0]==='team'?' '+staffState().light:'')+'</button>').join('');
-  if(!(!force&&document.activeElement&&/^(INPUT|SELECT)$/.test(document.activeElement.tagName)&&$('main').contains(document.activeElement)))$('main').innerHTML=({net:vNet,zone:vZone,plan:vPlan,ads:vAds,team:vTeam,bill:vBills,fin:vFin})[tab](c);
-}
-function askReset(){if(Date.now()-rstAsk<4000){reset();return}rstAsk=Date.now();render(true)}
-function go(t){tab=t;render(true);$('main').scrollTop=0}
-function hpc(h){return h>=70?'var(--good)':h>=40?'var(--warn)':'var(--bad)'}
-function towerCost(z){z=z||0;return Math.round(30000*(1+.1*z)*Math.pow(1.12,zoneCount(z))/100)*100}
-function vNetCards(c){
-  
-  const nx=GENS[S.gen+1];let up='<div class="muted">You run the best network: 6G. 🎉</div>';
-  if(nx){const okT=S.towers.length>=nx.need,okH=c.hp>=60;
-    up='<div class="row"><b>Next: '+nx.g+'</b><span class="tag">'+fs(nx.spd)+'</span></div><div class="muted" style="margin:4px 0 8px">Needs '+nx.need+' towers '+(okT?'✅':'('+S.towers.length+')')+' · average signal 60%+ '+(okH?'✅':'('+Math.round(c.hp)+'%)')+' · licence '+rs(nx.lic)+'/day</div><button class="btn" '+(genReq(S.gen+1).ok&&S.money>=nx.cost?'':'disabled')+' onclick="upGen()">Upgrade to '+nx.g+' · '+rs(nx.cost)+'</button>'}
-  return '<div class="card"><h3>Network generation · now '+GENS[S.gen].g+'</h3>'+up+'</div>'
-   +'<div class="card"><h3>Network health</h3><div class="g2"><div>Coverage<br><b>'+fm(c.cov)+' people</b></div><div>Capacity<br><b>'+fm(c.cap)+' users</b></div><div>Market size<br><b>'+fm(c.mkt)+'</b></div><div>Reputation<br><b>'+Math.round(S.rep*100)+'%</b></div></div>'+(S.users>c.cap?'<div class="muted" style="color:var(--bad);margin-top:6px">Network is congested. Build or upgrade towers!</div>':'')+'</div>';
-}
-function upkeep(t){return Math.max(150,300*(1+.3*(t.lvl-1))+100*(t.bw-2)+60*(t.g||0)+8*Math.pow(t.si||0,1.7))}
-function genReq(k){const c=calc(),av=S.towers.reduce((x,t)=>x+SP[t.si],0)/S.towers.length,nx=GENS[k],l=[[S.towers.length>=nx.need,nx.need+' towers (you have '+S.towers.length+')'],[S.users>=UREQ[k],fm(UREQ[k])+' customers (you have '+fm(S.users)+')'],[av>=GENS[k-1].spd*.3,'tower speed set to '+fs(GENS[k-1].spd*.3)+' (you set '+fs(av)+')'],[c.hp>=60,'average signal 60% (now '+Math.round(c.hp)+'%)']];return{ok:l.every(x=>x[0]),l}}
-function convertTowers(k){if(lock())return;const T=S.towers.filter(t=>(t.g||0)<k),c=T.reduce((a,t)=>a+costOf(k)-costOf(t.g||0),0);if(!T.length||k>S.gen||S.money<c)return;S.money-=c;T.forEach(t=>t.g=k);toast(T.length+' towers moved to '+GENS[k].g);save();simInfo()}
-function simInfo(){hold=0;const rows=[1,2,3,4,5].map(k=>{const g=GENS[k],un=S.gen>=k,nx=S.gen+1===k,rq=genReq(k),T=S.towers.filter(t=>(t.g||0)<k),cc=T.reduce((a,t)=>a+costOf(k)-costOf(t.g||0),0);
-  return '<div class="card" style="margin:6px 0"><div class="row"><b>'+g.g+' network</b><span class="tag '+(un?'ok':'')+'">'+(un?'UNLOCKED':'Rs '+fm(g.cost))+'</span></div>'+(un?(T.length?'<button class="btn s o" style="margin-top:8px" '+(S.money>=cc?'':'disabled')+' onclick="convertTowers('+k+')">Convert '+T.length+' towers to '+g.g+' · '+rs(cc)+'</button>':'<div class="muted" style="margin-top:6px">All towers are on '+g.g+' or better</div>'):'<div class="muted" style="margin:6px 0">'+rq.l.map(x=>(x[0]?'✅ ':'❌ ')+x[1]).join('<br>')+'</div>'+(nx?'<button class="btn s" '+(rq.ok&&S.money>=g.cost?'':'disabled')+' onclick="upGen();simInfo()">Unlock '+g.g+' · '+rs(g.cost)+'</button>':'<div class="muted">Unlock the earlier one first</div>'))+'</div>'}).join('');
-  $('mb').innerHTML='<h3 style="margin:0">'+S.name+'</h3><div class="muted" style="margin-bottom:8px">'+fm(S.users)+' users · '+fm(S.sims)+' SIMs sold · '+S.towers.length+' towers · now '+GENS[S.gen].g+'</div><div style="max-height:55vh;overflow-y:auto">'+rows+'</div><div style="height:8px"></div><button class="btn o" onclick="closeM()">Close</button>';$('modal').className='ov'}
-function costOf(g){return 6000*g*g}
-function techCost(t){return costOf(S.gen)-costOf(t.g||0)}
-function buildCost(bw,sp,g,z){return Math.max(10000,towerCost(z)+5000*(bw-2)+1500*(sp-1))+costOf(g||0)}
-function closeM(){$('modal').className='ov h';render(true)}
-function stp(l,h,fn,v){return '<div class="row" style="margin:7px 0"><div><b>'+l+'</b><div class="muted">'+h+'</div></div><div style="white-space:nowrap"><button class="btn s o" onclick="'+fn+',-1)">−</button> <b style="display:inline-block;min-width:18px;text-align:center">'+v+'</b> <button class="btn s o" onclick="'+fn+',1)">+</button></div></div>'}
-function vNet(c){
-  const rows=S.towers.map((t,i)=>{const x=c.ts[i],col=hpc(x.cong<1?Math.min(t.hp,35):t.hp);return '<div class="unit" onclick="tower('+i+')"><span class="led" style="background:'+col+';color:'+col+'"></span><b>Tower #'+(i+1)+' <span style="font-weight:600;color:#7dd3fc">'+GENS[t.g||0].g+'</span> <span style="font-weight:500;font-size:10px;opacity:.7">'+ZONES[t.z||0][0]+'</span></b><span>👥 '+fm(x.u)+'</span><span>⚡ '+fs(x.spd)+'</span>'+(t.cmp?'<span class="cm">📞 '+t.cmp+'</span>':'')+'</div>'}).join('');
-  const n=S.nt;if(n.si===undefined)n.si=nearSp(GENS[S.gen].spd);n.g=Math.min(S.gen,n.g===undefined?S.gen:n.g);const G=GENS[n.g];n.z=Math.min(n.z||0,S.zn-1);const bc=buildCost(n.bw,n.si,n.g,n.z),full=zoneCount(n.z)>=8;
-  return '<div class="card"><h3>Tower rack · '+S.towers.length+' towers</h3><div class="rack">'+rows+'</div><div class="muted" style="margin-top:6px">Tap a tower to see its users, speed and complaints, and to fix problems.</div></div>'
-   +netCard(c)+'<div class="card"><h3>Add a new tower</h3><div class="row" style="margin:7px 0"><div><b>Zone</b><div class="muted">Where to build (8 towers max each)</div></div><select onchange="ntZone(this.value)" style="padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text)">'+ZONES.slice(0,S.zn).map((z,i)=>'<option value="'+i+'"'+(i===n.z?' selected':'')+'>'+z[0]+' ('+zoneCount(i)+'/8)</option>').join('')+'</select></div>'+stp('Net allocation','Holds '+fm(1200*n.bw/2)+' users','ntOpt(\'bw\'',n.bw)+stp('Net speed','Your choice. Faster costs more upkeep','ntOpt(\'si\'',fs(SP[n.si]))+stp('Technology','Tower generation · unlocked up to '+GENS[S.gen].g,'ntOpt(\'g\'',GENS[n.g].g)+'<div class="row muted"><span>Build cost</span><b>'+rs(bc)+'</b></div><div class="row muted" style="margin-bottom:8px"><span>Upkeep a day</span><b>'+rs(upkeep({lvl:1,bw:n.bw,si:n.si,g:n.g}))+'</b></div><button class="btn" '+(S.money>=bc&&!full?'':'disabled')+' onclick="addTower()">'+(full?'Zone is full (8 towers)':'Build tower')+'</button></div>'
-   +vNetCards(c);
-}
-function ntOpt(k,d){if(k==='g')S.nt.g=Math.max(0,Math.min(S.gen,(S.nt.g===undefined?S.gen:S.nt.g)+d));else if(k==='si')S.nt.si=Math.max(0,Math.min(SP.length-1,S.nt.si+d));else S.nt[k]=Math.max(1,Math.min(5,S.nt[k]+d));render(true)}
-function addTower(){if(lock())return;const n=S.nt,z=Math.min(n.z||0,S.zn-1),g=Math.min(S.gen,n.g===undefined?S.gen:n.g),c=buildCost(n.bw,n.si,g,z);if(S.money<c||zoneCount(z)>=8)return;S.money-=c;S.towers.push({p:S.towers.length,lvl:1,hp:100,bw:n.bw,si:n.si,cmp:0,g:g,z:z,w:1});toast('New '+GENS[g].g+' tower in '+ZONES[z][0]);save();render(true)}
-function upTech(i){if(lock())return;const t=S.towers[i],c=techCost(t);if(!(t.g<S.gen)||S.money<c)return;S.money-=c;t.g=S.gen;t.hp=Math.min(100,t.hp+10);toast('Tower upgraded to '+GENS[S.gen].g);save();tower(i)}
-function tower(i){
-  hold=0;const t=S.towers[i],c=calc(),x=c.ts[i],rc=Math.round((100-t.hp)*60),uc=40000*t.lvl*t.lvl,fc=t.cmp*200,tc=techCost(t);
-  const o=(l,k,h)=>stp(l,h,'opt('+i+',\''+k+'\'',t[k]);
-  $('mb').innerHTML='<h3 style="margin:0 0 6px">Tower #'+(i+1)+' · '+ZONES[t.z||0][0]+' · Level '+t.lvl+'</h3><div class="bar"><i style="width:'+t.hp+'%;background:'+hpc(t.hp)+'"></i></div>'
-   +'<div class="g2" style="margin:8px 0"><div class="muted">Users<br><b style="color:var(--text)">'+fm(x.u)+' / '+fm(x.cap)+'</b></div><div class="muted">Speed each user<br><b style="color:var(--text)">'+fs(x.spd)+'</b></div><div class="muted">Condition<br><b style="color:var(--text)">'+Math.round(t.hp)+'%'+(x.cong<1?' · congested':'')+'</b></div><div class="muted">Complaints<br><b style="color:'+(t.cmp?'var(--bad)':'var(--good)')+'">'+t.cmp+'</b></div></div>'
-   +'<button class="btn" '+(t.cmp&&S.money>=fc?'':'disabled')+' onclick="solve('+i+')">Resolve complaints · '+rs(fc)+'</button><div style="height:6px"></div>'
-   +o('Net allocation','bw','more users fit · +Rs 3,000 per step')+stp('Net speed','your choice · +Rs 3,000 per step up','opt('+i+',\'si\'',fs(SP[t.si]))
-   +'<div class="row" style="margin:7px 0"><div><b>Technology · '+GENS[t.g||0].g+'</b><div class="muted">'+(t.g<S.gen?'Upgrade to '+GENS[S.gen].g+' for faster speed':'Latest generation')+'</div></div><button class="btn s" '+(t.g<S.gen&&S.money>=tc?'':'disabled')+' onclick="upTech('+i+')">'+(t.g<S.gen?'Upgrade · '+rs(tc):'Latest')+'</button></div>'+'<div class="muted" style="margin-bottom:8px">Upkeep '+rs(upkeep(t))+' a day</div><div class="g2"><button class="btn o" '+(t.hp<100&&S.money>=rc?'':'disabled')+' onclick="repair('+i+')">Repair · '+rs(rc)+'</button><button class="btn" '+(t.lvl<3&&S.money>=uc?'':'disabled')+' onclick="upT('+i+')">'+(t.lvl<3?'Upgrade · '+rs(uc):'Max level')+'</button></div><div style="height:8px"></div><button class="btn d" onclick="removeTower('+i+')">'+(rmAsk===i?'Tap again to remove this tower':'Remove tower')+'</button><div style="height:8px"></div><button class="btn o" onclick="closeM()">Close</button>';
-  $('modal').className='ov';
-}
-function opt(i,k,d){const t=S.towers[i],hi=k==='si'?SP.length-1:5,lo=k==='si'?0:1,v=Math.max(lo,Math.min(hi,t[k]+d));if(v===t[k])return;if(d>0){if(S.money<3000)return;S.money-=3000}t[k]=v;save();tower(i)}
-function solve(i){const t=S.towers[i],c=t.cmp*200;if(!t.cmp||S.money<c)return;S.money-=c;S.users+=t.cmp*4;t.hp=Math.min(100,t.hp+15);S.rep=Math.min(1,S.rep+.01*Math.min(5,t.cmp));t.cmp=0;toast('Complaints solved. Users are happier');save();tower(i)}
-function repair(i){const t=S.towers[i],c=Math.round((100-t.hp)*60);if(S.money<c)return;S.money-=c;t.hp=100;toast('Tower repaired');save();tower(i)}
-function upT(i){const t=S.towers[i],c=40000*t.lvl*t.lvl;if(S.money<c||t.lvl>=3)return;S.money-=c;t.lvl++;t.hp=100;toast('Tower upgraded');save();tower(i)}
-function upGen(){if(lock())return;const nx=GENS[S.gen+1];if(!nx||S.money<nx.cost||!genReq(S.gen+1).ok)return;S.money-=nx.cost;S.gen++;S.rep=Math.min(1,S.rep+.1);toast('Welcome to '+nx.g+'! Upgrade your towers in the rack');save();render(true)}
-const TPL=[{n:'Daily Saver',price:25,days:1,gb:1,sms:20,min:30},{n:'Weekly Booster',price:99,days:7,gb:6,sms:100,min:150},{n:'Monthly Unlimited',price:299,days:30,gb:30,sms:300,min:500},{n:'Student Pack',price:149,days:30,gb:40,sms:200,min:200}];
-function mk(){const d=S.dr;return{id:'p'+Date.now(),n:(d.n||'').trim()||(Math.max(0,d.gb)+' GB · '+Math.max(1,Math.round(d.days))+' day pack'),price:Math.max(1,d.price),days:Math.max(1,Math.round(d.days)),gb:Math.max(0,d.gb),sms:Math.max(0,Math.round(d.sms)),min:Math.max(0,Math.round(d.min))}}
-function pv(){const p=mk(),c=pCost(p),r=p.price-c,k=calc(),w=planV(p),u=(S.users||1000)*w/(k.sw+w),ex=u*r/p.days,nd=reserve(p),sh=nd>left();return 'Cost to us per user: <b>Rs '+c.toFixed(1)+'</b> · Profit per user: <b style="color:'+(r>=0?'var(--good)':'var(--bad)')+'">Rs '+r.toFixed(1)+'</b> every '+p.days+' day(s)<br>Launch cost now: <b>Rs 5,000</b> · Expected profit: <b style="color:'+(ex>=0?'var(--good)':'var(--bad)')+'">'+rs(ex)+' a day</b> (about '+fm(u)+' users)<br>'+verdict(p)+'<br>Internet this package takes: <b>'+nd.toFixed(1)+' TB</b> · left '+left().toFixed(1)+' TB'+(sh?'<div style="color:var(--bad);margin-top:6px"><b>Internet is short.</b> Buy internet, or launch with fewer GB (up to '+Math.max(0,Math.floor(left()*10*p.days/30))+' GB).<br><button class="btn s" style="margin-top:6px" onclick="poolSet(1)">Buy +5 TB</button></div>':'')}
-function dr(k,v){S.dr[k]=k==='n'?v:(parseFloat(v)||0);$('pv').innerHTML=pv()}
-function tpl(i){Object.assign(S.dr,TPL[i]);render(true)}
-function launchPlan(){if(lock())return;if(S.plans.length>=10){toast('Maximum 10 packages');return}const p=mk();if(reserve(p)>left()){toast('Not enough internet for this package');return}if(S.money<5000)return;S.money-=5000;S.plans.push(p);S.dr.n='';toast(p.n+' launched!');save();render(true)}
-function editPlan(i){hold=0;const p=S.plans[i],f=(l,k)=>'<div><label class="muted">'+l+'</label><input id="ep-'+k+'" type="number" min="0" value="'+p[k]+'" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:14px"></div>';
-  $('mb').innerHTML='<h3 style="margin:0 0 8px">Edit · '+p.n+'</h3><div class="g2">'+f('Price (Rs)','price')+f('Internet (GB)','gb')+f('SMS','sms')+f('Call minutes','min')+f('Valid for (days)','days')+'</div><div class="muted" style="margin:8px 0">Internet left for changes: '+(left()+reserve(p)).toFixed(1)+' TB</div><button class="btn" onclick="savePlan('+i+')">Save changes</button><div style="height:8px"></div><button class="btn o" onclick="closeM()">Close</button>';$('modal').className='ov'}
-function savePlan(i){const p=S.plans[i],g=k=>parseFloat($('ep-'+k).value)||0,q={price:Math.max(1,g('price')),gb:Math.max(0,g('gb')),sms:Math.max(0,Math.round(g('sms'))),min:Math.max(0,Math.round(g('min'))),days:Math.max(1,Math.round(g('days')))};if(alloc()-reserve(p)+reserve(q)>S.pool+1e-9){toast('Not enough internet. Buy more or use fewer GB');return}Object.assign(p,q);toast('Package updated');save();closeM()}
-let rmAsk=-1;
-function removeTower(i){if(S.towers.length<2){toast('Keep at least one tower');return}if(rmAsk!==i){rmAsk=i;tower(i);setTimeout(()=>{if(rmAsk===i)rmAsk=-1},4000);return}S.towers.splice(i,1);rmAsk=-1;S.money+=5000;toast('Tower removed. Rs 5,000 salvage');save();closeM()}
-function retire(i){if(S.plans.length<2){toast('Keep at least one package');return}S.plans.splice(i,1);save();render(true)}
-function reserve(p){return p.gb*30/p.days/10}
-function alloc(){return S.plans.reduce((a,p)=>a+reserve(p),0)}
-function left(){return S.pool-alloc()}
-function poolSet(d){if(d>0&&lock())return;if(d<0&&S.pool-5<alloc()){toast('That internet is already given to towers');return}S.pool=Math.max(1,S.pool+d*5);save();render(true)}
-function netCard(c){const a=alloc(),l=S.pool-a;return '<div class="card"><h3>Internet</h3><div class="row"><span>Bought a month</span><b>'+S.pool+' TB</b></div><div class="row"><span>Used by packages</span><b>'+a+' TB</b></div><div class="row"><span>Left for new packages</span><b style="color:'+(l>0?'var(--good)':'var(--warn)')+'">'+l+' TB</b></div><div class="bar" style="margin:6px 0"><i style="width:'+Math.min(100,a/S.pool*100)+'%"></i></div><div class="row"><span>Your users need</span><b>'+c.dem.toFixed(1)+' TB</b></div><div class="muted" style="margin:6px 0 8px">'+(c.pf<1?'Not enough internet! Speed falls to '+Math.round(c.pf*100)+'%. Buy more. ':'')+'Only your packages use this internet. Costs Rs 1,000 per TB a month.</div><div class="g2"><button class="btn o" '+(S.pool-5>=a?'':'disabled')+' onclick="poolSet(-1)">−5 TB</button><button class="btn" onclick="poolSet(1)">Buy +5 TB · Rs 5,000/mo</button></div></div>'}
-function vPlan(c){
-  const d=S.dr,inp=(l,k,t)=>'<div><label class="muted">'+l+'</label><input type="'+(t||'number')+'" value="'+d[k]+'" min="0" oninput="dr(\''+k+'\',this.value)" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:14px"></div>';
-  const pct=Math.min(100,c.dem/S.pool*100);
-  const drawers=S.plans.map((p,i)=>{const u=S.users*c.pw[i]/c.sw,inc=u*p.price/p.days,cs=u*pCost(p)/p.days,pr=inc-cs;
-    return '<div class="drw"><div class="row"><b>'+p.n+'</b><span class="tag">Rs '+p.price+' / '+p.days+'d</span></div><div class="muted">📶 '+p.gb+' GB · ✉️ '+p.sms+' SMS · 📞 '+p.min+' min</div><div style="font-size:11px;margin:4px 0">'+verdict(p)+'</div><div class="g2" style="margin:8px 0"><div class="muted">👤 Users<br><b style="color:#e5edf8">'+fm(u)+'</b></div><div class="muted">Income a day<br><b style="color:#e5edf8">'+rs(inc)+'</b></div><div class="muted">Cost a day<br><b style="color:#e5edf8">'+rs(cs)+'</b></div><div class="muted">Profit a day<br><b style="color:'+(pr>=0?'#4ade80':'#f87171')+'">'+rs(pr)+'</b></div></div><div style="display:flex;gap:8px"><button class="btn s o" onclick="editPlan('+i+')">Edit package</button><button class="btn s o" onclick="retire('+i+')">Retire</button></div><div class="hdl"></div></div>'}).join('<div style="height:6px"></div>');
-  return pricing()
-   +netCard(c)
-   +'<div class="card"><h3>Design a new package</h3><div class="muted" style="margin-bottom:6px">Start from a template or type your own numbers.</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">'+TPL.map((t,i)=>'<button class="btn s o" onclick="tpl('+i+')">'+t.n+'</button>').join('')+'</div>'
-   +'<div class="g2">'+inp('Package name','n','text')+inp('Price (Rs)','price')+inp('Internet (GB)','gb')+inp('SMS','sms')+inp('Call minutes','min')+inp('Valid for (days)','days')+'</div><div class="muted" id="pv" style="margin:10px 0">'+pv()+'</div><button class="btn" '+(S.money>=5000?'':'disabled')+' onclick="launchPlan()">Launch package</button></div>'
-   +'<div class="card"><h3>Your packages</h3><div class="rack" style="padding:6px">'+drawers+'</div></div>';
-}
-function vAds(){
-  return '<div class="card"><div class="muted">News and advertising bring new users, but cost money every single day. Pick a level.</div></div>'+ADS.map((a,i)=>'<div class="card" style="'+(S.ads===i?'border-color:var(--acc)':'')+'"><div class="row"><b>'+a.n+'</b><span class="tag '+(S.ads===i?'ok':'')+'">'+(S.ads===i?'RUNNING':'+'+Math.round(a.b*100)+'% appeal')+'</span></div><div class="muted" style="margin:3px 0 8px">'+(a.c?rs(a.c)+' a day':'No cost')+'</div>'+(S.ads===i?'':'<button class="btn o" onclick="setAds('+i+')">Choose</button>')+'</div>').join('');
-}
-function setAds(i){S.ads=i;toast('Ads: '+ADS[i].n);save();render(true)}
-function vTeam(){
-  return staffCard()+'<div class="card"><div class="muted">Employees are paid salary every day. Hiring costs a one-time fee.</div></div>'+Object.keys(STAFF).map(k=>{const s=STAFF[k],n=S.staff[k];
-    return '<div class="card"><div class="row"><b>'+s.n+'</b><span class="tag">'+n+' hired</span></div><div class="muted" style="margin:3px 0 8px">'+s.fx+' · '+rs(s.sal)+' a day each · <b style="color:'+(n<need()[k]?'var(--bad)':'var(--good)')+'">need '+need()[k]+'</b></div><div class="g2"><button class="btn o" '+(n?'':'disabled')+' onclick="staff(\''+k+'\',-1)">Fire one</button><button class="btn" '+(S.money>=s.fee&&n<10?'':'disabled')+' onclick="staff(\''+k+'\',1)">Hire · '+rs(s.fee)+'</button></div></div>'}).join('');
-}
-function staff(k,d){const s=STAFF[k];if(d>0){if(S.money<s.fee||S.staff[k]>=10)return;S.money-=s.fee}else if(!S.staff[k])return;S.staff[k]+=d;save();render(true)}
-function vFin(){
-  const f=S.fin,row=(a,b)=>'<tr><td>'+a+'</td><td>'+b+'</td></tr>';
-  return charts()+'<div class="card"><h3>Today’s money</h3><table>'+row('Income from users',rs(f.rev))+row('Tax (15%)','-'+rs(f.tax))+row('Salaries','-'+rs(f.sal))+row('Tower upkeep','-'+rs(f.twr))+row('News and ads','-'+rs(f.ads))+row('Network licence','-'+rs(f.lic))+row('Package costs','-'+rs(f.pk||0))+row('Internet purchase','-'+rs(f.nt||0))+row('<b>Profit today</b>','<span style="color:'+(f.net>=0?'var(--good)':'var(--bad)')+'">'+rs(f.net)+'</span>')+'</table></div>'
-   +'<div class="card"><h3>Since launch</h3><table>'+row('Total income',rs(S.tot.rev))+row('Tax paid',rs(S.tot.tax))+row('Other expenses',rs(S.tot.exp))+'</table></div>'
-   +'<div class="card"><h3>Goal: King of Pakistan · '+S.zn+'/'+ZONES.length+' zones</h3><div class="bar"><i style="width:'+S.zn/ZONES.length*100+'%"></i></div><div class="muted" style="margin-top:6px">'+fm(S.users)+' users joined · '+fm(S.sims)+' SIMs sold</div></div>'
-   +'<button class="btn d" onclick="askReset()">'+(Date.now()-rstAsk<4000?'Tap again to delete everything':'Reset game')+'</button>';
-}
-const CATS=[['sal','Employee salaries'],['tax','Tax'],['twr','Tower upkeep'],['ads','News and ads'],['lic','Network licence'],['loan','Loan interest'],['fine','Government fine'],['pack','Package costs'],['net','Internet purchase']];
-function fixS(){S.acc=S.acc||{sal:0,tax:0,twr:0,ads:0,lic:0,loan:0,fine:0,pack:0,net:0};S.invs=S.invs||[];S.price=S.price||1;S.riv=S.riv||[{n:'AirNova',ap:.55},{n:'Zephyr Mobile',ap:.5}];S.loan=S.loan||0;S.offer=S.offer||0;S.h=S.h||{u:[],r:[],g:[]};S.towers.forEach(t=>{t.bw=t.bw||2;t.sp=t.sp||3;t.cmp=t.cmp||0;t.w=t.w||1;t.q=t.q||1;t.g=t.g===undefined?S.gen:t.g;t.si=t.si===undefined?nearSp(GENS[t.g].spd*(t.sp||3)/3):t.si});S.monthMin=S.monthMin||15;S.nt=S.nt||{bw:2,sp:3};S.over=false;S.nt.si=S.nt.si===undefined?nearSp(GENS[S.gen].spd):S.nt.si;S.zn=S.zn||1;S.atk=S.atk||{};S.cr=S.cr||null;S.towers.forEach(t=>{t.z=Math.min(t.z||0,S.zn-1)});S.nt.z=Math.min(S.nt.z||0,S.zn-1);
-  S.plans=S.plans.map(x=>{if(typeof x!=='string')return x;const p=PLANS.find(q=>q.id===x);return{id:x,n:p.n,price:p.arpu,days:30,gb:5,sms:100,min:100}});
-  S.pool=Math.max(S.pool||5,Math.ceil(S.plans.reduce((a,p)=>a+p.gb*30/p.days/10,0)));S.dr=S.dr||{n:'',price:299,days:30,gb:10,sms:100,min:200};S.acc.pack=S.acc.pack||0;S.acc.net=S.acc.net||0}
-function fairP(p){return Math.max(100,pCost(p)*30/p.days*3+80)}
-function planV(p){const r=fairP(p)/(p.price*30/p.days);return Math.min(6,Math.max(.02,r*r))}
-function verdict(p){const f=fairP(p),r=f/(p.price*30/p.days),t=r>1.8?'💥 Too cheap: overloaded, may lose money':r>1.25?'🔥 Cheap: many customers':r>.8?'✅ Fair price':r>.5?'😴 Expensive: fewer customers':'🚫 Very expensive: almost nobody buys';return t+' · fair ≈ Rs '+fm(f)+'/month'}
-function pCost(p){return p.gb*1+p.sms*.02+p.min*.1}
-function staffState(){const n=need(),k=Object.keys(STAFF),mn=Math.min(...k.map(x=>S.staff[x]/Math.max(1,n[x])));return{n,have:k.reduce((a,x)=>a+S.staff[x],0),light:k.every(x=>S.staff[x]>=n[x])?'🟢':mn>=.5?'🟡':'🔴'}}
-function staffCard(){const st=staffState(),t={'🟢':'Fully staffed. Great!','🟡':'Normal, but short. Hire a few more.','🔴':'Very few employees! Hire now.'}[st.light];return '<div class="card"><div class="row"><div><h3 style="margin:0">'+st.light+' Employees: '+st.have+'</h3><div class="muted">'+t+'<br>Needed now: '+Object.keys(STAFF).map(k=>STAFF[k].n.split(' ')[0]+' '+st.n[k]).join(' · ')+'</div></div></div><button class="btn" style="margin-top:8px" '+(st.light==='🟢'?'disabled':'')+' onclick="hireAll()">Hire all needed</button></div>'}
-function hireAll(){const n=need();Object.keys(STAFF).forEach(k=>{while(S.staff[k]<Math.min(10,n[k])&&S.money>=STAFF[k].fee){S.money-=STAFF[k].fee;S.staff[k]++}});save();render(true)}
-function monthCtl(){return '<div class="card"><h3>Month length</h3><div class="row"><button class="btn s o" onclick="setMonth(-1)">−1 min</button><b>'+S.monthMin+' real minutes</b><button class="btn s o" onclick="setMonth(1)">+1 min</button></div><div class="muted" style="margin-top:6px">How long one month (30 days) lasts before the bill. The clock at the top counts down.</div></div>'}
-function setMonth(d){S.monthMin=Math.max(1,Math.min(60,S.monthMin+d));run();save();render(true)}
-function newsItems(){const sh=S.share||.5,t=S.riv.reduce((a,r)=>a+r.ap,0)||1,tot=S.users/sh,rv=S.riv.map(r=>({n:r.n,u:tot*(1-sh)*r.ap/t})),all=rv.concat([{n:S.name,u:S.users}]).sort((a,b)=>b.u-a.u),rk=all.findIndex(x=>x.n===S.name)+1,st=staffState(),it=[];
-  if(S.invs.some(b=>b.late>0))it.push('🏛️ Government notice: overdue bills. Purchases are blocked'+(S.towers.some(t=>t.off)?' and some towers are shut':'')+'. Pay in the Bills tab.');Object.keys(S.atk).forEach(z=>it.push('🔥 '+S.atk[z].r+' is stealing customers in '+ZONES[z][0]));
-  if(st.light!=='🟢')it.push((st.light==='🔴'?'🚨':'⚠️')+' Team is short. Open the Team tab to hire.');
-  it.push('🏆 #1 SIM right now: '+all[0].n+' with '+fm(all[0].u)+' users');rv.forEach(r=>it.push('📰 '+r.n+' has sold about '+fm(r.u*1.4)+' SIMs'));it.push('📈 '+S.name+' is #'+rk+' · '+fm(S.sims)+' SIMs sold');return it}
-function clock(){if(!S||S.over)return;const dl=30-(S.day%30),ms=dl*dayMs()-(Date.now()-lastTick);$('hc').textContent=S.speed?'⏱ Bill in '+Math.floor(Math.max(0,ms)/60000)+':'+String(Math.floor(Math.max(0,ms)/1000)%60).padStart(2,'0'):'⏸ Paused';const n=newsItems();$('news').textContent=n[Math.floor(Date.now()/5000)%n.length];const cr=$('cr');if(S.cr){const ms=Math.max(0,S.cr.left*dayMs()-(Date.now()-lastTick));cr.style.display='block';cr.textContent='🚨 '+crisisName()+' · '+(S.speed?Math.floor(ms/60000)+':'+String(Math.floor(ms/1000)%60).padStart(2,'0'):'paused')+' · TAP to fix · '+rs(crisisCost())}else cr.style.display='none'}
-setInterval(clock,1000);
-function need(){return{eng:Math.ceil(S.towers.length/4),sup:Math.ceil(S.users/4000),sales:Math.ceil(S.users/10000)}}
-function invoice(c){const it=Object.assign({},S.acc);it.fine=c.hp<45?Math.round(5000+(45-c.hp)*400):0;const tot=Object.values(it).reduce((a,b)=>a+b,0);S.invs.push({m:S.day/30,it,tot,due:S.day+15,late:0});S.acc={sal:0,tax:0,twr:0,ads:0,lic:0,loan:0,fine:0,pack:0,net:0};toast('New monthly bill: '+rs(tot)+'. Pay within 15 days')}
-function checkDue(){S.invs.forEach(b=>{if(S.day>=b.due+b.late*15){b.late++;const pen=Math.round(b.tot*.05);b.tot+=pen;S.rep=Math.max(0,S.rep-.03);toast('Bill is overdue. Late fee '+rs(pen))}});if(S.invs.some(b=>b.late>=2)&&!S.towers.some(t=>t.off)&&S.towers.length>1){S.towers.forEach((t,i)=>{if(i%4===0&&i>0)t.off=true});toast('🏛️ Government shut some towers. Pay your bills!')}}
-function payBill(i){const b=S.invs[i];if(!b||S.money<b.tot)return;S.money-=b.tot;S.invs.splice(i,1);toast('Bill paid');if(!S.invs.some(x=>x.late>0)&&S.towers.some(t=>t.off)){S.towers.forEach(t=>t.off=false);toast('Government lifted the order. Towers are back')}save();render(true)}
-function takeLoan(){if(S.loan)return;S.money+=500000;S.loan=500000;toast('Loan taken. Interest is added to your bill');save();render(true)}
-function repayLoan(){if(!S.loan||S.money<S.loan)return;S.money-=S.loan;S.loan=0;toast('Loan repaid');save();render(true)}
-function setPrice(d){S.price=Math.max(.7,Math.min(1.5,Math.round((S.price+d)*10)/10));save();render(true)}
-function festival(){if(S.money<20000||S.offer>0)return;S.money-=20000;S.offer=10;toast('Festival offer is live!');save();render(true)}
-function pricing(){return '<div class="card"><h3>Your pricing</h3><div class="row"><button class="btn s o" onclick="setPrice(-.1)">−10%</button><b>'+Math.round(S.price*100)+'% of normal price</b><button class="btn s o" onclick="setPrice(.1)">+10%</button></div><div class="muted" style="margin:6px 0 8px">Cheaper wins more users but earns less per user. Costlier does the opposite.</div><button class="btn" '+(S.money>=20000&&!S.offer?'':'disabled')+' onclick="festival()">'+(S.offer?'Festival offer running · '+S.offer+' days left':'Festival offer · Rs 20,000 · 10 days')+'</button></div>'}
-function bars(it){const mx=Math.max(1,...Object.values(it));return CATS.map(a=>it[a[0]]?'<div style="margin:5px 0"><div class="row"><span>'+a[1]+'</span><b>'+rs(it[a[0]])+'</b></div><div class="bar"><i style="width:'+it[a[0]]/mx*100+'%"></i></div></div>':'').join('')}
-function vBills(){
-  const run=Object.values(S.acc).reduce((a,b)=>a+b,0);
-  let h=monthCtl()+'<div class="card"><h3>This month so far · next bill in '+(30-S.day%30)+' days</h3>'+(run?bars(S.acc):'<div class="muted">Nothing yet</div>')+'<div class="row" style="margin-top:6px"><span>Running total</span><b>'+rs(run)+'</b></div></div>';
-  h+=S.invs.length?S.invs.map((b,i)=>'<div class="card" style="border-color:var(--bad)"><h3>Month '+b.m+' bill · due in '+(b.due+b.late*15-S.day)+' days</h3>'+bars(b.it)+'<div class="row" style="margin:8px 0"><b>Total</b><b>'+rs(b.tot)+'</b></div><button class="btn" '+(S.money>=b.tot?'':'disabled')+' onclick="payBill('+i+')">Pay bill</button></div>').join(''):'<div class="card muted">No unpaid bills. Well done!</div>';
-  return h+'<div class="card"><h3>Bank loan</h3><div class="muted" style="margin-bottom:8px">'+(S.loan?'You owe '+rs(S.loan)+'. Interest is added to your monthly bill.':'Rs 5,00,000 now. Interest 0.1% a day goes into your bill.')+'</div>'+(S.loan?'<button class="btn o" '+(S.money>=S.loan?'':'disabled')+' onclick="repayLoan()">Repay loan</button>':'<button class="btn" onclick="takeLoan()">Take loan</button>')+'</div>';
-}
-function spark(a,c){if(a.length<2)return'';const mx=Math.max(...a),mn=Math.min(...a);return'<svg viewBox="0 0 200 40" style="height:48px;border:0;background:none"><polyline points="'+a.map((v,i)=>(i*200/(a.length-1)).toFixed(1)+','+(38-(v-mn)/(mx-mn||1)*34).toFixed(1)).join(' ')+'" fill="none" stroke="'+c+'" stroke-width="2"/></svg>'}
-function charts(){const h=S.h,sh=S.share||.5,t=S.riv.reduce((a,r)=>a+r.ap,0)||1;
-  const row=(n,p,c)=>'<div class="row"><span>'+n+'</span><b>'+Math.round(p*100)+'%</b></div><div class="bar" style="margin-bottom:6px"><i style="width:'+p*100+'%;background:'+c+'"></i></div>';
-  return '<div class="card"><h3>Market share</h3>'+row(S.name,sh,'var(--acc)')+S.riv.map(r=>row(r.n,(1-sh)*r.ap/t,'var(--muted)')).join('')+'</div><div class="card"><h3>Users</h3>'+spark(h.u,'var(--acc)')+'<h3>Daily income</h3>'+spark(h.r,'var(--good)')+'<h3>Signal</h3>'+spark(h.g,'var(--warn)')+'</div>'}
-document.addEventListener('pointerdown',()=>{hold=Date.now()});
-if(load()){$('start').className='ov h';if(S.over)over();else{run();render(true)}}
-</script>
+    <!-- Official NICH Employee Attendance 3 app icon badge anchored bottom-right -->
+    <button
+      id="terminalBadgeButton"
+      type="button"
+      class="terminal-app-badge"
+      aria-label="NICH Employee Attendance 3 — Cloud Sync & Terminal Info"
+      title="NICH Employee Attendance 3 • Tap for Cloud Sync"
+    >
+      <img
+        src="./assets/nich_official_logo.png"
+        alt="NICH Employee Attendance 3"
+        width="54"
+        height="54"
+        draggable="false"
+      />
+      <span id="cloudSyncDot" class="sync-dot offline" aria-hidden="true"></span>
+    </button>
+
+    <!-- Transient Verification Successful Overlay (Check-In auto-resets, Check-Out displays Send Email & Finish) -->
+    <section
+      id="verifiedOverlay"
+      class="modal-backdrop hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="verifiedTitle"
+    >
+      <div id="verifiedCard" class="terminal-card verified-card">
+        <div class="verified-header-row">
+          <svg class="status-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              fill="currentColor"
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+            />
+          </svg>
+          <h1 id="verifiedTitle" class="verified-title">Verification Successful</h1>
+        </div>
+
+        <div id="verifiedAvatarRing" class="avatar-ring">
+          <img
+            id="verifiedSelfiePreview"
+            src="./assets/emp_muhammad_ansar.jpg"
+            alt="Verified employee selfie"
+          />
+        </div>
+
+        <p id="verifiedEmployeeName" class="verified-employee-name">Muhammad Ansar</p>
+        <p id="verifiedMeta" class="verified-meta">CHECK-IN • 09:00:00 AM</p>
+
+        <!-- Shown ONLY on Check-Out (hidden on Check-In) -->
+        <div id="checkOutActions" class="checkout-actions hidden">
+          <button
+            id="sendEmailFinishBtn"
+            type="button"
+            class="btn-primary-send"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+            </svg>
+            <span id="sendEmailBtnLabel">Send Email &amp; Finish</span>
+          </button>
+          <p class="recipient-caption">Nichemployeeattendance@gmail.com</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Minimal Camera Hardware / Permission Notice Overlay -->
+    <section
+      id="cameraFailureOverlay"
+      class="modal-backdrop failure-backdrop hidden"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="failureTitle"
+    >
+      <div class="terminal-card failure-card">
+        <svg class="failure-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M11 15h2v2h-2zm0-8h2v6h-2zm1-5C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2zm0 18a8 8 0 0 1-8-8 8 8 0 0 1 8-8 8 8 0 0 1 8 8 8 8 0 0 1-8 8z"
+          />
+        </svg>
+        <h2 id="failureTitle" class="failure-title">Camera Access Required</h2>
+        <p id="failureMessage" class="failure-message">
+          Allow camera permissions in your browser to start hands-free biometric face scanning.
+        </p>
+        <button id="retryCameraBtn" type="button" class="btn-cyan">Allow Camera</button>
+      </div>
+    </section>
+
+    <!-- Discreet Operator Cloud Sync Sheet (opened ONLY when tapping bottom-right app icon badge) -->
+    <section
+      id="operatorDrawer"
+      class="modal-backdrop hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="operatorDrawerTitle"
+    >
+      <div class="terminal-card operator-card">
+        <div class="operator-header">
+          <div class="operator-brand">
+            <img src="./assets/nich_official_logo.png" alt="NICH Logo" width="38" height="38" />
+            <div>
+              <h2 id="operatorDrawerTitle" class="operator-title">NICH Attendance 3</h2>
+              <p class="operator-subtitle">GitHub Pages Web Adapter • Firebase Cloud Sync</p>
+            </div>
+          </div>
+          <button id="closeOperatorDrawerBtn" type="button" class="btn-icon-close" aria-label="Close">
+            ✕
+          </button>
+        </div>
+
+        <div class="status-grid">
+          <div class="status-pill">
+            <span class="pill-label">Firebase Project</span>
+            <span class="pill-value mono">attendanceapp-f6a0e</span>
+          </div>
+          <div class="status-pill">
+            <span class="pill-label">Cloud Operator</span>
+            <span id="operatorAuthStatus" class="pill-value">Offline Storage Mode</span>
+          </div>
+          <div class="status-pill">
+            <span class="pill-label">Active Window</span>
+            <span id="windowStatusValue" class="pill-value">Auto</span>
+          </div>
+          <div class="status-pill">
+            <span class="pill-label">Queued Sync</span>
+            <span id="queuedSyncCount" class="pill-value mono">0 logs</span>
+          </div>
+        </div>
+
+        <div class="operator-actions">
+          <button id="googleSignInBtn" type="button" class="btn-cyan">
+            Connect Google Cloud Sync
+          </button>
+          <button id="googleSignOutBtn" type="button" class="btn-outline hidden">
+            Disconnect Google Account
+          </button>
+        </div>
+
+        <div class="recent-logs-section">
+          <div class="recent-logs-header">
+            <h3>Recent Web Terminal Logs</h3>
+            <span id="recentLogsBadge" class="mono">0</span>
+          </div>
+          <ul id="recentLogsList" class="recent-logs-list"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./js/app.js"></script>
 </body>
 </html>
